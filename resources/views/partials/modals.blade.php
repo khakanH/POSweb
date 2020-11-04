@@ -1,7 +1,7 @@
 <style type="text/css">
-  input[type="file"] {
+  /*input[type="file"] {
     display: none;
-}
+}*/
 </style>
 
 <div id="myModal" class="modal fade show " tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-modal="true" aria-hidden="true">
@@ -153,9 +153,7 @@
                           <div class="col-lg-6"> 
                             <label>Product Image:</label><br>
                             <img id="product_image_output" src="{{ env('IMG_URL')}}choose_img.png" width="130" height="130" style="
-  border-radius: 2%; border: solid gray 1px; object-position: top; object-fit: cover;">&nbsp;&nbsp; <label class="btn btn-small btn-rounded btn-dark-solid" style="cursor: pointer; vertical-align: middle;"  onchange="product_loadFile(event)"><i style="font-size: 15px; text-align: center;" class="fa fa-camera"></i> Upload Image
-    
-<input type="file"  name="product_image"  accept="image/*" required=""></label> </div>
+  border-radius: 2%; border: solid gray 1px; object-position: top; object-fit: cover;">&nbsp;&nbsp;<input type="file"  name="product_image" onchange="product_loadFile(event)"  accept="image/*" required=""></div>
                           <div class="col-lg-6"> 
                             <label>Product Description:</label>
                             <textarea class="form-control" name="prod_descrip" id="prod_descrip" rows="5" placeholder="Enter Product Description"></textarea></div>
@@ -327,6 +325,9 @@
       prod_price: {
         required: true,
       },
+      product_image: {
+        required: true,
+      },
 
     },
     messages: {
@@ -348,7 +349,9 @@
       prod_price: {
         required: "Please Provide a Product Priver",
       },
-     
+      product_image: {
+        required: "Please Provide a Product Image",
+      },
     },
     submitHandler: function(form) {
 

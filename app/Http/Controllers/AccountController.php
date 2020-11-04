@@ -6,8 +6,10 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\Members;
+use App\Models\CompanyInfo;
+use App\Models\Countries;
 
-
+use File;
 
 class AccountController extends Controller
 {
@@ -77,8 +79,22 @@ class AccountController extends Controller
 
             if($id)
             {   
+                    $company_info = array(
+                                            'name'              => "",
+                                            'email'             => "",
+                                            'phone'             => "",
+                                            'country_id'        => 0,
+                                            'default_tax'       => 0,
+                                            'default_discount'  => 0,
+                                            'receipt_header'    => "",
+                                            'receipt_footer'    => "",
+                                            'logo'              => "choose_img.png",
+                                            'member_id'         => $id,
+                                            'created_at'        => date("Y-m-d H:i:s"),
+                                            'updated_at'        => date("Y-m-d H:i:s"),
 
-               
+                                         );
+                    CompanyInfo::insert($company_info);
 
                     $request->session()->put("success","Account Created Successfully!");
                     return view('verify_email',["email"=>$input['email'],'verification_type'=>1]);
@@ -264,6 +280,109 @@ class AccountController extends Controller
 
 
 
+    public function Settings(Request $request)
+    {
+        try 
+        {
+            $user_id = session("login")["user_id"];
+
+            $user_info = $this->checkUserAvailbility($user_id,$request);
+
+            $country  =Countries::where('is_show',1)->get();
+            $company  = CompanyInfo::where('member_id',$user_id)->first();
+
+            return view('settings',compact('company','country'));
+
+        } 
+        catch (Exception $e) 
+        {
+            return response()->json($e,500);
+        }
+    }
+
+    public function AddCompanyInfo(Request $request)
+    {
+        try 
+        {
+            $user_id = session("login")["user_id"];
+
+            $user_info = $this->checkUserAvailbility($user_id,$request);
+
+            $input = $request->all();
+
+            $old_logo = CompanyInfo::where('member_id',$user_id)->first();
+
+            $image= $request->file('company_logo');
+            if (empty($image)) 
+            {
+
+                $path = $old_logo->logo;
+                
+            }
+            else
+            {
+
+                if ($old_logo->logo != "choose_img.png") 
+                {
+                    $image_path = public_path('images/'.$old_logo->logo);  // Value is not URL but directory file path
+
+                    if(File::exists($image_path)) {
+                        File::delete($image_path);
+                    }
+                }
+
+                $input['imagename'] =  uniqid().'.webp';
+               
+                $destinationPath = public_path('/images/companylogo');
+
+                if($image->move($destinationPath, $input['imagename']))
+                {
+                        $path =  'companylogo/'.$input['imagename'];
+                }
+                else
+                {
+                        return redirect()->back()->withInput()->with("failed","Something Went Wrong for Image Uploading");
+                }
+
+            }
+             
+
+            $result = CompanyInfo::where('member_id',$user_id)
+                                 ->update(array(
+                                    'name'              => $input['name'],
+                                    'email'             => $input['email'],
+                                    'phone'             => $input['phone'],
+                                    'logo'             =>  $path,
+                                    'country_id'        => $input['country'],
+                                    'default_discount'  => $input['discount'],
+                                    'default_tax'       => $input['tax'],
+                                    'receipt_header'    => $input['receipt_header'],
+                                    'receipt_footer'    => $input['receipt_footer'],
+                                 ));
+
+            if ($result) 
+            {
+                    return array("status"=>"1","msg"=>"Company Information Saved Successfully.");
+            }
+            else
+            {
+                return array("status"=>"0","msg"=>"Failed.");
+
+            }
+        } 
+        catch (Exception $e) 
+        {
+            return response()->json($e,500);
+        }
+    }
+
+
+
+
+
+
+
+
 
     public function SignOut(Request $request)
     {   
@@ -277,7 +396,23 @@ class AccountController extends Controller
 
 
     
+    public function checkUserAvailbility($id,$request)
+    {   
 
+        $user = $this->member_model->where('id',$id)->first();
+
+
+        if ($user == "") 
+        {   
+            $request->session()->put("failed","Session Time Out. You need to Login Again.");
+            header('Location:'.url('/'));
+            exit();
+        }
+        else
+        {   
+            return $user;
+        }
+    }
 
 }
     

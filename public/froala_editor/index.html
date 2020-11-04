@@ -1,0 +1,157 @@
+
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0" />
+    <title>Froala Editor built using the Froala customizer</title>
+
+    <style>
+      body {
+        line-height: 1.5;
+        font-family: sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        text-align: center;
+      }
+
+      section {
+        width: 90%;
+        margin: auto;
+        padding-top: 30px;
+      }
+
+      h1 {
+        font-size: 36px;
+        font-weight: 300;
+        text-align: center;
+      }
+
+      h2 {
+        margin: 0;
+        color: #252525;
+        padding-left: 10px;
+        font-weight: 400;
+      }
+
+    </style>
+
+    <link href="./css/froala_editor.pkgd.min.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.3.0/codemirror.min.css">
+
+    <script type="text/javascript" src="https://raw.githack.com/eKoopmans/html2pdf/master/dist/html2pdf.bundle.js"></script>
+    <script type="text/javascript" src="./js/froala_editor.pkgd.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.3.0/codemirror.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.3.0/mode/xml/xml.min.js"></script>
+
+    <!-- The script below imports your chosen language for the editor --> 
+	 <script id="language" src="./js/languages/en_gb.js"></script>
+  </head>
+
+  <body>
+    <section>
+      <h1>Welcome to your custom Froala Editor!</h1>
+      <h2>Visit <a href="https://froala.com/wysiwyg-editor/pricing/" target="_blank" rel="noopener noreferrer">froala.com/wysiwyg-editor/pricing/</a> to pick your pricing plan and take your editor live.</h2>
+
+      <br/>
+
+      <!-- The Froala editor gets initialized inside of this DIV element -->
+      <div id="froala-editor"></div>
+
+    </section>
+    <script>
+      // The following function creates a new instance of the Froala Editor and inserts it into the DIV element created above with id="froala-editor"
+      new FroalaEditor('div#froala-editor',
+      {
+    "key": "INSERT-YOUR-FROALA-KEY-HERE",
+    "events": {},
+    "colorsText": [
+        "#61BD6D",
+        "#1ABC9C",
+        "#54ACD2",
+        "#2C82C9",
+        "#9365B8",
+        "#475577",
+        "#CCCCCC",
+        "#41A85F",
+        "#00A885",
+        "#3D8EB9",
+        "#2969B0",
+        "#553982",
+        "#28324E",
+        "#000000",
+        "#F7DA64",
+        "#FBA026",
+        "#EB6B56",
+        "#E25041",
+        "#A38F84",
+        "#EFEFEF",
+        "#FFFFFF",
+        "#FAC51C",
+        "#F37934",
+        "#D14841",
+        "#B8312F",
+        "#7C706B",
+        "#D1D5D8",
+        "REMOVE"
+    ],
+    "fontFamily": {
+        "Arial,Helvetica,sans-serif": "Arial",
+        "Georgia,serif": "Georgia",
+        "Impact,Charcoal,sans-serif": "Impact",
+        "Tahoma,Geneva,sans-serif": "Tahoma",
+        "Times New Roman,Times,serif": "Times New Roman",
+        "Verdana,Geneva,sans-serif": "Verdana"
+    },
+    "fontSize": [
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "14",
+        "18",
+        "24",
+        "30",
+        "36",
+        "48",
+        "60",
+        "72",
+        "96"
+    ],
+    "inlineStyles": {
+        "Big Red": "font-size: 20px; color: red;",
+        "Small Blue": "font-size: 14px; color: blue;"
+    },
+    "paragraphFormat": {
+        "N": "Normal",
+        "H1": "Heading 1",
+        "H2": "Heading 2",
+        "H3": "Heading 3",
+        "H4": "Heading 4",
+        "PRE": "Code"
+    },
+    "toolbarButtons": {
+        "moreRich": {
+            "buttons": [
+                "insertLink",
+                "insertFiles",
+                "insertImage",
+                "insertVideo",
+                "insertTable",
+                "emoticons",
+                "specialCharacters",
+                "insertFile",
+                "insertHR"
+            ],
+            "buttonsVisible": 3,
+            "align": "left"
+        },
+        "showMoreButtons": true
+    },
+    "language": "en_gb"
+});
+    </script>
+  </body>
+</html>

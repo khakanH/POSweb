@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\POSController;
 
 /*
 |--------------------------------------------------------------------------
@@ -44,6 +45,9 @@ Route::post('/check-verification-code', [AccountController::class, 'CheckVerific
 Route::middleware(['LoginSession'])->group(function () 
 {
 	Route::get('dashboard',[DashboardController::class, 'Index'])->name('dashboard');
+
+	Route::get('settings',[AccountController::class, 'Settings'])->name('settings');
+	Route::post('add-company-info',[AccountController::class, 'AddCompanyInfo'])->name('add-company-info');
 	
 	
 	//_______C A T E G O R Y -- R O U T E S________________________________________
@@ -68,6 +72,12 @@ Route::middleware(['LoginSession'])->group(function ()
 	Route::get('get-product-list-AJAX/{search_text}',[ProductController::class,'ProductListAJAX'])->name('get-product-list-AJAX');
 	Route::post('add-update-product',[ProductController::class,'AddUpdateProduct'])->name('add-update-product');
 	Route::get('delete-product/{id}',[ProductController::class,'DeleteProduct'])->name('delete-product');
+	//_________________________________________________________________________________
+
+
+	//_______P O S -- R O U T E S________________________________________
+	Route::get('pos',[POSController::class, 'Index'])->name('pos');
+	Route::get('get-pos-product-list/{cate_id}/{search_text}',[POSController::class, 'GetPOSProductList'])->name('get-pos-product-list');
 	//_________________________________________________________________________________
 
 

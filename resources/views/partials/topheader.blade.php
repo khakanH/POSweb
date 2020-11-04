@@ -9,8 +9,8 @@
                     <div class="header__navbar">
                         <ul class="list-unstyled">
                            
-                            <li class="">
-                                <a href="#">
+                            <li class="{{ Request::is('pos')? 'active' : ''}}">
+                                <a href="{{route('pos')}}">
                                     <i class="fas fa-shopping-basket"></i>
                                     <span class="bot-line"></span>POS</a>
                             </li>
@@ -24,8 +24,8 @@
                                     <i class="fas fa-shopping-basket"></i>
                                     <span class="bot-line"></span>Products</a>
                             </li>
-                            <li>
-                                <a href="#">
+                            <li class="{{ Request::is('settings')? 'active' : ''}}">
+                                <a href="{{route('settings')}}">
                                     <i class="fas fa-shopping-basket"></i>
                                     <span class="bot-line"></span>Settings</a>
                             </li>
