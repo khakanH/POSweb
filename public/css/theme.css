@@ -4490,7 +4490,7 @@ section {
     border: none;
     font-weight: 600;
     vertical-align: top;
-    padding: 15px 40px;
+    padding: 5px 0px;
     padding-right: 10px;
 }
 
@@ -4540,7 +4540,7 @@ section {
     font-size: 14px;
     color: #808080;
     vertical-align: middle;
-    padding: 25px 40px;
+    padding: 10px 1px;
     padding-right: 10px;
     border: none;
 }

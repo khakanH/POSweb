@@ -78,6 +78,12 @@ Route::middleware(['LoginSession'])->group(function ()
 	//_______P O S -- R O U T E S________________________________________
 	Route::get('pos',[POSController::class, 'Index'])->name('pos');
 	Route::get('get-pos-product-list/{cate_id}/{search_text}',[POSController::class, 'GetPOSProductList'])->name('get-pos-product-list');
+	Route::get('create-new-bill',[POSController::class, 'CreateNewBill'])->name('create-new-bill');
+	Route::get('delete-last-bill',[POSController::class, 'DeleteLastBill'])->name('delete-last-bill');
+	Route::get('get-bill-nav-links',[POSController::class, 'GetBillNavLinks'])->name('get-bill-nav-links');
+	Route::get('get-pending-bill/{id}',[POSController::class, 'GetPendingBill'])->name('get-pending-bill');
+	Route::get('cancel-bill/{id}',[POSController::class, 'CancelBill'])->name('cancel-bill');
+
 	//_________________________________________________________________________________
 
 
