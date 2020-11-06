@@ -10,6 +10,38 @@
 {
   padding: 3px;
 }
+  
+  .qty-btn{
+    line-height: 0px;
+    font-size: 1rem;
+    padding: 3px;
+    height: 20px;
+  }
+  .qty-input{
+    width: 40%;
+    padding: 3px;
+    line-height: 0px;
+    font-size: 1rem;
+    margin-right:2px; 
+    margin-left:2px;
+    height: 25px;
+  }
+
+    .tax-dis-input{
+    padding: 3px;
+    line-height: 0px;
+    font-size: 1rem;
+    height: 25px;
+    max-width: 100px;
+    margin-right: 25px;
+  }
+
+   input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+               -webkit-appearance: none;
+               margin: 0;
+            }
+
   </style>
     
   
@@ -56,6 +88,13 @@
                              @endforeach
                            </select></div>
                            <div class="col-5"> <input type="text" name="bar_code" class="form-control" placeholder="Enter Barcode"></div>
+
+                           <!-- ______________________________________________ -->
+                           <!-- H I D D E N -- C U R R E N T -- B I L L -- I D -->
+                           <input type="hidden" name="current_bill_id" id="current_bill_id" value="{{$pending_bill[0]['id']}}">
+                           <!-- H I D D E N -- C U R R E N T -- B I L L -- I D -->
+                           <!-- ______________________________________________ -->
+
                            </div>
                           
 
@@ -75,16 +114,16 @@
                                     <table class="table table-data2">
                                         <thead class="text-sm-center">
                                             <tr>
-                                                <th>
+                                                <th width="5%">
                                                     
                                                 </th>
-                                                <th width="50%">Product</th>
+                                                <th width="40%">Product</th>
                                                 <th width="10%">Price</th>
-                                                <th width="10%">Qty</th>
-                                                <th width="30%">Total</th>
+                                                <th width="25%">Qty</th>
+                                                <th width="20%">Total</th>
                                             </tr>
                                         </thead>
-                                        <tbody class="text-sm-center">
+                                        <tbody class="text-sm-center" id="bill-prod-list{{$pending_bill[0]['id']}}">
                                           @if(count($pending_bill_item)==0)
                                           <tr class="spacer"></tr>
                                           <tr class="spacer"></tr>
@@ -97,11 +136,15 @@
                                             @foreach($pending_bill_item as $bill_item)
                                             <tr class="tr-shadow" id="bill_item{{$bill_item['id']}}">
                                                 <td>
-                                                    <i class="fa fa-times-circle text-danger"></i>
+                                                    <i class="fa fa-times-circle text-danger" style="cursor: pointer;" onclick='DeleteBillProductItem("{{$bill_item['id']}}")'></i>
                                                 </td>
                                                 <td>{{$bill_item['product_name']}}</td>
                                                 <td>{{$bill_item['product_price']}}</td>
-                                                <td>{{$bill_item['product_quantity']}}</td>
+                                                <td>
+                                                  <div class="row" style="margin: auto; vertical-align: middle;">
+                                                  <button class="btn btn-primary qty-btn" onclick='DecreaseBillItem("{{$bill_item['id']}}","{{$bill_item['product_id']}}")'>-</button><input class="form-control qty-input" type="number" value="{{$bill_item['product_quantity']}}" onfocusout='ChangeBillProductQty(this.value,"{{$bill_item['id']}}","{{$bill_item['product_id']}}")' step="1" min="1" name="prod-qty" id="prod-qty{{$bill_item['id']}}"><button class="btn btn-primary qty-btn" onclick='IncreaseBillItem("{{$bill_item['id']}}","{{$bill_item['product_id']}}")'>+</button>
+                                                  </div>
+                                                </td>
                                                 <td>{{$bill_item['product_subtotal']}}</td>
                                             </tr>
                                             @endforeach
@@ -111,12 +154,12 @@
                                 </div>
                                   <br>
                                 <table width="100%" class="table">
-                                  <tbody>
+                                  <tbody id="bill-summary-total{{$pending_bill[0]['id']}}">
                                     <tr><td width="50%" style="background: #ecf0f1;">SubTotal: </td><td>
                                       <span style="float: left;">{{$pending_bill[0]['subtotal']}}</span><i style="float: right;"><b>{{$pending_bill[0]['total_item']}}</b> items</i>
                                     </td></tr>
-                                    <tr><td width="50%" style="background: #ecf0f1;">Order Tax: </td><td>{{$pending_bill[0]['tax']}}</td></tr>
-                                    <tr><td width="50%" style="background: #ecf0f1;">Discount: </td><td>{{$pending_bill[0]['discount']}}</td></tr>
+                                    <tr><td width="50%" style="background: #ecf0f1;">Order Tax: </td><td><div class="d-flex"><span style="float: left;"><input type="text" class="form-control tax-dis-input" onfocusout='ApplyBillTax(this.value,"{{$pending_bill[0]['id']}}")' id="bill-tax-input{{$pending_bill[0]['id']}}" value="{{$pending_bill[0]['tax_percentage']}}%"></span><i style="float: right;">{{$pending_bill[0]['tax_amount']}}</i></div></td></tr>
+                                    <tr><td width="50%" style="background: #ecf0f1;">Discount: </td><td><div class="d-flex"><span style="float: left;"><input type="text" class="form-control tax-dis-input" onfocusout='ApplyBillDiscount(this.value,"{{$pending_bill[0]['id']}}")' name=""></span><i style="float: right;">here</i></div></td></tr>
                                     <tr><td width="50%" style="background: #ecf0f1;">Total: </td><td>{{number_format($pending_bill[0]['total_bill'],2)}}</td></tr>
                                   </tbody>  
                                 </table>
@@ -191,7 +234,7 @@
                           <div class="row" id="pos-prod-list" style="min-height: 420px; max-height: 420px; overflow: auto;">
                           @foreach($product as $prod)
                           <div class="col-3">
-                                <div class="card">
+                                <div class="card" style="cursor: pointer;" onclick='AddProductToBill("{{$prod['id']}}","{{$prod['name']}}","{{$prod['price']}}")'>
                                     <div class="card-body">
                                         <div class="mx-auto d-block">
                                             <img class="rounded-circle mx-auto d-block" src="{{env('IMG_URL')}}{{$prod['image']}}" width="100" height="100" alt="{{$prod['name']}}">
@@ -227,6 +270,21 @@
 
         <script type="text/javascript">
           
+          $('.tax-dis-input').keydown(function (e) {
+          
+
+          var key = e.keyCode;
+          
+          if (! ((key >= 48 && key <= 57) || key == 8 || key == 9 || key == 13 || key == 16 || key == 37 || key == 39 || key == 46 || (key >= 96 && key <= 105)) ) {
+          
+            e.preventDefault();
+            
+          }
+
+        
+      });
+
+
           function GetAllProducts() 
           {
             txt =document.getElementById("prod_search_text").value.trim();
@@ -278,37 +336,35 @@
                 });
           }
 
-        function SearchProduct(value)
-        {   
-            var txt = value.trim();
+          function SearchProduct(value)
+          {   
+              var txt = value.trim();
 
-            if (!txt) 
-            {
-                txt = "0";
-            }
+              if (!txt) 
+              {
+                  txt = "0";
+              }
 
-                 $.ajax({
-                    type: "GET",
-                    url: "{{ env('APP_URL')}}get-pos-product-list/"+"0"+"/"+txt,
-                    beforeSend: function(){
-                            $('#LoadingModal').modal('show');
-                        },
-                    success: function(data) {
-                            $('#LoadingModal').modal('hide');
+                   $.ajax({
+                      type: "GET",
+                      url: "{{ env('APP_URL')}}get-pos-product-list/"+"0"+"/"+txt,
+                      beforeSend: function(){
+                              $('#LoadingModal').modal('show');
+                          },
+                      success: function(data) {
+                              $('#LoadingModal').modal('hide');
 
-                        $('#pos-prod-list').html(data);
-                    },
-                    error: function(jqXHR, textStatus, errorThrown) {
-                        alert('Exception:' + errorThrown);
-                    }
-                });
-        }
-          
-
+                          $('#pos-prod-list').html(data);
+                      },
+                      error: function(jqXHR, textStatus, errorThrown) {
+                          alert('Exception:' + errorThrown);
+                      }
+                  });
+          }
 
 
 
-        //______________ B I L L -- G E N E R A T I O N ______________________________
+        //______________ B I L L -- G E N E R A T I O N ___________________________
 
         function getBill(id)
         {
@@ -458,6 +514,7 @@
 
                                      setTimeout(function() {
                                     document.getElementById('toast').className = "alert alert-success alert-rounded fadeOut animated";
+                                    document.getElementById('toast').style.visibility = "hidden";
 
                                 }, 5000);
 
@@ -480,9 +537,321 @@
 
 
 
+        //______________ A D D -- P R O D U C T -- T O -- B I L L_________________
+
+        function AddProductToBill(id,name,price)
+        {
+          var bill_id = document.getElementById("current_bill_id").value;
+
+
+          $.ajax({
+                  type: "POST",
+                  url: "{{ env('APP_URL')}}add-product-to-bill",
+                  data: { 
+                          "bill_id":bill_id,
+                          "prod_id":id,
+                          "prod_name":name,
+                          "prod_price":price,
+                          "_token": $('meta[name="csrf-token"]').attr('content') },
+                          beforeSend: function(){
+                            $('#LoadingModal').modal('show');
+                        },
+                  success: function(data) {
+                            $('#LoadingModal').modal('hide');
+                          
+                            $('#bill-prod-list'+bill_id).html(data);
+
+                             $.ajax({
+                            type: "GET",
+
+                            url: "{{ env('APP_URL')}}calculate-total-bill/"+bill_id,
+                            success: function(data_) {
+                                    
+                                    $('#bill-summary-total'+bill_id).html(data_);
 
 
 
+                            },
+                            error: function(jqXHR, textStatus, errorThrown) {
+                                alert('Exception:' + errorThrown);
+                            }
+                        });
+
+
+
+                            
+                  },
+                  error: function(jqXHR, textStatus, errorThrown) {
+                                alert('Exception:' + errorThrown);
+                  }
+          });
+
+        }
+
+        function DeleteBillProductItem(item_id)
+        {
+          var bill_id = document.getElementById("current_bill_id").value;
+
+          $.ajax({
+                  type: "POST",
+                  url: "{{ env('APP_URL')}}delete-product-from-bill",
+                  data: { 
+                          "bill_id":bill_id,
+                          "item_id":item_id,
+                          "_token": $('meta[name="csrf-token"]').attr('content') },
+                          beforeSend: function(){
+                            $('#LoadingModal').modal('show');
+                        },
+                  success: function(data) {
+                            $('#LoadingModal').modal('hide');
+                          
+                            $('#bill-prod-list'+bill_id).html(data);
+
+                             $.ajax({
+                            type: "GET",
+
+                            url: "{{ env('APP_URL')}}calculate-total-bill/"+bill_id,
+                            success: function(data_) {
+                                    
+                                    $('#bill-summary-total'+bill_id).html(data_);
+
+
+
+                            },
+                            error: function(jqXHR, textStatus, errorThrown) {
+                                alert('Exception:' + errorThrown);
+                            }
+                        });
+
+
+
+                            
+                  },
+                  error: function(jqXHR, textStatus, errorThrown) {
+                                alert('Exception:' + errorThrown);
+                  }
+          });
+
+        }
+
+
+        function DecreaseBillItem(bill_item_id,prod_id)
+        {
+          var bill_id = document.getElementById("current_bill_id").value;
+
+          if (document.getElementById('prod-qty'+bill_item_id).value <= 1) 
+          {
+            return;
+          }
+
+
+           $.ajax({
+                  type: "POST",
+                  url: "{{ env('APP_URL')}}decrease-bill-product-item",
+                  data: { 
+                          "bill_id":bill_id,
+                          "bill_item_id":bill_item_id,
+                          "prod_id":prod_id,
+                          "_token": $('meta[name="csrf-token"]').attr('content') },
+                          beforeSend: function(){
+                            $('#LoadingModal').modal('show');
+                        },
+                  success: function(data) {
+                            $('#LoadingModal').modal('hide');
+                          
+                            
+                            $('#bill-prod-list'+bill_id).html(data);
+
+
+                             $.ajax({
+                            type: "GET",
+
+                            url: "{{ env('APP_URL')}}calculate-total-bill/"+bill_id,
+                            success: function(data_) {
+                                    
+                                    $('#bill-summary-total'+bill_id).html(data_);
+
+
+
+                            },
+                            error: function(jqXHR, textStatus, errorThrown) {
+                                alert('Exception:' + errorThrown);
+                            }
+                        });
+
+
+
+                            
+                  },
+                  error: function(jqXHR, textStatus, errorThrown) {
+                                alert('Exception:' + errorThrown);
+                  }
+          });
+        }
+
+        function IncreaseBillItem(bill_item_id,prod_id)
+        {
+          var bill_id = document.getElementById("current_bill_id").value;
+
+           $.ajax({
+                  type: "POST",
+                  url: "{{ env('APP_URL')}}increase-bill-product-item",
+                  data: { 
+                          "bill_id":bill_id,
+                          "bill_item_id":bill_item_id,
+                          "prod_id":prod_id,
+                          "_token": $('meta[name="csrf-token"]').attr('content') },
+                          beforeSend: function(){
+                            $('#LoadingModal').modal('show');
+                        },
+                  success: function(data) {
+                            $('#LoadingModal').modal('hide');
+                          
+                            $('#bill-prod-list'+bill_id).html(data);
+                           
+
+                             $.ajax({
+                            type: "GET",
+
+                            url: "{{ env('APP_URL')}}calculate-total-bill/"+bill_id,
+                            success: function(data_) {
+                                    
+                                    $('#bill-summary-total'+bill_id).html(data_);
+
+
+
+                            },
+                            error: function(jqXHR, textStatus, errorThrown) {
+                                alert('Exception:' + errorThrown);
+                            }
+                        });
+
+
+
+                            
+                  },
+                  error: function(jqXHR, textStatus, errorThrown) {
+                                alert('Exception:' + errorThrown);
+                  }
+          });
+        }
+
+        function ChangeBillProductQty(val,bill_item_id,prod_id)
+        {
+
+          if (val < 1) 
+          {
+            return;
+          }
+          var bill_id = document.getElementById("current_bill_id").value;
+
+           $.ajax({
+                  type: "POST",
+                  url: "{{ env('APP_URL')}}change-bill-product-quantity",
+                  data: { 
+                          "bill_id":bill_id,
+                          "bill_item_id":bill_item_id,
+                          "prod_id":prod_id,
+                          "prod_qty":val,
+                          "_token": $('meta[name="csrf-token"]').attr('content') },
+                          beforeSend: function(){
+                            $('#LoadingModal').modal('show');
+                        },
+                  success: function(data) {
+                            $('#LoadingModal').modal('hide');
+                          
+                            $('#bill-prod-list'+bill_id).html(data);
+                           
+
+                             $.ajax({
+                            type: "GET",
+
+                            url: "{{ env('APP_URL')}}calculate-total-bill/"+bill_id,
+                            success: function(data_) {
+                                    
+                                    $('#bill-summary-total'+bill_id).html(data_);
+
+
+
+                            },
+                            error: function(jqXHR, textStatus, errorThrown) {
+                                alert('Exception:' + errorThrown);
+                            }
+                        });
+
+
+
+                            
+                  },
+                  error: function(jqXHR, textStatus, errorThrown) {
+                                alert('Exception:' + errorThrown);
+                  }
+          });
+        }
+
+        //________________________________________________________________________
+
+
+
+        //______________ B I L L -- T A X -- D I S C O U N T _________________
+
+
+        function ApplyBillTax(val,bill_id)
+        {
+          val = parseInt(val)?parseInt(val):0;
+
+          if(val < 0 || val > 100)
+          {
+            document.getElementById('bill-tax-input'+bill_id).value = "0%";
+            document.getElementById('bill-tax-input'+bill_id).style.border = "solid red 1px";
+          }
+          else
+          {
+            document.getElementById('bill-tax-input'+bill_id).value = val+"%";
+            document.getElementById('bill-tax-input'+bill_id).style.border = "solid lightgray 1px";
+            
+                $.ajax({
+                  type: "POST",
+                  url: "{{ env('APP_URL')}}apply-bill-tax",
+                  data: { 
+                          "bill_id":bill_id,
+                          "tax":val,
+                          "_token": $('meta[name="csrf-token"]').attr('content') },
+                          beforeSend: function(){
+                            $('#LoadingModal').modal('show');
+                        },
+                  success: function(data) {
+                            $('#LoadingModal').modal('hide');
+
+                             $.ajax({
+                            type: "GET",
+
+                            url: "{{ env('APP_URL')}}calculate-total-bill/"+bill_id,
+                            success: function(data_) {
+                                    
+                                    $('#bill-summary-total'+bill_id).html(data_);
+
+
+
+                            },
+                            error: function(jqXHR, textStatus, errorThrown) {
+                                alert('Exception:' + errorThrown);
+                            }
+                        });
+
+
+
+                            
+                  },
+                  error: function(jqXHR, textStatus, errorThrown) {
+                                alert('Exception:' + errorThrown);
+                  }
+          });
+
+
+
+          }
+        }
 
 
         </script>

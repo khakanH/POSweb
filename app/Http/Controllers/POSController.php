@@ -27,9 +27,9 @@ class POSController extends Controller
 
     public function Index(Request $request)
     {	
-        $user_id = session("login")["user_id"];
+      $user_id = session("login")["user_id"];
 
-        $user_info = $this->checkUserAvailbility($user_id,$request);
+      $user_info = $this->checkUserAvailbility($user_id,$request);
 
     	$company  = CompanyInfo::where('member_id',$user_id)->get();
     	$category = Category::where('member_id',$user_id)->where('is_deleted',0)->get();
@@ -43,8 +43,10 @@ class POSController extends Controller
                                         "bill_code"      => $this->getBillCode($user_id),
                                         "member_id"     => $user_id,
                                         "customer_id"   => 0,
-                                        "tax"           => 0,
-                                        "discount"      => 0,
+                                        "tax_percentage"           => 0,
+                                        "tax_amount"           => 0,
+                                        "discount_percentage"      => 0,
+                                        "discount_amount"      => 0,
                                         "subtotal"      => 0,
                                         "total_bill"    => 0,
                                         "total_item"    => 0,
@@ -192,21 +194,30 @@ class POSController extends Controller
                              <?php endforeach; ?>
                            </select></div>
                            <div class="col-5"> <input type="text" name="bar_code" class="form-control" placeholder="Enter Barcode"></div>
+
+
+                           <!-- ______________________________________________ -->
+                           <!-- H I D D E N -- C U R R E N T -- B I L L -- I D -->
+                           <input type="hidden" name="current_bill_id" id="current_bill_id" value="<?php echo $id; ?>">
+                           <!-- H I D D E N -- C U R R E N T -- B I L L -- I D -->
+                           <!-- ______________________________________________ -->
+
+
                            </div>
                     <div class="table-responsive" style="min-height: 200px; max-height: 200px;">
                                     <table class="table table-data2">
                                         <thead class="text-sm-center">
                                             <tr>
-                                                <th>
+                                                <th width="5%">
                                                     
                                                 </th>
-                                                <th width="50%">Product</th>
+                                                <th width="40%">Product</th>
                                                 <th width="10%">Price</th>
-                                                <th width="10%">Qty</th>
-                                                <th width="30%">Total</th>
+                                                <th width="25%">Qty</th>
+                                                <th width="20%">Total</th>
                                             </tr>
                                         </thead>
-                                        <tbody class="text-sm-center">
+                                        <tbody class="text-sm-center" id="bill-prod-list<?php echo $id; ?>">
                                             
                                         <?php if(count($pending_bill_item)==0): ?>
                                           <tr class="spacer"></tr>
@@ -220,11 +231,13 @@ class POSController extends Controller
                                             <?php foreach($pending_bill_item as $bill_item):?>
                                             <tr class="tr-shadow" id="bill_item<?php echo $bill_item['id'] ?>">
                                                 <td>
-                                                    <i class="fa fa-times-circle text-danger"></i>
+                                                    <i class="fa fa-times-circle text-danger" style="cursor: pointer;" onclick='DeleteBillProductItem("<?php echo $bill_item['id'] ?>")'></i>
                                                 </td>
                                                 <td><?php echo $bill_item['product_name']; ?></td>
                                                 <td><?php echo $bill_item['product_price']; ?></td>
-                                                <td><?php echo $bill_item['product_quantity']; ?></td>
+                                                <td><div class="row" style="margin: auto; vertical-align: middle;">
+                                                  <button class="btn btn-primary qty-btn" onclick='DecreaseBillItem("<?php echo $bill_item['id'] ?>","<?php echo $bill_item['product_id']; ?>")'>-</button><input class="form-control qty-input" type="number" value="<?php echo $bill_item['product_quantity']; ?>" onfocusout='ChangeBillProductQty(this.value,"<?php echo $bill_item['id'] ?>","<?php echo $bill_item['product_id']; ?>")' step="1" min="1" name="prod-qty" id="prod-qty<?php echo $bill_item['id'] ?>"><button class="btn btn-primary qty-btn" onclick='IncreaseBillItem("<?php echo $bill_item['id'] ?>","<?php echo $bill_item['product_id']; ?>")'>+</button>
+                                                  </div></td>
                                                 <td><?php echo $bill_item['product_subtotal']; ?></td>
                                             </tr>
                                             <?php endforeach; ?>
@@ -234,13 +247,14 @@ class POSController extends Controller
                                     </table>
                                 </div>      
                                 <br>
+
                                 <table width="100%" class="table">
-                                  <tbody>
+                                  <tbody id="bill-summary-total<?php echo $id; ?>">
                                     <tr><td width="50%" style="background: #ecf0f1;">SubTotal: </td><td>
                                       <span style="float: left;"><?php echo $pending_bill->subtotal ?></span><i style="float: right;"><b><?php echo $pending_bill->total_item ?></b> items</i>
                                     </td></tr>
-                                    <tr><td width="50%" style="background: #ecf0f1;">Order Tax: </td><td><?php echo $pending_bill->tax ?></td></tr>
-                                    <tr><td width="50%" style="background: #ecf0f1;">Discount: </td><td><?php echo $pending_bill->discount ?></td></tr>
+                                    <tr><td width="50%" style="background: #ecf0f1;">Order Tax: </td><td><div class="d-flex"><span style="float: left;"><input type="text" class="form-control tax-dis-input" onfocusout='ApplyBillTax(this.value,"<?php echo $pending_bill->id ?>")' id="bill-tax-input<?php echo $pending_bill->id ?>" value="<?php echo $pending_bill->tax_percentage ?>%"></span><i style="float: right;"><?php echo $pending_bill->tax_amount ?></i></div></td></tr>
+                                    <tr><td width="50%" style="background: #ecf0f1;">Discount: </td><td><?php echo $pending_bill->discount_percentage ?></td></tr>
                                     <tr><td width="50%" style="background: #ecf0f1;">Total: </td><td><?php echo number_format($pending_bill->total_bill,2) ?></td></tr>
                                   </tbody>  
                                 </table>
@@ -264,8 +278,10 @@ class POSController extends Controller
                                 "bill_code"     => $this->getBillCode($user_id),
                                 "member_id"     => $user_id,
                                 "customer_id"   => 0,
-                                "tax"           => 0,
-                                "discount"      => 0,
+                                "tax_percentage"       => 0,
+                                "tax_amount"           => 0,
+                                "discount_percentage"  => 0,
+                                "discount_amount"      => 0,
                                 "subtotal"      => 0,
                                 "total_bill"    => 0,
                                 "total_item"    => 0,
@@ -287,21 +303,30 @@ class POSController extends Controller
                              <?php endforeach; ?>
                            </select></div>
                            <div class="col-5"> <input type="text" name="bar_code" class="form-control" placeholder="Enter Barcode"></div>
+                           
+
+                           <!-- ______________________________________________ -->
+                           <!-- H I D D E N -- C U R R E N T -- B I L L -- I D -->
+                           <input type="hidden" name="current_bill_id" id="current_bill_id" value="<?php echo $new_bill; ?>">
+                           <!-- H I D D E N -- C U R R E N T -- B I L L -- I D -->
+                           <!-- ______________________________________________ -->
+                           
+
                            </div>
                     <div class="table-responsive" style="min-height: 200px; max-height: 200px;">
                                     <table class="table table-data2">
                                         <thead class="text-sm-center">
                                             <tr>
-                                                <th>
+                                                <th width="5%">
                                                     
                                                 </th>
-                                                <th width="50%">Product</th>
+                                                <th width="40%">Product</th>
                                                 <th width="10%">Price</th>
-                                                <th width="10%">Qty</th>
-                                                <th width="30%">Total</th>
+                                                <th width="25%">Qty</th>
+                                                <th width="20%">Total</th>
                                             </tr>
                                         </thead>
-                                        <tbody class="text-sm-center">
+                                        <tbody class="text-sm-center" id="bill-prod-list<?php echo $new_bill; ?>">
                                          
                                           <tr class="spacer"></tr>
                                           <tr class="spacer"></tr>
@@ -313,12 +338,12 @@ class POSController extends Controller
                                 </div>      
                                 <br>
                                 <table width="100%" class="table">
-                                  <tbody>
+                                  <tbody id="bill-summary-total<?php echo $new_bill; ?>">
                                     <tr><td width="50%" style="background: #ecf0f1;">SubTotal: </td><td>
                                       <span style="float: left;">0</span><i style="float: right;"><b>0</b> items</i>
                                     </td></tr>
-                                    <tr><td width="50%" style="background: #ecf0f1;">Order Tax: </td><td>0</td></tr>
-                                    <tr><td width="50%" style="background: #ecf0f1;">Discount: </td><td>0</td></tr>
+                                    <tr><td width="50%" style="background: #ecf0f1;">Order Tax: </td><td><div class="d-flex"><span style="float: left;"><input type="text" class="form-control tax-dis-input" onfocusout='ApplyBillTax(this.value,"<?php echo $new_bill; ?>")' id="bill-tax-input<?php echo $new_bill; ?>" value="0%"></span><i style="float: right;">0</i></div></td></tr>
+                                    <tr><td width="50%" style="background: #ecf0f1;">Discount: </td><td>0%</td></tr>
                                     <tr><td width="50%" style="background: #ecf0f1;">Total: </td><td>0.00</td></tr>
                                   </tbody>  
                                 </table>
@@ -373,21 +398,29 @@ class POSController extends Controller
                              <?php endforeach; ?>
                            </select></div>
                            <div class="col-5"> <input type="text" name="bar_code" class="form-control" placeholder="Enter Barcode"></div>
+
+                           <!-- ______________________________________________ -->
+                           <!-- H I D D E N -- C U R R E N T -- B I L L -- I D -->
+                           <input type="hidden" name="current_bill_id" id="current_bill_id" value="<?php echo $pending_bill->id; ?>">
+                           <!-- H I D D E N -- C U R R E N T -- B I L L -- I D -->
+                           <!-- ______________________________________________ -->
+
+
                            </div>
                     <div class="table-responsive" style="min-height: 200px; max-height: 200px;">
                                     <table class="table table-data2">
                                         <thead class="text-sm-center">
                                             <tr>
-                                                <th>
+                                                <th width="5%">
                                                     
                                                 </th>
-                                                <th width="50%">Product</th>
+                                                <th width="40%">Product</th>
                                                 <th width="10%">Price</th>
-                                                <th width="10%">Qty</th>
-                                                <th width="30%">Total</th>
+                                                <th width="25%">Qty</th>
+                                                <th width="20%">Total</th>
                                             </tr>
                                         </thead>
-                                        <tbody class="text-sm-center">
+                                        <tbody class="text-sm-center" id="bill-prod-list<?php echo $pending_bill->id; ?>">
                                             
                                         <?php if(count($pending_bill_item)==0): ?>
                                           <tr class="spacer"></tr>
@@ -401,11 +434,13 @@ class POSController extends Controller
                                             <?php foreach($pending_bill_item as $bill_item):?>
                                             <tr class="tr-shadow" id="bill_item<?php echo $bill_item['id'] ?>">
                                                 <td>
-                                                    <i class="fa fa-times-circle text-danger"></i>
+                                                    <i class="fa fa-times-circle text-danger" style="cursor: pointer;" onclick='DeleteBillProductItem("<?php echo $bill_item['id'] ?>")'></i>
                                                 </td>
                                                 <td><?php echo $bill_item['product_name']; ?></td>
                                                 <td><?php echo $bill_item['product_price']; ?></td>
-                                                <td><?php echo $bill_item['product_quantity']; ?></td>
+                                                <td><div class="row" style="margin: auto; vertical-align: middle;">
+                                                  <button class="btn btn-primary qty-btn" onclick='DecreaseBillItem("<?php echo $bill_item['id'] ?>","<?php echo $bill_item['product_id']; ?>")'>-</button><input class="form-control qty-input" type="number" value="<?php echo $bill_item['product_quantity']; ?>" onfocusout='ChangeBillProductQty(this.value,"<?php echo $bill_item['id'] ?>","<?php echo $bill_item['product_id']; ?>")' step="1" min="1" name="prod-qty" id="prod-qty<?php echo $bill_item['id'] ?>"><button class="btn btn-primary qty-btn" onclick='IncreaseBillItem("<?php echo $bill_item['id'] ?>","<?php echo $bill_item['product_id']; ?>")'>+</button>
+                                                  </div></td>
                                                 <td><?php echo $bill_item['product_subtotal']; ?></td>
                                             </tr>
                                             <?php endforeach; ?>
@@ -416,12 +451,12 @@ class POSController extends Controller
                                 </div>      
                                 <br>
                                 <table width="100%" class="table">
-                                  <tbody>
+                                  <tbody id="bill-summary-total<?php echo $pending_bill->id; ?>">
                                     <tr><td width="50%" style="background: #ecf0f1;">SubTotal: </td><td>
                                       <span style="float: left;"><?php echo $pending_bill->subtotal ?></span><i style="float: right;"><b><?php echo $pending_bill->total_item ?></b> items</i>
                                     </td></tr>
-                                    <tr><td width="50%" style="background: #ecf0f1;">Order Tax: </td><td><?php echo $pending_bill->tax ?></td></tr>
-                                    <tr><td width="50%" style="background: #ecf0f1;">Discount: </td><td><?php echo $pending_bill->discount ?></td></tr>
+                                    <tr><td width="50%" style="background: #ecf0f1;">Order Tax: </td><td><div class="d-flex"><span style="float: left;"><input type="text" class="form-control tax-dis-input" onfocusout='ApplyBillTax(this.value,"<?php echo $pending_bill->id ?>")' id="bill-tax-input<?php echo $pending_bill->id ?>" value="<?php echo $pending_bill->tax_percentage ?>%"></span><i style="float: right;"><?php echo $pending_bill->tax_amount ?></i></div></td></tr>
+                                    <tr><td width="50%" style="background: #ecf0f1;">Discount: </td><td><?php echo $pending_bill->discount_percentage ?></td></tr>
                                     <tr><td width="50%" style="background: #ecf0f1;">Total: </td><td><?php echo number_format($pending_bill->total_bill,2) ?></td></tr>
                                   </tbody>  
                                 </table>
@@ -477,8 +512,10 @@ class POSController extends Controller
         PendingBillItems::where('member_id',$user_id)->where('pending_bill_id',$get_bill->id)->delete();
 
         PendingBills::where('member_id',$user_id)->where('id',$id)->update(array(
-                                                                        'tax'       => 0,
-                                                                        'discount'  => 0,
+                                                                        'tax_percentage'       => 0,
+                                                                        'tax_amount'       => 0,
+                                                                        'discount_percentage'  => 0,
+                                                                        'discount_amount'  => 0,
                                                                         'subtotal'  => 0,
                                                                         'total_bill'=> 0,
                                                                         'total_item'=> 0,
@@ -489,13 +526,403 @@ class POSController extends Controller
 
 
 
+    //_____________ B I L L -- P R O D U C T S -- M E T H O D S ________________
+
+    public function AddProductToBill(Request $request)
+    {
+        $user_id = session("login")["user_id"];
+        $user_info = $this->checkUserAvailbility($user_id,$request);
+        
+        $input = $request->all();
+
+        $get_bill = PendingBills::where('member_id',$user_id)->where('id',$input['bill_id'])->first();
+
+        if ($get_bill == "") 
+        {
+          ?>
+              <tr class="tr-shadow"><td colspan="5">Something went wrong.</td></tr>
+          <?php
+        }
+        else
+        {
+          $check_prod = PendingBillItems::where('member_id',$user_id)->where('pending_bill_id',$input['bill_id'])->where('product_id',$input['prod_id'])->first();
+
+          if ($check_prod == "") 
+          {
+              PendingBillItems::insert(array(
+                                        'pending_bill_id'   => $input['bill_id'],
+                                        "bill_code"         => $get_bill->bill_code,
+                                        "member_id"         => $get_bill->member_id,
+                                        "customer_id"       => $get_bill->customer_id,
+                                        "product_id"        => $input['prod_id'],
+                                        "product_name"      => $input['prod_name'],
+                                        "product_price"     => $input['prod_price'],
+                                        "product_quantity"  => 1,
+                                        "product_subtotal"  => $input['prod_price'],
+                                        "created_at"        => date("Y-m-d H:i:s"),
+                                        "updated_at"        => date("Y-m-d H:i:s"),
+                                      ));
+          }
+          else
+          {
+              PendingBillItems::where('member_id',$user_id)
+                              ->where('pending_bill_id',$input['bill_id'])
+                              ->where('product_id',$input['prod_id'])
+                              ->update(array(
+                                      "product_quantity" => $check_prod->product_quantity + 1,
+                                      "product_subtotal" => $input['prod_price'] * ($check_prod->product_quantity + 1),
+                                ));
+          }
+
+          $pending_bill_item = PendingBillItems::where('member_id',$user_id)
+                          ->where('pending_bill_id',$input['bill_id'])
+                          ->get();
+
+          if(count($pending_bill_item)==0): 
+
+          ?>
+              <tr class="spacer"></tr>
+              <tr class="spacer"></tr>
+              <tr class="tr-shadow">
+              <td colspan="5"><h5>Empty List</h5><pre>Select Product</pre></td>
+              </tr>
+
+          <?php else: 
+                foreach($pending_bill_item as $bill_item):
+          ?>
+              <tr class="tr-shadow" id="bill_item<?php echo $bill_item['id'] ?>">
+              <td>
+                <i class="fa fa-times-circle text-danger" style="cursor: pointer;" onclick='DeleteBillProductItem("<?php echo $bill_item['id'] ?>")'></i>
+              </td>
+              <td><?php echo $bill_item['product_name']; ?></td>
+              <td><?php echo $bill_item['product_price']; ?></td>
+              <td><div class="row" style="margin: auto; vertical-align: middle;">
+                                                  <button class="btn btn-primary qty-btn" onclick='DecreaseBillItem("<?php echo $bill_item['id'] ?>","<?php echo $bill_item['product_id']; ?>")'>-</button><input class="form-control qty-input" type="number" value="<?php echo $bill_item['product_quantity']; ?>" onfocusout='ChangeBillProductQty(this.value,"<?php echo $bill_item['id'] ?>","<?php echo $bill_item['product_id']; ?>")' step="1" min="1" name="prod-qty" id="prod-qty<?php echo $bill_item['id'] ?>"><button class="btn btn-primary qty-btn" onclick='IncreaseBillItem("<?php echo $bill_item['id'] ?>","<?php echo $bill_item['product_id']; ?>")'>+</button>
+                                                  </div></td>
+              <td><?php echo $bill_item['product_subtotal']; ?></td>
+              </tr>
+          <?php endforeach; 
+                endif; 
+
+
+
+        }
+
+    } 
+
+
+    public function DeleteProductFromBill(Request $request)
+    {
+        $user_id = session("login")["user_id"];
+        $user_info = $this->checkUserAvailbility($user_id,$request);
+        
+        $input = $request->all();
+
+        $get_bill = PendingBills::where('member_id',$user_id)->where('id',$input['bill_id'])->first();
+
+        if ($get_bill == "") 
+        {
+          ?>
+              <tr class="tr-shadow"><td colspan="5">Something went wrong.</td></tr>
+          <?php
+        }
+        else
+        {
+          $check_prod = PendingBillItems::where('member_id',$user_id)->where('pending_bill_id',$input['bill_id'])->where('id',$input['item_id'])->delete();
+
+
+          $pending_bill_item = PendingBillItems::where('member_id',$user_id)
+                          ->where('pending_bill_id',$input['bill_id'])
+                          ->get();
+
+          if(count($pending_bill_item)==0): 
+
+          ?>
+              <tr class="spacer"></tr>
+              <tr class="spacer"></tr>
+              <tr class="tr-shadow">
+              <td colspan="5"><h5>Empty List</h5><pre>Select Product</pre></td>
+              </tr>
+
+          <?php else: 
+                foreach($pending_bill_item as $bill_item):
+          ?>
+              <tr class="tr-shadow" id="bill_item<?php echo $bill_item['id'] ?>">
+              <td>
+                <i class="fa fa-times-circle text-danger" style="cursor: pointer;" onclick='DeleteBillProductItem("<?php echo $bill_item['id'] ?>")'></i>
+              </td>
+              <td><?php echo $bill_item['product_name']; ?></td>
+              <td><?php echo $bill_item['product_price']; ?></td>
+              <td><div class="row" style="margin: auto; vertical-align: middle;">
+                                                  <button class="btn btn-primary qty-btn" onclick='DecreaseBillItem("<?php echo $bill_item['id'] ?>","<?php echo $bill_item['product_id']; ?>")'>-</button><input class="form-control qty-input" type="number" value="<?php echo $bill_item['product_quantity']; ?>" onfocusout='ChangeBillProductQty(this.value,"<?php echo $bill_item['id'] ?>","<?php echo $bill_item['product_id']; ?>")' step="1" min="1" name="prod-qty" id="prod-qty<?php echo $bill_item['id'] ?>"><button class="btn btn-primary qty-btn" onclick='IncreaseBillItem("<?php echo $bill_item['id'] ?>","<?php echo $bill_item['product_id']; ?>")'>+</button>
+                                                  </div></td>
+              <td><?php echo $bill_item['product_subtotal']; ?></td>
+              </tr>
+          <?php endforeach; 
+                endif; 
+
+
+
+        }
+
+    }     
+
+    public function DecreaseBillProductItem(Request $request)
+    {
+      $user_id = session("login")["user_id"];
+      $user_info = $this->checkUserAvailbility($user_id,$request);
+        
+      $input = $request->all();
+
+      $get_bill_item = PendingBillItems::where('member_id',$user_id)->where('id',$input['bill_item_id'])->first();
+      if ($get_bill_item == "") 
+      {
+        ?>
+              <tr class="tr-shadow"><td colspan="5">Something went wrong.</td></tr>
+        <?php
+      }
+      else
+      {
+        PendingBillItems::where('id',$input['bill_item_id'])->update(array(
+                                        'product_quantity'=>$get_bill_item->product_quantity -1,
+                                        'product_subtotal' => $get_bill_item->product_subtotal - $get_bill_item->product_price,
+                                                              ));
+         $pending_bill_item = PendingBillItems::where('member_id',$user_id)
+                          ->where('pending_bill_id',$input['bill_id'])
+                          ->get();
+
+          if(count($pending_bill_item)==0): 
+
+          ?>
+              <tr class="spacer"></tr>
+              <tr class="spacer"></tr>
+              <tr class="tr-shadow">
+              <td colspan="5"><h5>Empty List</h5><pre>Select Product</pre></td>
+              </tr>
+
+          <?php else: 
+                foreach($pending_bill_item as $bill_item):
+          ?>
+              <tr class="tr-shadow" id="bill_item<?php echo $bill_item['id'] ?>">
+              <td>
+                <i class="fa fa-times-circle text-danger" style="cursor: pointer;" onclick='DeleteBillProductItem("<?php echo $bill_item['id'] ?>")'></i>
+              </td>
+              <td><?php echo $bill_item['product_name']; ?></td>
+              <td><?php echo $bill_item['product_price']; ?></td>
+              <td><div class="row" style="margin: auto; vertical-align: middle;">
+                                                  <button class="btn btn-primary qty-btn" onclick='DecreaseBillItem("<?php echo $bill_item['id'] ?>","<?php echo $bill_item['product_id']; ?>")'>-</button><input class="form-control qty-input" type="number" value="<?php echo $bill_item['product_quantity']; ?>" onfocusout='ChangeBillProductQty(this.value,"<?php echo $bill_item['id'] ?>","<?php echo $bill_item['product_id']; ?>")' step="1" min="1" name="prod-qty" id="prod-qty<?php echo $bill_item['id'] ?>"><button class="btn btn-primary qty-btn" onclick='IncreaseBillItem("<?php echo $bill_item['id'] ?>","<?php echo $bill_item['product_id']; ?>")'>+</button>
+                                                  </div></td>
+              <td><?php echo $bill_item['product_subtotal']; ?></td>
+              </tr>
+          <?php endforeach; 
+                endif; 
+
+      }
+    }
+
+    public function IncreaseBillProductItem(Request $request)
+    {
+      $user_id = session("login")["user_id"];
+      $user_info = $this->checkUserAvailbility($user_id,$request);
+        
+      $input = $request->all();
+
+      $get_bill_item = PendingBillItems::where('member_id',$user_id)->where('id',$input['bill_item_id'])->first();
+      if ($get_bill_item == "") 
+      {
+        ?>
+              <tr class="tr-shadow"><td colspan="5">Something went wrong.</td></tr>
+          <?php
+      }
+      else
+      {
+        PendingBillItems::where('id',$input['bill_item_id'])->update(array(
+                                        'product_quantity'=>$get_bill_item->product_quantity + 1,
+                                        'product_subtotal' => $get_bill_item->product_subtotal + $get_bill_item->product_price,
+                                                              ));
+        $pending_bill_item = PendingBillItems::where('member_id',$user_id)
+                          ->where('pending_bill_id',$input['bill_id'])
+                          ->get();
+
+          if(count($pending_bill_item)==0): 
+
+          ?>
+              <tr class="spacer"></tr>
+              <tr class="spacer"></tr>
+              <tr class="tr-shadow">
+              <td colspan="5"><h5>Empty List</h5><pre>Select Product</pre></td>
+              </tr>
+
+          <?php else: 
+                foreach($pending_bill_item as $bill_item):
+          ?>
+              <tr class="tr-shadow" id="bill_item<?php echo $bill_item['id'] ?>">
+              <td>
+                <i class="fa fa-times-circle text-danger" style="cursor: pointer;" onclick='DeleteBillProductItem("<?php echo $bill_item['id'] ?>")'></i>
+              </td>
+              <td><?php echo $bill_item['product_name']; ?></td>
+              <td><?php echo $bill_item['product_price']; ?></td>
+              <td><div class="row" style="margin: auto; vertical-align: middle;">
+                                                  <button class="btn btn-primary qty-btn" onclick='DecreaseBillItem("<?php echo $bill_item['id'] ?>","<?php echo $bill_item['product_id']; ?>")'>-</button><input class="form-control qty-input" type="number" value="<?php echo $bill_item['product_quantity']; ?>" onfocusout='ChangeBillProductQty(this.value,"<?php echo $bill_item['id'] ?>","<?php echo $bill_item['product_id']; ?>")' step="1" min="1" name="prod-qty" id="prod-qty<?php echo $bill_item['id'] ?>"><button class="btn btn-primary qty-btn" onclick='IncreaseBillItem("<?php echo $bill_item['id'] ?>","<?php echo $bill_item['product_id']; ?>")'>+</button>
+                                                  </div></td>
+              <td><?php echo $bill_item['product_subtotal']; ?></td>
+              </tr>
+          <?php endforeach; 
+                endif; 
+
+      }
+    }
+
+    public function ChangeBillProductQuantity(Request $request)
+    {
+      $user_id = session("login")["user_id"];
+      $user_info = $this->checkUserAvailbility($user_id,$request);
+        
+      $input = $request->all();
+
+      $get_bill_item = PendingBillItems::where('member_id',$user_id)->where('id',$input['bill_item_id'])->first();
+      if ($get_bill_item == "") 
+      {
+        ?>
+              <tr class="tr-shadow"><td colspan="5">Something went wrong.</td></tr>
+        <?php
+      }
+      else
+      {
+        PendingBillItems::where('id',$input['bill_item_id'])->update(array(
+                                        'product_quantity'=>$input['prod_qty'],
+                                        'product_subtotal' => $get_bill_item->product_price * $input['prod_qty'],
+                                                              ));
+        $pending_bill_item = PendingBillItems::where('member_id',$user_id)
+                          ->where('pending_bill_id',$input['bill_id'])
+                          ->get();
+
+          if(count($pending_bill_item)==0): 
+
+          ?>
+              <tr class="spacer"></tr>
+              <tr class="spacer"></tr>
+              <tr class="tr-shadow">
+              <td colspan="5"><h5>Empty List</h5><pre>Select Product</pre></td>
+              </tr>
+
+          <?php else: 
+                foreach($pending_bill_item as $bill_item):
+          ?>
+              <tr class="tr-shadow" id="bill_item<?php echo $bill_item['id'] ?>">
+              <td>
+                <i class="fa fa-times-circle text-danger" style="cursor: pointer;" onclick='DeleteBillProductItem("<?php echo $bill_item['id'] ?>")'></i>
+              </td>
+              <td><?php echo $bill_item['product_name']; ?></td>
+              <td><?php echo $bill_item['product_price']; ?></td>
+              <td><div class="row" style="margin: auto; vertical-align: middle;">
+                                                  <button class="btn btn-primary qty-btn" onclick='DecreaseBillItem("<?php echo $bill_item['id'] ?>","<?php echo $bill_item['product_id']; ?>")'>-</button><input class="form-control qty-input" type="number" value="<?php echo $bill_item['product_quantity']; ?>" onfocusout='ChangeBillProductQty(this.value,"<?php echo $bill_item['id'] ?>","<?php echo $bill_item['product_id']; ?>")' step="1" min="1" name="prod-qty" id="prod-qty<?php echo $bill_item['id'] ?>"><button class="btn btn-primary qty-btn" onclick='IncreaseBillItem("<?php echo $bill_item['id'] ?>","<?php echo $bill_item['product_id']; ?>")'>+</button>
+                                                  </div></td>
+              <td><?php echo $bill_item['product_subtotal']; ?></td>
+              </tr>
+          <?php endforeach; 
+                endif; 
+
+      }
+    }
+
+    // _________________________________________________________________________
+    
+
+
+    //_____________ B I L L -- T A X -- M E T H O D S ________________
+
+    public function ApplyBillTax(Request $request)
+    {
+      $user_id = session("login")["user_id"];
+
+      $user_info = $this->checkUserAvailbility($user_id,$request);
+
+      $input = $request->all();
+
+      $get_bill = PendingBills::where('member_id',$user_id)->where('id',$input['bill_id'])->first();
+      if ($get_bill == "") 
+      {
+            return array("status"=>"0","msg"=>"Something went wrong.");
+      }
+      else
+      {
+
+        PendingBills::where('member_id',$user_id)
+                    ->where('id',$input['bill_id'])
+                    ->update(array(
+                          "tax_percentage"  => $input['tax'],
+                      ));
+      }
+    }
+
+    // _________________________________________________________________________
+
+    public function CalculateTotalBill(Request $request, $id)
+    {
+        $user_id = session("login")["user_id"];
+
+        $user_info = $this->checkUserAvailbility($user_id,$request);
+
+        $get_bill = PendingBills::where('member_id',$user_id)->where('id',$id)->first();
+
+        if ($get_bill == "") 
+        {
+          ?>
+          <tr><td colspan="2">Something went wrong.</td></tr>
+          <?php
+        }
+        else
+        {
+          $subtotal = PendingBillItems::where('member_id',$user_id)->where('pending_bill_id',$id)->sum('product_subtotal');
+          $total_item = PendingBillItems::where('member_id',$user_id)->where('pending_bill_id',$id)->count();
+
+          $tax_amount = $subtotal * ((int)$get_bill->tax_percentage/100);
+
+
+          $total_bill = $subtotal + $tax_amount;
+
+          PendingBills::where('member_id',$user_id)
+                      ->where('id',$id)
+                      ->update(array(
+                          "subtotal"    => $subtotal,
+                          "total_bill"  => $total_bill,
+                          "tax_amount"  => $tax_amount,
+                          "total_item"  => $total_item,
+                        ));
 
 
 
 
+          ?>
+            <tr>
+              <td width="50%" style="background: #ecf0f1;">SubTotal: </td>
+              <td>
+                <span style="float: left;"><?php echo $subtotal; ?></span>
+                <i style="float: right;"><b><?php echo $total_item; ?></b> items</i>
+              </td>
+            </tr>
+            
+            <tr>
+              <td width="50%" style="background: #ecf0f1;">Order Tax: </td>
+              <td><div class="d-flex"><span style="float: left;"><input type="text" class="form-control tax-dis-input" onfocusout='ApplyBillTax(this.value,"<?php echo $id ?>")' id="bill-tax-input<?php echo $id ?>" value="<?php echo $get_bill->tax_percentage ?>%"></span><i style="float: right;"><?php echo $tax_amount ?></i></div></td>
+            </tr>
+            
+            <tr>
+              <td width="50%" style="background: #ecf0f1;">Discount: </td>
+              <td>0%</td>
+            </tr>
+            <tr>
+              <td width="50%" style="background: #ecf0f1;">Total: </td>
+              <td><?php echo number_format($total_bill,2) ?></td>
+            </tr>
+          
+          <?php
 
 
+        }
 
+    }
 
 
 

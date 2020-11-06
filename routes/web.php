@@ -84,6 +84,18 @@ Route::middleware(['LoginSession'])->group(function ()
 	Route::get('get-pending-bill/{id}',[POSController::class, 'GetPendingBill'])->name('get-pending-bill');
 	Route::get('cancel-bill/{id}',[POSController::class, 'CancelBill'])->name('cancel-bill');
 
+			//________ B I L L -- P R O D U C T S -- R O U T E S_______
+
+	Route::post('add-product-to-bill',[POSController::class,'AddProductToBill'])->name('add-product-to-bill');
+	Route::get('calculate-total-bill/{id}',[POSController::class, 'CalculateTotalBill'])->name('calculate-total-bill');
+	Route::post('delete-product-from-bill',[POSController::class,'DeleteProductFromBill'])->name('delete-product-from-bill');
+
+	Route::post('decrease-bill-product-item',[POSController::class,'DecreaseBillProductItem'])->name('decrease-bill-product-item');
+	Route::post('increase-bill-product-item',[POSController::class,'IncreaseBillProductItem'])->name('increase-bill-product-item');
+	Route::post('change-bill-product-quantity',[POSController::class,'ChangeBillProductQuantity'])->name('change-bill-product-quantity');
+	Route::post('apply-bill-tax',[POSController::class,'ApplyBillTax'])->name('apply-bill-tax');
+
+
 	//_________________________________________________________________________________
 
 
