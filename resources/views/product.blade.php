@@ -2,6 +2,9 @@
 @section('content')
 
     
+    <style type="text/css">
+        
+    </style>
   
 <div class="page-content--bgf7">
         
@@ -12,10 +15,15 @@
 
     <section class="statistic statistic2">
         <div class="container">
-           
-
-			<div class="row">
-                            <div class="col-lg-12">
+            <center>
+            @if(session('success'))
+                        <p class="text-success pulse animated">{{ session('success') }}</p>
+                        {{ session()->forget('success') }}
+                        @elseif(session('failed'))
+                        <p class="text-danger pulse animated">{{ session('failed') }}</p>
+                        {{ session()->forget('failed') }}
+            @endif
+            </center>
 
                             <div class="table-data__tool">
                                 <div class="table-data__tool-left">
@@ -27,11 +35,19 @@
                                     </div>
                                     
                                 </div>
+                                <form method="post" action="{{route('upload-products-using-csv')}}" enctype="multipart/form-data">
+                                        @csrf 
                                 <div class="table-data__tool-right">
                                     <button class="au-btn au-btn-icon au-btn--green au-btn--small" onclick="AddProduct()">
                                         <i class="zmdi zmdi-plus"></i>Add Product</button>
+
+                                           
+                                       <label for="csv_file" class="au-btn au-btn-icon au-btn--blue au-btn--small"><i class="fa fa-file"></i> Select CSV File</label><input id="csv_file" name="csv_file" style="visibility:hidden; width: 15px;" onchange="form.submit()" type="file" accept=".csv">
+                                        
+
                                    
                                 </div>
+                                        </form>
                             </div>
 
 
@@ -73,8 +89,6 @@
                                     </table>
                                 </div>
                                 <!-- END DATA TABLE-->
-                            </div>
-                        </div>
 
                     </div>
                 </section>
@@ -231,6 +245,8 @@
 
 
     }
+
+    
 </script>
                       
                         

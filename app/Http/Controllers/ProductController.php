@@ -249,6 +249,113 @@ class ProductController extends Controller
     }
 
 
+
+
+
+    public function UploadProductsUsingCSV(Request $request)
+    {
+        try 
+        {
+            $user_id = session("login")["user_id"];
+
+            $user_info = $this->checkUserAvailbility($user_id,$request);
+            
+            $input = $request->all();  
+        
+
+            $file = $request->file('csv_file');
+
+            $filename = $file->getClientOriginalName();
+              $extension = $file->getClientOriginalExtension();
+              $tempPath = $file->getRealPath();
+              $fileSize = $file->getSize();
+              $mimeType = $file->getMimeType();
+
+              // Valid File Extensions
+              $valid_extension = array("csv");
+
+              // 2MB in Bytes
+              $maxFileSize = 2097152; 
+
+                    // Check file extension
+      if(in_array(strtolower($extension),$valid_extension)){
+
+        // Check file size
+        if($fileSize <= $maxFileSize){
+
+          // File upload location
+          $destinationPath = public_path('/csv_files');
+          $filename =  uniqid().".".$extension;
+
+          // Upload file
+          $file->move($destinationPath,$filename);
+
+          //Import CSV to Database
+          $filepath = public_path("csv_files/".$filename);
+
+          // Reading file
+          $file = fopen($filepath,"r");
+
+          $importData_arr = array();
+          $i = 0;
+
+          while (($filedata = fgetcsv($file, 1000, ",")) !== FALSE) {
+             $num = count($filedata );
+            
+             // Skip first row (Remove below comment if you want to skip the first row)
+             if($i == 0){
+                $i++;
+                continue; 
+             }
+             for ($c=0; $c < $num; $c++) {
+                $importData_arr[$i][] = $filedata [$c];
+             }
+             $i++;
+          }
+          fclose($file);
+
+          // Insert to MySQL database
+          foreach($importData_arr as $importData){
+
+            $insertData = array(
+                        "product_code"          => (string)$importData[1],
+                        "name"                  => (string)$importData[2],
+                        "image"                 => "product/default_product.png",
+                        "category_id"           => (int)$importData[3],
+                        "description"           => (string)$importData[4],
+                        "cost"                  => (float)$importData[5],
+                        "tax"                   => (float)$importData[6],
+                        "price"                 => (float)$importData[7],
+                        "member_id"             => $user_id,
+                        "is_deleted"            => 0,
+                        "created_at"            => date("Y-m-d H:i:s"),
+                        "updated_at"            => date("Y-m-d H:i:s"),
+            );
+            Product::insert($insertData);
+
+          }
+            return redirect()->route('product-list')->with('success','Product Uploaded Successfully!');
+
+        }
+        else
+        {
+            return redirect()->route('product-list')->with('failed','Invalid File Size! Kindly Use file Size of Minimum 2 MB');
+        }
+
+      }
+      else
+      {
+        return redirect()->route('product-list')->with('failed','Invalid File Extension! Kindly Use Only CSV Files');
+      }
+
+
+        } 
+        catch (Exception $e) 
+        {
+            
+        }
+    }
+
     public function AddUpdateProduct(Request $request)
     {
         try 

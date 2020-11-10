@@ -10,4 +10,7 @@ class PendingBills extends Model
     use HasFactory;
     protected $table = "pending_bills";
 
+    public function customer_name(){
+        return $this->hasOne('App\Models\Customers','id','customer_id');
+    }
 }

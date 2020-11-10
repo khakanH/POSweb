@@ -93,3 +93,120 @@
                                 </div>
                 </div>
                 </div>
+
+
+<script type="text/javascript">
+
+
+
+
+
+    var canvas = document.getElementById("big_clock");
+    var ctx = canvas.getContext("2d");
+
+    ctx.strokeStyle = 'white';
+    ctx.lineWidth = 20;
+    ctx.shadowBlur= 20;
+    ctx.shadowColor = 'white'
+
+    function degToRad(degree){
+      var factor = Math.PI/180;
+      return degree*factor;
+    }
+
+    function renderTime(){
+      var now = new Date();
+      var today = now.toDateString();
+      var time = now.toLocaleTimeString();
+      var hrs = now.getHours();
+      var min = now.getMinutes();
+      var sec = now.getSeconds();
+      var mil = now.getMilliseconds();
+      var smoothsec = sec+(mil/1000);
+      var smoothmin = min+(smoothsec/60);
+
+      //Background
+      gradient = ctx.createLinearGradient(100,50,500,0);
+      gradient.addColorStop(0, "#fc466b");
+      gradient.addColorStop(1, "#3f5efb");
+      ctx.fillStyle = gradient;
+      //ctx.fillStyle = 'rgba(00 ,00 , 00, 1)';
+      ctx.fillRect(0, 0, 500, 500);
+      //Hours
+      ctx.beginPath();
+      ctx.arc(250,250,200, degToRad(270), degToRad((hrs*30)-90));
+      ctx.stroke();
+      //Minutes
+      ctx.beginPath();
+      ctx.arc(250,250,170, degToRad(270), degToRad((smoothmin*6)-90));
+      ctx.stroke();
+      //Seconds
+      ctx.beginPath();
+      ctx.arc(250,250,140, degToRad(270), degToRad((smoothsec*6)-90));
+      ctx.stroke();
+      //Date
+      ctx.font = "30px sans-serif";
+      ctx.fillStyle = 'rgba(255, 255, 255, 1)'
+      ctx.fillText(today, 135, 240);
+      //Time
+      ctx.font = "40px sans-serif";
+      ctx.fillStyle = 'rgba(255, 255, 255, 1)';
+      ctx.fillText(time, 135, 290);
+
+
+    }
+    setInterval(renderTime, 40);
+
+    function ChangeClockType(type)
+    {
+        if (type == '1') 
+        {
+            document.getElementById('big_clock').style.display='none';
+            document.getElementById('small_clock').style.display='block';
+            startTime();
+        }
+        else
+        {   
+            document.getElementById('big_clock').style.display='block';
+            document.getElementById('small_clock').style.display='none';
+        }
+    }
+
+    function startTime() {
+      var today = new Date();
+      var h = today.getHours();
+      var m = today.getMinutes();
+      var s = today.getSeconds();
+
+      if (h > 12) 
+      {
+        am_pm = "pm";
+      }
+      else
+      {
+        am_pm = "am";
+      }
+
+      h=  checkHour(h);
+      m = checkTime(m);
+      s = checkTime(s);
+      document.getElementById('live_time').innerHTML =
+      h + ":" + m + ":" + s + " " + am_pm;
+      var t = setTimeout(startTime, 500);
+    }
+    function checkTime(i) {
+      if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
+      return i;
+    }
+    function checkHour(i) {
+      if (i > 12) {i = i-12};  // add zero in front of numbers < 10
+      return i;
+    }
+
+
+
+
+
+
+
+</script>

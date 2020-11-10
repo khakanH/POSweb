@@ -60,43 +60,23 @@
                     </div>
                     <div class="row">
                         <div class="col-lg-8">
-                            <!-- CHART-->
-                            <div class="statistic-chart-1">
-                                <h3 class="title-3 m-b-30">chart</h3>
-                                <div class="chart-wrap">
-                                    <canvas id="widgetChart5"></canvas>
-                                </div>
-                                <div class="statistic-chart-1-note">
-                                    <span class="big">10,368</span>
-                                    <span>/ 16220 items sold</span>
+                                <div class="au-card m-b-30">
+                                    <div class="au-card-inner"><div class="chartjs-size-monitor" style="position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px; overflow: hidden; pointer-events: none; visibility: hidden; z-index: -1;"><div class="chartjs-size-monitor-expand" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;"><div style="position:absolute;width:1000000px;height:1000000px;left:0;top:0"></div></div><div class="chartjs-size-monitor-shrink" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;"><div style="position:absolute;width:200%;height:200%;left:0; top:0"></div></div></div>
+                                        <h3 class="title-2 m-b-40">Monthly Stats</h3>
+                                        <canvas id="team-chart" height="185" width="370" class="chartjs-render-monitor" style="display: block; width: 370px; height: 185px;"></canvas>
+                                    </div>
                                 </div>
                             </div>
-                            <!-- END CHART-->
-                        </div>
+                            <div class="col-lg-4">
+                              <div class="au-card m-b-30">
+                                    <div class="au-card-inner"><div class="chartjs-size-monitor" style="position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px; overflow: hidden; pointer-events: none; visibility: hidden; z-index: -1;"><div class="chartjs-size-monitor-expand" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;"><div style="position:absolute;width:1000000px;height:1000000px;left:0;top:0"></div></div><div class="chartjs-size-monitor-shrink" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;"><div style="position:absolute;width:200%;height:200%;left:0; top:0"></div></div></div>
+                                        <h3 class="title-2 m-b-40">Top 5 Products This Year</h3>
+                                        <canvas id="pieChart" height="246" width="370" class="chartjs-render-monitor" style="display: block; width: 370px; height: 246px;"></canvas>
+                                    </div>
+                                </div>
+                            </div>
                        
-                        <div class="col-lg-4">
-                            <!-- CHART PERCENT-->
-                            <div class="chart-percent-2">
-                                <h3 class="title-3 m-b-30">chart by %</h3>
-                                <div class="chart-wrap">
-                                    <canvas id="percent-chart2"></canvas>
-                                    <div id="chartjs-tooltip">
-                                        <table></table>
-                                    </div>
-                                </div>
-                                <div class="chart-info">
-                                    <div class="chart-note">
-                                        <span class="dot dot--blue"></span>
-                                        <span>products</span>
-                                    </div>
-                                    <div class="chart-note">
-                                        <span class="dot dot--red"></span>
-                                        <span>Services</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- END CHART PERCENT-->
-                        </div>
+                        
                     </div>
                 </div>
             </section>
@@ -106,126 +86,101 @@
 
         </div>
 
+    <script src="{{ asset('vendor/chartjs/Chart.bundle.min.js') }}"></script>
                       
+        <script type="text/javascript">
+            
+          var sale = <?php echo '["' . implode('", "', $monthly_sale) . '"]' ?>;
+
+                  var ctx = document.getElementById("team-chart");
+                  if (ctx) {
+                    ctx.height = 150;
+                    var myChart = new Chart(ctx, {
+                      type: 'line',
+                      data: {
+                        labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul","Aug","Sep","Oct","Nov","Dec"],
+                        type: 'line',
+                        defaultFontFamily: 'Poppins',
+                        datasets: [{
+                          data: sale,
+                          label: "Sale",
+                          backgroundColor: 'rgba(0,103,255,.15)',
+                          borderColor: 'rgba(0,103,255,0.5)',
+                          borderWidth: 3.5,
+                          pointStyle: 'circle',
+                          pointRadius: 5,
+                          pointBorderColor: 'transparent',
+                          pointBackgroundColor: 'rgba(0,103,255,0.5)',
+                        },]
+                      },
+                      options: {
+                        responsive: true,
+                        tooltips: {
+                          mode: 'index',
+                          titleFontSize: 12,
+                          titleFontColor: '#000',
+                          bodyFontColor: '#000',
+                          backgroundColor: '#fff',
+                          titleFontFamily: 'Poppins',
+                          bodyFontFamily: 'Poppins',
+                          cornerRadius: 3,
+                          intersect: false,
+                        },
+                        legend: {
+                          display: false,
+                          position: 'top',
+                          labels: {
+                            usePointStyle: true,
+                            fontFamily: 'Poppins',
+                          },
+
+
+                        },
+                        scales: {
+                          xAxes: [{
+                            display: true,
+                            gridLines: {
+                              display: false,
+                              drawBorder: false
+                            },
+                            scaleLabel: {
+                              display: false,
+                              labelString: 'Month'
+                            },
+                            ticks: {
+                              fontFamily: "Poppins"
+                            }
+                          }],
+                          yAxes: [{
+                            display: true,
+                            gridLines: {
+                              display: false,
+                              drawBorder: false
+                            },
+                            scaleLabel: {
+                              display: true,
+                              labelString: 'Sales',
+                              fontFamily: "Poppins"
+                            },
+                            ticks: {
+                              fontFamily: "Poppins"
+                            }
+                          }]
+                        },
+                        title: {
+                          display: false,
+                        }
+                      }
+                    });
+                  }
+
+
+        </script>
                         
                       
                        
 
-<script type="text/javascript">
 
-
-
-
-
-    var canvas = document.getElementById("big_clock");
-    var ctx = canvas.getContext("2d");
-
-    ctx.strokeStyle = 'white';
-    ctx.lineWidth = 20;
-    ctx.shadowBlur= 20;
-    ctx.shadowColor = 'white'
-
-    function degToRad(degree){
-      var factor = Math.PI/180;
-      return degree*factor;
-    }
-
-    function renderTime(){
-      var now = new Date();
-      var today = now.toDateString();
-      var time = now.toLocaleTimeString();
-      var hrs = now.getHours();
-      var min = now.getMinutes();
-      var sec = now.getSeconds();
-      var mil = now.getMilliseconds();
-      var smoothsec = sec+(mil/1000);
-      var smoothmin = min+(smoothsec/60);
-
-      //Background
-      gradient = ctx.createLinearGradient(100,50,500,0);
-      gradient.addColorStop(0, "#fc466b");
-      gradient.addColorStop(1, "#3f5efb");
-      ctx.fillStyle = gradient;
-      //ctx.fillStyle = 'rgba(00 ,00 , 00, 1)';
-      ctx.fillRect(0, 0, 500, 500);
-      //Hours
-      ctx.beginPath();
-      ctx.arc(250,250,200, degToRad(270), degToRad((hrs*30)-90));
-      ctx.stroke();
-      //Minutes
-      ctx.beginPath();
-      ctx.arc(250,250,170, degToRad(270), degToRad((smoothmin*6)-90));
-      ctx.stroke();
-      //Seconds
-      ctx.beginPath();
-      ctx.arc(250,250,140, degToRad(270), degToRad((smoothsec*6)-90));
-      ctx.stroke();
-      //Date
-      ctx.font = "30px sans-serif";
-      ctx.fillStyle = 'rgba(255, 255, 255, 1)'
-      ctx.fillText(today, 135, 240);
-      //Time
-      ctx.font = "40px sans-serif";
-      ctx.fillStyle = 'rgba(255, 255, 255, 1)';
-      ctx.fillText(time, 135, 290);
-
-
-    }
-    setInterval(renderTime, 40);
-
-function ChangeClockType(type)
-{
-    if (type == '1') 
-    {
-        document.getElementById('big_clock').style.display='none';
-        document.getElementById('small_clock').style.display='block';
-        startTime();
-    }
-    else
-    {   
-        document.getElementById('big_clock').style.display='block';
-        document.getElementById('small_clock').style.display='none';
-    }
-}
-
-function startTime() {
-  var today = new Date();
-  var h = today.getHours();
-  var m = today.getMinutes();
-  var s = today.getSeconds();
-
-  if (h > 12) 
-  {
-    am_pm = "pm";
-  }
-  else
-  {
-    am_pm = "am";
-  }
-
-  h=  checkHour(h);
-  m = checkTime(m);
-  s = checkTime(s);
-  document.getElementById('live_time').innerHTML =
-  h + ":" + m + ":" + s + " " + am_pm;
-  var t = setTimeout(startTime, 500);
-}
-function checkTime(i) {
-  if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
-  return i;
-}
-function checkHour(i) {
-  if (i > 12) {i = i-12};  // add zero in front of numbers < 10
-  return i;
-}
-
-
-
-
-
-
-
-</script>
 
   
 @endsection

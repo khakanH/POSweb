@@ -5,6 +5,8 @@ use App\Http\Controllers\AccountController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\POSController;
+use App\Http\Controllers\BillController;
+use App\Http\Controllers\CustomerController;
 
 /*
 |--------------------------------------------------------------------------
@@ -71,6 +73,7 @@ Route::middleware(['LoginSession'])->group(function ()
 	Route::get('product-list',[ProductController::class, 'ProductList'])->name('product-list');
 	Route::get('get-product-list-AJAX/{search_text}',[ProductController::class,'ProductListAJAX'])->name('get-product-list-AJAX');
 	Route::post('add-update-product',[ProductController::class,'AddUpdateProduct'])->name('add-update-product');
+	Route::post('upload-products-using-csv',[ProductController::class,'UploadProductsUsingCSV'])->name('upload-products-using-csv');
 	Route::get('delete-product/{id}',[ProductController::class,'DeleteProduct'])->name('delete-product');
 	//_________________________________________________________________________________
 
@@ -94,9 +97,46 @@ Route::middleware(['LoginSession'])->group(function ()
 	Route::post('increase-bill-product-item',[POSController::class,'IncreaseBillProductItem'])->name('increase-bill-product-item');
 	Route::post('change-bill-product-quantity',[POSController::class,'ChangeBillProductQuantity'])->name('change-bill-product-quantity');
 	Route::post('apply-bill-tax',[POSController::class,'ApplyBillTax'])->name('apply-bill-tax');
+	Route::post('apply-bill-discount',[POSController::class,'ApplyBillDiscount'])->name('apply-bill-discount');
 
+
+			//________ B I L L -- C U S T O M E R S -- R O U T E S_______
+
+	Route::post('add-update-customer',[BillController::class,'AddUpdateCustomer'])->name('add-update-customer');
+	Route::get('get-customers-list',[BillController::class,'GetCustomersList'])->name('get-customers-list');
+	Route::get('change-bill-customer/{cust_id}/{bill_id}',[BillController::class, 'ChangeBillCustomer'])->name('change-bill-customer');
+
+	Route::get('get-bill-details/{id}',[BillController::class, 'GetBillDetails'])->name('get-bill-details');
+	Route::get('get-payment-method',[BillController::class, 'GetPaymentMethod'])->name('get-payment-method');
+	Route::post('add-sale',[BillController::class,'AddSale'])->name('add-sale');
+
+	Route::get('get-bill-receipt/{id}',[BillController::class, 'GetBillReceipt'])->name('get-bill-receipt');
 
 	//_________________________________________________________________________________
+
+	
+
+
+	//________________________ C U S T O M E R S -- R O U T E S________________________
+
+	Route::get('customers',[CustomerController::class,'Index'])->name('customers');
+	Route::get('get-customer-list-AJAX/{search_text}',[CustomerController::class,'CustomerListAJAX'])->name('get-customer-list-AJAX');
+	Route::get('delete-customer/{id}',[CustomerController::class,'DeleteCustomer'])->name('delete-customer');
+	//_________________________________________________________________________________
+
+
+
+
+	//_______________________________ S A L E S -- R O U T E S ________________________
+
+	Route::get('sales',[BillController::class,'Index'])->name('sales');
+	Route::get('get-sale-list-AJAX/{search_text}',[BillController::class,'SaleListAJAX'])->name('get-sale-list-AJAX');
+	Route::get('delete-sale/{id}',[BillController::class,'DeleteSale'])->name('delete-sale');
+	
+	Route::get('get-bill-sale-items/{id}',[BillController::class,'BillSaleItems'])->name('get-bill-sale-items');
+
+	//_________________________________________________________________________________
+
 
 
 

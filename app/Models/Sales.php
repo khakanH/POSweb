@@ -9,4 +9,9 @@ class Sales extends Model
 {
     use HasFactory;
     protected $table = "sales";
+
+
+    public function customer_name(){
+        return $this->hasOne('App\Models\Customers','id','customer_id');
+    }
 }

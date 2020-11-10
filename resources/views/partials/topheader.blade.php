@@ -2,7 +2,7 @@
             <div class="section__content section__content--p35">
                 <div class="header3-wrap">
                     <div class="header__logo">
-                        <a href="#">
+                        <a href="{{route('dashboard')}}">
                             <img src="{{env('IMG_URL')}}icon/logo-white.png" alt="Logo Here" />
                         </a>
                     </div>
@@ -29,14 +29,14 @@
                                     <i class="fas fa-shopping-basket"></i>
                                     <span class="bot-line"></span>Settings</a>
                             </li>
-                            <li>
-                                <a href="#">
+                            <li class="{{ Request::is('customers')? 'active' : ''}}">
+                                <a href="{{route('customers')}}">
                                     <i class="fas fa-shopping-basket"></i>
                                     <span class="bot-line"></span>Customers</a>
                             </li>
 
-                           <li>
-                                <a href="#">
+                           <li class="{{ Request::is('sales')? 'active' : ''}}">
+                                <a href="{{route('sales')}}">
                                     <i class="fas fa-shopping-basket"></i>
                                     <span class="bot-line"></span>Sales</a>
                             </li>

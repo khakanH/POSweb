@@ -41,7 +41,20 @@
                -webkit-appearance: none;
                margin: 0;
             }
-
+ @media print {
+    .ReceiptModalData {
+        background-color: white;
+        height: 100%;
+        width: 100%;
+        position: fixed;
+        top: 0;
+        left: 0;
+        margin: 0;
+        padding: 15px;
+        font-size: 14px;
+        line-height: 18px;
+    }
+}
   </style>
     
   
@@ -75,9 +88,13 @@
                         <div class="tab-pane fade show active" id="nav-home_" role="tabpanel" aria-labelledby="nav-home-tab">
                          <div id="bill_pos">
 
-                           <h5>Choose Client</h5>
+                          <div class="row">
+                           <div class="col-7"><h5 >Choose Client</h5></div>
+                           <div class="col-5"><i  style="float: right; padding-right: 5px; cursor: pointer;" onclick="CreateNewCustomer()" data-toggle="tooltip" title="Create Customer" class="fa fa-user"></i> <i  style="float: right; padding-right: 10px; cursor: pointer;" data-toggle="tooltip" title="Show Last Bill" onclick="ShowLastBill()" class="fa fa-list-alt"></i></div>
+                          </div>
+
                            <div class=" row form-group">
-                           <div class="col-7"><select class="form-control" name="customer_list" id="customer_list">
+                           <div class="col-7"><select class="form-control" name="customer_list" id="customer_list" onchange='ChangeBillCustomer(this.value,"{{$pending_bill[0]['id']}}")'>
                              <option value="0">Walk in Customer</option>
                              @foreach($customers as $cust)
                              <option 
@@ -158,15 +175,17 @@
                                     <tr><td width="50%" style="background: #ecf0f1;">SubTotal: </td><td>
                                       <span style="float: left;">{{$pending_bill[0]['subtotal']}}</span><i style="float: right;"><b>{{$pending_bill[0]['total_item']}}</b> items</i>
                                     </td></tr>
-                                    <tr><td width="50%" style="background: #ecf0f1;">Order Tax: </td><td><div class="d-flex"><span style="float: left;"><input type="text" class="form-control tax-dis-input" onfocusout='ApplyBillTax(this.value,"{{$pending_bill[0]['id']}}")' id="bill-tax-input{{$pending_bill[0]['id']}}" value="{{$pending_bill[0]['tax_percentage']}}%"></span><i style="float: right;">{{$pending_bill[0]['tax_amount']}}</i></div></td></tr>
-                                    <tr><td width="50%" style="background: #ecf0f1;">Discount: </td><td><div class="d-flex"><span style="float: left;"><input type="text" class="form-control tax-dis-input" onfocusout='ApplyBillDiscount(this.value,"{{$pending_bill[0]['id']}}")' name=""></span><i style="float: right;">here</i></div></td></tr>
+                                    <tr><td width="50%" style="background: #ecf0f1;">Order Tax: </td><td><div class="d-flex"><span style="float: left;"><input autocomplete="off" type="text" class="form-control tax-dis-input" onfocusout='ApplyBillTax(this.value,"{{$pending_bill[0]['id']}}")' id="bill-tax-input{{$pending_bill[0]['id']}}" value="{{number_format($pending_bill[0]['tax_percentage'],1)}}%"></span><i style="float: right;">{{number_format($pending_bill[0]['tax_amount'],2)}}</i></div></td></tr>
+                                    <tr><td width="50%" style="background: #ecf0f1;">Discount: </td><td><div class="d-flex"><span style="float: left;"><input autocomplete="off" type="text" class="form-control tax-dis-input" onfocusout='ApplyBillDiscount(this.value,"{{$pending_bill[0]['id']}}")' id="bill-discount-input{{$pending_bill[0]['id']}}" value="{{number_format($pending_bill[0]['discount_percentage'],1)}}%"></span><i style="float: right;">{{number_format($pending_bill[0]['discount_amount'],2)}}</i></div></td></tr>
                                     <tr><td width="50%" style="background: #ecf0f1;">Total: </td><td>{{number_format($pending_bill[0]['total_bill'],2)}}</td></tr>
                                   </tbody>  
                                 </table>
 
                                 <div class="row" style="margin-top: 14px;">
                                   <div class="col-6"><button style="width: 100%;" onclick='CancelBill("{{$pending_bill[0]['id']}}")' class="btn btn-danger">Cancel</button></div>
-                                  <div class="col-6"><button style="width: 100%;" class="btn btn-success">Payment</button></div>
+                                  <div class="col-6"><button style="width: 100%;" id="payment_button{{$pending_bill[0]['id']}}" class="btn btn-success"<?php if($pending_bill[0]['total_item'] == 0):?>
+                                    disabled=""
+                                  <?php endif ?> onclick='PayBill("{{$pending_bill[0]['id']}}")'>Payment</button></div>
                                 </div>
 
 
@@ -270,19 +289,7 @@
 
         <script type="text/javascript">
           
-          $('.tax-dis-input').keydown(function (e) {
-          
-
-          var key = e.keyCode;
-          
-          if (! ((key >= 48 && key <= 57) || key == 8 || key == 9 || key == 13 || key == 16 || key == 37 || key == 39 || key == 46 || (key >= 96 && key <= 105)) ) {
-          
-            e.preventDefault();
-            
-          }
-
         
-      });
 
 
           function GetAllProducts() 
@@ -556,10 +563,13 @@
                           beforeSend: function(){
                             $('#LoadingModal').modal('show');
                         },
+                  dataType: "html",
                   success: function(data) {
                             $('#LoadingModal').modal('hide');
                           
                             $('#bill-prod-list'+bill_id).html(data);
+
+                            document.getElementById("payment_button"+bill_id).disabled =false;
 
                              $.ajax({
                             type: "GET",
@@ -798,7 +808,7 @@
 
         function ApplyBillTax(val,bill_id)
         {
-          val = parseInt(val)?parseInt(val):0;
+          val = parseFloat(val)?parseFloat(val):0;
 
           if(val < 0 || val > 100)
           {
@@ -852,7 +862,305 @@
 
           }
         }
+         function ApplyBillDiscount(val,bill_id)
+         {
+            if (val.substr(val.length - 1) == "%") 
+            {
+              //apply discount as percentage
+              val = parseFloat(val)?parseFloat(val):0;
+              if(val < 0 || val > 100)
+              {
+                document.getElementById('bill-discount-input'+bill_id).value = "0%";
+                document.getElementById('bill-discount-input'+bill_id).style.border = "solid red 1px";
 
+                return;
+              }
+              else
+              {
+                document.getElementById('bill-discount-input'+bill_id).value = val+"%";
+                document.getElementById('bill-discount-input'+bill_id).style.border = "solid lightgray 1px";
+                         $.ajax({
+                  type: "POST",
+                  url: "{{ env('APP_URL')}}apply-bill-discount",
+                  data: { 
+                          "bill_id":bill_id,
+                          "discount":val,
+                          "type": 1, // for discount as percentage
+                          "_token": $('meta[name="csrf-token"]').attr('content') },
+                          beforeSend: function(){
+                            $('#LoadingModal').modal('show');
+                        },
+                  success: function(data) {
+                            $('#LoadingModal').modal('hide');
+
+                             $.ajax({
+                            type: "GET",
+
+                            url: "{{ env('APP_URL')}}calculate-total-bill/"+bill_id,
+                            success: function(data_) {
+                                    
+                                    $('#bill-summary-total'+bill_id).html(data_);
+
+
+
+                            },
+                            error: function(jqXHR, textStatus, errorThrown) {
+                                alert('Exception:' + errorThrown);
+                            }
+                        });
+
+
+
+                            
+                  },
+                  error: function(jqXHR, textStatus, errorThrown) {
+                                alert('Exception:' + errorThrown);
+                  }
+          });
+              }
+         
+
+            }
+            else
+            {
+
+              //apply discount as amount
+              val = parseFloat(val)?parseFloat(val):0;
+                                $.ajax({
+                  type: "POST",
+                  url: "{{ env('APP_URL')}}apply-bill-discount",
+                  data: { 
+                          "bill_id":bill_id,
+                          "discount":val,
+                          "type": 2, // for discount as amount
+                          "_token": $('meta[name="csrf-token"]').attr('content') },
+                          beforeSend: function(){
+                            $('#LoadingModal').modal('show');
+                        },
+                  success: function(data) {
+                            $('#LoadingModal').modal('hide');
+
+                             $.ajax({
+                            type: "GET",
+
+                            url: "{{ env('APP_URL')}}calculate-total-bill/"+bill_id,
+                            success: function(data_) {
+                                    
+                                    $('#bill-summary-total'+bill_id).html(data_);
+
+
+
+                            },
+                            error: function(jqXHR, textStatus, errorThrown) {
+                                alert('Exception:' + errorThrown);
+                            }
+                        });
+
+
+
+                            
+                  },
+                  error: function(jqXHR, textStatus, errorThrown) {
+                                alert('Exception:' + errorThrown);
+                  }
+          });
+            }
+
+         }
+        //________________________________________________________________________
+
+        
+        //______________ -- C U S T O M E R S --  ________________________________
+
+          function CreateNewCustomer()
+          {
+            document.getElementById('cust_name').value = "";
+            document.getElementById('cust_email').value = "";
+            document.getElementById('cust_phone').value = "";
+            document.getElementById('cust_discount').value = "";
+            document.getElementById('cust_id').value = "";
+            
+            document.getElementById('create_type').value = "1";
+
+            $('#CustomerModal').modal('show');
+            $('#CustomerModalLabel').html('Add New Customer');
+
+            document.getElementById('CustomerModal').style.backgroundColor="rgba(0,0,0,0.8)";
+            document.getElementById('CustomerModalDialog').style.paddingTop="0px";
+            document.getElementById('CustomerModalData').style.padding="5px 5px 0px 5px";
+          }
+
+          function ChangeBillCustomer(val,bill_id)
+          {
+            $.ajax({
+                    type: "GET",
+                    url: "{{ env('APP_URL')}}change-bill-customer/"+val+"/"+bill_id,
+                    success: function(data) {
+                          
+                          $.ajax({
+                            type: "GET",
+
+                            url: "{{ env('APP_URL')}}calculate-total-bill/"+bill_id,
+                            success: function(data_) {
+                                    $('#bill-summary-total'+bill_id).html(data_);
+                            },
+                            error: function(jqXHR, textStatus, errorThrown) {
+                                alert('Exception:' + errorThrown);
+                            }
+                          });              
+                      
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                      alert('Exception:' + errorThrown);
+                            }
+                    }); 
+          }
+
+          function PayBill(bill_id)
+          {
+
+            $.ajax({
+                    type: "GET",
+                    url: "{{ env('APP_URL')}}get-bill-details/"+bill_id,
+                    success: function(data) {
+
+                        get_status = data['status'];
+                        get_msg    = data['msg'];
+
+                                if (get_status == "0") 
+                                {
+                                   document.getElementById('toast').style.visibility = "visible";
+                                    document.getElementById('toast').className = "alert alert-danger alert-rounded fadeIn animated";
+                                    document.getElementById('toastMsg').innerHTML = get_msg;
+
+
+                                     setTimeout(function() {
+                                    document.getElementById('toast').className = "alert alert-danger alert-rounded fadeOut animated";
+
+                                }, 5000);
+
+                                }
+                                else
+                                {
+                                   document.getElementById("bill_cust_name").innerHTML = data['result']['customer_name'];
+                                   document.getElementById("bill_total_item").innerHTML = data['result']['total_item'];
+                                   document.getElementById("bill_total_amount").innerHTML = "<strong>Total:</strong> "+data['result']['total_bill'].toFixed(2);
+                                   
+                                   document.getElementById('total_bill_amount').value = data['result']['total_bill'];
+                                   document.getElementById('payment_amount').value = data['result']['total_bill'];
+                                }
+
+
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                      alert('Exception:' + errorThrown);
+                    }
+            });     
+
+
+            $.ajax({
+                            type: "GET",
+
+                            url: "{{ env('APP_URL')}}get-payment-method",
+                            success: function(data) {
+                                    $('#payment_method').html(data);
+                            },
+                            error: function(jqXHR, textStatus, errorThrown) {
+                                alert('Exception:' + errorThrown);
+                            }
+                          });
+
+
+            document.getElementById('bill_id').value = bill_id;
+            document.getElementById('for_cash').style.display = "block";
+            document.getElementById('for_credit_card').style.display = "none";
+            document.getElementById('for_cheque').style.display = "none";
+
+            document.getElementById('bill_change').innerHTML = 0;
+            $('#BillModal').modal('show');
+            $('#BillModalLabel').html('Add Sale');
+
+            document.getElementById('BillModal').style.backgroundColor="rgba(0,0,0,0.8)";
+            document.getElementById('BillModalDialog').style.paddingTop="0px";
+            document.getElementById('BillModalData').style.padding="5px 5px 0px 5px";
+          }
+          
+          function CheckPaymentMethod(val)
+          {
+            if (val == "") 
+            {
+              alert('Kindly Select a Payment Method');
+            }
+            else
+            {
+              if (val == 1) 
+              {
+                document.getElementById("for_cash").style.display = "block";
+                document.getElementById("for_credit_card").style.display = "none";
+                document.getElementById("for_cheque").style.display = "none";
+              }
+              else if(val ==2)
+              {
+                document.getElementById("for_cash").style.display = "none";
+                document.getElementById("for_credit_card").style.display = "block";
+                document.getElementById("for_cheque").style.display = "none";
+              }
+              else
+              {
+                document.getElementById("for_cash").style.display = "none";
+                document.getElementById("for_credit_card").style.display = "none";
+                document.getElementById("for_cheque").style.display = "block";
+              }
+
+            }
+
+          }                       
+
+
+              function CalculateBillChange(val)
+              { 
+                val = parseFloat(val)?parseFloat(val):0.0;
+
+                total_bill = parseFloat(document.getElementById("total_bill_amount").value);
+                
+                change = val - total_bill;
+
+                document.getElementById("bill_change").innerHTML = change.toFixed(2);
+                document.getElementById("bill_cash_change").value = change.toFixed(2);
+              }
+
+
+              function PrintReceipt()
+              {
+                
+                var divToPrint=document.getElementById('ReceiptModalData');
+                var newWin=window.open('','Print-Window');
+                newWin.document.open();
+                newWin.document.write('<html><body onload="window.print()">'+divToPrint.innerHTML+'</body></html>');
+                newWin.document.close();
+                setTimeout(function(){newWin.close();},1);
+
+              }
+
+              function ShowLastBill()
+              {
+                 $('#ReceiptModal').modal('show');
+                               
+                                 $.ajax({
+                                    type: "GET",
+
+                                    url: "{{ env('APP_URL')}}get-bill-receipt/"+"0",
+                                    success: function(data) {
+                                           
+                                      $('#ReceiptModalData').html(data);
+
+                                    },
+                                    error: function(jqXHR, textStatus, errorThrown) {
+                                        alert('Exception:' + errorThrown);
+                                    }
+                                  });      
+              }
+        //________________________________________________________________________
 
         </script>
                       

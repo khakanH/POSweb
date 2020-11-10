@@ -31,7 +31,7 @@ class POSController extends Controller
 
       $user_info = $this->checkUserAvailbility($user_id,$request);
 
-    	$company  = CompanyInfo::where('member_id',$user_id)->get();
+    	$company  = CompanyInfo::where('member_id',$user_id)->first();
     	$category = Category::where('member_id',$user_id)->where('is_deleted',0)->get();
     	$product  = Product::where('member_id',$user_id)->where('is_deleted',0)->limit(20)->get();
 
@@ -43,9 +43,9 @@ class POSController extends Controller
                                         "bill_code"      => $this->getBillCode($user_id),
                                         "member_id"     => $user_id,
                                         "customer_id"   => 0,
-                                        "tax_percentage"           => 0,
+                                        "tax_percentage"       => $company->default_tax,
                                         "tax_amount"           => 0,
-                                        "discount_percentage"      => 0,
+                                        "discount_percentage"  => $company->default_discount,
                                         "discount_amount"      => 0,
                                         "subtotal"      => 0,
                                         "total_bill"    => 0,
@@ -136,7 +136,7 @@ class POSController extends Controller
                 ?>
 
                   <div class="col-3">
-                                <div class="card">
+                                <div class="card" style="cursor: pointer;" onclick='AddProductToBill("<?php echo $prod['id'] ?>","<?php echo $prod['name'] ?>","<?php echo $prod['price'] ?>")'>
                                     <div class="card-body">
                                         <div class="mx-auto d-block">
                                             <img class="rounded-circle mx-auto d-block" src="<?php echo env('IMG_URL').$prod['image'] ?>" width="100" height="100" alt="<?php echo $prod['name']?> ">
@@ -182,9 +182,12 @@ class POSController extends Controller
 
         ?> 
 
-                    <h5>Choose Client</h5>
+                   <div class="row">
+                           <div class="col-7"><h5 >Choose Client</h5></div>
+                           <div class="col-5"><i  style="float: right; padding-right: 5px; cursor: pointer;" onclick="CreateNewCustomer()" data-toggle="tooltip" title="Create Customer" class="fa fa-user"></i> <i  style="float: right; padding-right: 10px; cursor: pointer;" data-toggle="tooltip" title="Show Last Bill" onclick="ShowLastBill()" class="fa fa-list-alt"></i></div>
+                          </div>
                            <div class=" row form-group">
-                           <div class="col-7"><select class="form-control" name="customer_list" id="customer_list">
+                           <div class="col-7"><select class="form-control" name="customer_list" id="customer_list" onchange='ChangeBillCustomer(this.value,"<?php echo $id; ?>")'>
                              <option value="0">Walk in Customer</option>
                              <?php foreach($customers as $cust): ?>
                              <option <?php if ($pending_bill->customer_id == $cust['id']): ?>
@@ -253,14 +256,16 @@ class POSController extends Controller
                                     <tr><td width="50%" style="background: #ecf0f1;">SubTotal: </td><td>
                                       <span style="float: left;"><?php echo $pending_bill->subtotal ?></span><i style="float: right;"><b><?php echo $pending_bill->total_item ?></b> items</i>
                                     </td></tr>
-                                    <tr><td width="50%" style="background: #ecf0f1;">Order Tax: </td><td><div class="d-flex"><span style="float: left;"><input type="text" class="form-control tax-dis-input" onfocusout='ApplyBillTax(this.value,"<?php echo $pending_bill->id ?>")' id="bill-tax-input<?php echo $pending_bill->id ?>" value="<?php echo $pending_bill->tax_percentage ?>%"></span><i style="float: right;"><?php echo $pending_bill->tax_amount ?></i></div></td></tr>
-                                    <tr><td width="50%" style="background: #ecf0f1;">Discount: </td><td><?php echo $pending_bill->discount_percentage ?></td></tr>
+                                    <tr><td width="50%" style="background: #ecf0f1;">Order Tax: </td><td><div class="d-flex"><span style="float: left;"><input autocomplete="off" type="text" class="form-control tax-dis-input" onfocusout='ApplyBillTax(this.value,"<?php echo $pending_bill->id ?>")' id="bill-tax-input<?php echo $pending_bill->id ?>" value="<?php echo number_format($pending_bill->tax_percentage,1) ?>%"></span><i style="float: right;"><?php echo number_format($pending_bill->tax_amount,2) ?></i></div></td></tr>
+                                    <tr><td width="50%" style="background: #ecf0f1;">Discount: </td><td><div class="d-flex"><span style="float: left;"><input autocomplete="off" type="text" class="form-control tax-dis-input" onfocusout='ApplyBillDiscount(this.value,"<?php echo $pending_bill->id ?>")' id="bill-discount-input<?php echo $pending_bill->id ?>" value="<?php echo number_format($pending_bill->discount_percentage,1) ?>%"></span><i style="float: right;"><?php echo number_format($pending_bill->discount_amount,2) ?></i></div></td></tr>
                                     <tr><td width="50%" style="background: #ecf0f1;">Total: </td><td><?php echo number_format($pending_bill->total_bill,2) ?></td></tr>
                                   </tbody>  
                                 </table>
                                 <div class="row" style="margin-top: 14px;">
                                   <div class="col-6"><button style="width: 100%;" class="btn btn-danger" onclick='CancelBill("<?php echo $id; ?>")'>Cancel</button></div>
-                                  <div class="col-6"><button style="width: 100%;" class="btn btn-success">Payment</button></div>
+                                  <div class="col-6"><button style="width: 100%;" class="btn btn-success" id="payment_button<?php echo $id; ?>" <?php if ($pending_bill->total_item == 0): ?>
+                                    disabled=""
+                                  <?php endif ?> onclick='PayBill("<?php echo $id; ?>")'>Payment</button></div>
                                 </div>
 
 
@@ -274,13 +279,16 @@ class POSController extends Controller
         $user_id = session("login")["user_id"];
         $user_info = $this->checkUserAvailbility($user_id,$request);
 
+        
+        $company  = CompanyInfo::where('member_id',$user_id)->first();
+
         $new_bill = PendingBills::insertGetId(array(
                                 "bill_code"     => $this->getBillCode($user_id),
                                 "member_id"     => $user_id,
                                 "customer_id"   => 0,
-                                "tax_percentage"       => 0,
+                                "tax_percentage"       => $company->default_tax,
                                 "tax_amount"           => 0,
-                                "discount_percentage"  => 0,
+                                "discount_percentage"  => $company->default_discount,
                                 "discount_amount"      => 0,
                                 "subtotal"      => 0,
                                 "total_bill"    => 0,
@@ -293,9 +301,12 @@ class POSController extends Controller
 
 
         ?>
-                    <h5>Choose Client</h5>
+                   <div class="row">
+                           <div class="col-7"><h5 >Choose Client</h5></div>
+                           <div class="col-5"><i  style="float: right; padding-right: 5px; cursor: pointer;" onclick="CreateNewCustomer()" data-toggle="tooltip" title="Create Customer" class="fa fa-user"></i> <i  style="float: right; padding-right: 10px; cursor: pointer;" data-toggle="tooltip" title="Show Last Bill" onclick="ShowLastBill()" class="fa fa-list-alt"></i></div>
+                          </div>
                            <div class=" row form-group">
-                           <div class="col-7"><select class="form-control" name="customer_list" id="customer_list">
+                           <div class="col-7"><select class="form-control" name="customer_list" id="customer_list" onchange='ChangeBillCustomer(this.value,"<?php echo $new_bill; ?>")'>
                              <option value="0">Walk in Customer</option>
                              <?php foreach($customers as $cust): ?>
                              <option 
@@ -342,14 +353,14 @@ class POSController extends Controller
                                     <tr><td width="50%" style="background: #ecf0f1;">SubTotal: </td><td>
                                       <span style="float: left;">0</span><i style="float: right;"><b>0</b> items</i>
                                     </td></tr>
-                                    <tr><td width="50%" style="background: #ecf0f1;">Order Tax: </td><td><div class="d-flex"><span style="float: left;"><input type="text" class="form-control tax-dis-input" onfocusout='ApplyBillTax(this.value,"<?php echo $new_bill; ?>")' id="bill-tax-input<?php echo $new_bill; ?>" value="0%"></span><i style="float: right;">0</i></div></td></tr>
-                                    <tr><td width="50%" style="background: #ecf0f1;">Discount: </td><td>0%</td></tr>
+                                    <tr><td width="50%" style="background: #ecf0f1;">Order Tax: </td><td><div class="d-flex"><span style="float: left;"><input autocomplete="off" type="text" class="form-control tax-dis-input" onfocusout='ApplyBillTax(this.value,"<?php echo $new_bill; ?>")' id="bill-tax-input<?php echo $new_bill; ?>" value="<?php echo number_format($company->default_tax,1); ?>%"></span><i style="float: right;">0.00</i></div></td></tr>
+                                    <tr><td width="50%" style="background: #ecf0f1;">Discount: </td><td><div class="d-flex"><span style="float: left;"><input autocomplete="off" type="text" class="form-control tax-dis-input" onfocusout='ApplyBillDiscount(this.value,"<?php echo $new_bill; ?>")' id="bill-discount-input<?php echo $new_bill; ?>" value="<?php echo number_format($company->default_discount,1); ?>%"></span><i style="float: right;">0.00</i></div></td></tr>
                                     <tr><td width="50%" style="background: #ecf0f1;">Total: </td><td>0.00</td></tr>
                                   </tbody>  
                                 </table>
                                 <div class="row" style="margin-top: 14px;">
-                                  <div class="col-6"><button style="width: 100%;" class="btn btn-danger">Cancel</button></div>
-                                  <div class="col-6"><button style="width: 100%;" class="btn btn-success">Payment</button></div>
+                                  <div class="col-6"><button style="width: 100%;" class="btn btn-danger" onclick='CancelBill("<?php echo $new_bill; ?>")'>Cancel</button></div>
+                                  <div class="col-6"><button style="width: 100%;" class="btn btn-success" disabled="" id="payment_button<?php echo $new_bill; ?>" onclick='PayBill("<?php echo $new_bill; ?>")'>Payment</button></div>
                                 </div>
 
         <?php
@@ -363,7 +374,7 @@ class POSController extends Controller
         $user_id = session("login")["user_id"];
         $user_info = $this->checkUserAvailbility($user_id,$request);
 
-        $last_bill = PendingBills::where('member_id',$user_id)->orderBy('bill_code','desc')->first();
+        $last_bill = PendingBills::where('member_id',$user_id)->orderBy('id','desc')->first();
         if ($last_bill == "") 
         {
             return "<p>Cannot Found Last Bill</p>";
@@ -386,9 +397,12 @@ class POSController extends Controller
 
 
         ?>
-                    <h5>Choose Client</h5>
+                    <div class="row">
+                           <div class="col-7"><h5 >Choose Client</h5></div>
+                           <div class="col-5"><i  style="float: right; padding-right: 5px; cursor: pointer;" onclick="CreateNewCustomer()" data-toggle="tooltip" title="Create Customer" class="fa fa-user"></i> <i  style="float: right; padding-right: 10px; cursor: pointer;" data-toggle="tooltip" title="Show Last Bill" onclick="ShowLastBill()" class="fa fa-list-alt"></i></div>
+                          </div>
                            <div class=" row form-group">
-                           <div class="col-7"><select class="form-control" name="customer_list" id="customer_list">
+                           <div class="col-7"><select class="form-control" name="customer_list" id="customer_list" onchange='ChangeBillCustomer(this.value,"<?php echo $pending_bill->id; ?>")'>
                              <option value="0">Walk in Customer</option>
                              <?php foreach($customers as $cust): ?>
                              <option <?php if ($pending_bill->customer_id == $cust['id']): ?>
@@ -455,14 +469,16 @@ class POSController extends Controller
                                     <tr><td width="50%" style="background: #ecf0f1;">SubTotal: </td><td>
                                       <span style="float: left;"><?php echo $pending_bill->subtotal ?></span><i style="float: right;"><b><?php echo $pending_bill->total_item ?></b> items</i>
                                     </td></tr>
-                                    <tr><td width="50%" style="background: #ecf0f1;">Order Tax: </td><td><div class="d-flex"><span style="float: left;"><input type="text" class="form-control tax-dis-input" onfocusout='ApplyBillTax(this.value,"<?php echo $pending_bill->id ?>")' id="bill-tax-input<?php echo $pending_bill->id ?>" value="<?php echo $pending_bill->tax_percentage ?>%"></span><i style="float: right;"><?php echo $pending_bill->tax_amount ?></i></div></td></tr>
-                                    <tr><td width="50%" style="background: #ecf0f1;">Discount: </td><td><?php echo $pending_bill->discount_percentage ?></td></tr>
+                                    <tr><td width="50%" style="background: #ecf0f1;">Order Tax: </td><td><div class="d-flex"><span style="float: left;"><input autocomplete="off" type="text" class="form-control tax-dis-input" onfocusout='ApplyBillTax(this.value,"<?php echo $pending_bill->id ?>")' id="bill-tax-input<?php echo $pending_bill->id ?>" value="<?php echo number_format($pending_bill->tax_percentage,1) ?>%"></span><i style="float: right;"><?php echo number_format($pending_bill->tax_amount,2) ?></i></div></td></tr>
+                                    <tr><td width="50%" style="background: #ecf0f1;">Discount: </td><td><div class="d-flex"><span style="float: left;"><input autocomplete="off" type="text" class="form-control tax-dis-input" onfocusout='ApplyBillDiscount(this.value,"<?php echo $pending_bill->id ?>")' id="bill-discount-input<?php echo $pending_bill->id ?>" value="<?php echo number_format($pending_bill->discount_percentage,1) ?>%"></span><i style="float: right;"><?php echo number_format($pending_bill->discount_amount,2) ?></i></div></td></tr>
                                     <tr><td width="50%" style="background: #ecf0f1;">Total: </td><td><?php echo number_format($pending_bill->total_bill,2) ?></td></tr>
                                   </tbody>  
                                 </table>
                                 <div class="row" style="margin-top: 14px;">
-                                  <div class="col-6"><button style="width: 100%;" class="btn btn-danger">Cancel</button></div>
-                                  <div class="col-6"><button style="width: 100%;" class="btn btn-success">Payment</button></div>
+                                  <div class="col-6"><button style="width: 100%;" class="btn btn-danger" onclick='CancelBill("<?php echo $pending_bill->id ?>")'>Cancel</button></div>
+                                  <div class="col-6"><button style="width: 100%;" id="payment_button<?php echo $pending_bill->id ?>" class="btn btn-success" <?php if ($pending_bill->total_item == 0): ?>
+                                      disabled=""
+                                  <?php endif ?> onclick='PayBill("<?php echo $pending_bill->id ?>")'>Payment</button></div>
                                 </div>
 
         <?php
@@ -477,7 +493,7 @@ class POSController extends Controller
 
         $user_info = $this->checkUserAvailbility($user_id,$request);
 
-        $pending_bill      = PendingBills::where('member_id',$user_id)->get();
+        $pending_bill      = PendingBills::where('member_id',$user_id)->orderBy('id','asc')->get();
         $count = 1;
         foreach($pending_bill as $bill):
         ?>
@@ -502,6 +518,8 @@ class POSController extends Controller
         $user_id = session("login")["user_id"];
         $user_info = $this->checkUserAvailbility($user_id,$request);
 
+        $company  = CompanyInfo::where('member_id',$user_id)->first();
+
         $get_bill = PendingBills::where('member_id',$user_id)->where('id',$id)->first();
         if ($get_bill == "") 
         {
@@ -512,13 +530,14 @@ class POSController extends Controller
         PendingBillItems::where('member_id',$user_id)->where('pending_bill_id',$get_bill->id)->delete();
 
         PendingBills::where('member_id',$user_id)->where('id',$id)->update(array(
-                                                                        'tax_percentage'       => 0,
+                                                                        'tax_percentage'       => $company->default_tax,
                                                                         'tax_amount'       => 0,
-                                                                        'discount_percentage'  => 0,
+                                                                        'discount_percentage'  => $company->default_discount,
                                                                         'discount_amount'  => 0,
                                                                         'subtotal'  => 0,
                                                                         'total_bill'=> 0,
                                                                         'total_item'=> 0,
+                                                                        'customer_id' => 0,
                                                                     ));
         return array("status"=>"1","msg"=>"Bill Cancelled Successfully.");
     }
@@ -643,6 +662,11 @@ class POSController extends Controller
               <tr class="tr-shadow">
               <td colspan="5"><h5>Empty List</h5><pre>Select Product</pre></td>
               </tr>
+              <script type="text/javascript">
+                (function(){
+                            document.getElementById("payment_button"+<?php echo $input['bill_id']; ?>).disabled =true;
+                })();
+              </script>
 
           <?php else: 
                 foreach($pending_bill_item as $bill_item):
@@ -856,6 +880,47 @@ class POSController extends Controller
       }
     }
 
+
+    public function ApplyBillDiscount(Request $request)
+    {
+      $user_id = session("login")["user_id"];
+
+      $user_info = $this->checkUserAvailbility($user_id,$request);
+
+      $input = $request->all();
+
+      $get_bill = PendingBills::where('member_id',$user_id)->where('id',$input['bill_id'])->first();
+      if ($get_bill == "") 
+      {
+            return array("status"=>"0","msg"=>"Something went wrong.");
+      }
+      else
+      {
+
+
+        //apply discount as percentage
+        if ($input['type'] == 1) 
+        {
+          PendingBills::where('member_id',$user_id)
+                      ->where('id',$input['bill_id'])
+                      ->update(array(
+                            "discount_percentage"  => $input['discount'],
+                        ));
+        }
+        //apply discount as amount
+        else
+        {
+          $get_discount_percentage = (100*$input['discount'])/$get_bill->subtotal;
+
+          PendingBills::where('member_id',$user_id)
+                      ->where('id',$input['bill_id'])
+                      ->update(array(
+                            "discount_percentage"  => $get_discount_percentage,
+                        ));
+        }
+     
+      }
+    }
     // _________________________________________________________________________
 
     public function CalculateTotalBill(Request $request, $id)
@@ -877,10 +942,12 @@ class POSController extends Controller
           $subtotal = PendingBillItems::where('member_id',$user_id)->where('pending_bill_id',$id)->sum('product_subtotal');
           $total_item = PendingBillItems::where('member_id',$user_id)->where('pending_bill_id',$id)->count();
 
-          $tax_amount = $subtotal * ((int)$get_bill->tax_percentage/100);
+          $tax_amount = $subtotal * ($get_bill->tax_percentage/100);
+
+          $discount_amount = $subtotal * ($get_bill->discount_percentage/100);
 
 
-          $total_bill = $subtotal + $tax_amount;
+          $total_bill = ($subtotal - $discount_amount) + $tax_amount;
 
           PendingBills::where('member_id',$user_id)
                       ->where('id',$id)
@@ -889,6 +956,7 @@ class POSController extends Controller
                           "total_bill"  => $total_bill,
                           "tax_amount"  => $tax_amount,
                           "total_item"  => $total_item,
+                          "discount_amount"  => $discount_amount,
                         ));
 
 
@@ -905,12 +973,12 @@ class POSController extends Controller
             
             <tr>
               <td width="50%" style="background: #ecf0f1;">Order Tax: </td>
-              <td><div class="d-flex"><span style="float: left;"><input type="text" class="form-control tax-dis-input" onfocusout='ApplyBillTax(this.value,"<?php echo $id ?>")' id="bill-tax-input<?php echo $id ?>" value="<?php echo $get_bill->tax_percentage ?>%"></span><i style="float: right;"><?php echo $tax_amount ?></i></div></td>
+              <td><div class="d-flex"><span style="float: left;"><input autocomplete="off" type="text" class="form-control tax-dis-input" onfocusout='ApplyBillTax(this.value,"<?php echo $id ?>")' id="bill-tax-input<?php echo $id ?>" value="<?php echo number_format($get_bill->tax_percentage,1) ?>%"></span><i style="float: right;"><?php echo number_format($tax_amount,2) ?></i></div></td>
             </tr>
             
             <tr>
               <td width="50%" style="background: #ecf0f1;">Discount: </td>
-              <td>0%</td>
+              <td><div class="d-flex"><span style="float: left;"><input autocomplete="off" type="text" class="form-control tax-dis-input" onfocusout='ApplyBillDiscount(this.value,"<?php echo $id ?>")' id="bill-discount-input<?php echo $id ?>" value="<?php echo number_format($get_bill->discount_percentage,1) ?>%"></span><i style="float: right;"><?php echo number_format($discount_amount,2) ?></i></div></td>
             </tr>
             <tr>
               <td width="50%" style="background: #ecf0f1;">Total: </td>
@@ -932,10 +1000,11 @@ class POSController extends Controller
     {
         $last_bill = Sales::where('member_id',$id)->orderBy('bill_code','desc')->first();
 
+        $last_pending_bill = PendingBills::where('member_id',$id)->orderBy('bill_code','desc')->first();
         if ($last_bill == "") 
         {   
 
-            $last_pending_bill = PendingBills::where('member_id',$id)->orderBy('bill_code','desc')->first();
+           
             if ($last_pending_bill == "") 
             {
                 return "00001";
@@ -947,7 +1016,15 @@ class POSController extends Controller
         }
         else
         {
-            return str_pad((int)$last_bill->bill_code+1, 5, '0', STR_PAD_LEFT);
+            if ($last_pending_bill == "") 
+            {
+                return str_pad((int)$last_bill->bill_code+1, 5, '0', STR_PAD_LEFT);
+            }
+            else
+            {
+                return str_pad((int)$last_pending_bill->bill_code+1, 5, '0', STR_PAD_LEFT);
+
+            }
         }
     }
 

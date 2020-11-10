@@ -152,8 +152,7 @@
                         <div class="row">
                           <div class="col-lg-6"> 
                             <label>Product Image:</label><br>
-                            <img id="product_image_output" src="{{ env('IMG_URL')}}choose_img.png" width="130" height="130" style="
-  border-radius: 2%; border: solid gray 1px; object-position: top; object-fit: cover;">&nbsp;&nbsp;<input type="file"  name="product_image" onchange="product_loadFile(event)"  accept="image/*" required=""></div>
+                            <img id="product_image_output" src="{{ env('IMG_URL')}}choose_img.png" width="130" height="130" style="border-radius: 2%; border: solid gray 1px; object-position: top; object-fit: cover;">&nbsp;&nbsp;<input type="file"  name="product_image" onchange="product_loadFile(event)"  accept="image/*" required=""></div>
                           <div class="col-lg-6"> 
                             <label>Product Description:</label>
                             <textarea class="form-control" name="prod_descrip" id="prod_descrip" rows="5" placeholder="Enter Product Description"></textarea></div>
@@ -182,6 +181,224 @@
 <!-- ----------------------------------------------------------------------------------------------------- -->
 <!-- ----------------------------------------------------------------------------------------------------- -->
 
+<!-- Customer Modal                                         -->
+<!-- ----------------------------------------------------------------------------------------------------- -->
+
+<div id="CustomerModal" class="modal fade show " tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-modal="true" aria-hidden="true" style="color: black;">
+    <div class="modal-dialog" id="CustomerModalDialog">
+        <div class="modal-content" id="CustomerModalContent">
+           
+            <form name="customerForm" enctype="multipart/form-data" id="custForm">
+              @csrf
+               <span class='arrow'>
+              <label class='error'></label>
+              </span>
+                  <div class="modal-header">
+                      <h4 class="modal-title" id="CustomerModalLabel"></h4>
+                      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                  </div>
+                  <div class="modal-body">
+                      <div class="" id="CustomerModalData">
+
+                      <input type="hidden" id="cust_id" name="cust_id">
+
+                      <input type="hidden" id="create_type" name="create_type">
+
+
+                        
+                        <div class="form-group">
+                          <label for="cust_name" class=" form-control-label">Name:</label>
+                          <input type="text" id="cust_name" name="cust_name" required="" class="form-control" placeholder="Enter Customer Name">
+                        </div>
+                        <div class="form-group">
+                          <label for="cust_email" class=" form-control-label">Email:</label>
+                          <input type="email" id="cust_email" required="" name="cust_email" class="form-control" placeholder="Enter Customer Email Address">
+                        </div>
+                        <div class="form-group">
+                          <label for="cust_phone" class=" form-control-label">Phone Number:</label>
+                          <input type="text" id="cust_phone" required="" name="cust_phone" class="form-control" placeholder="Enter Customer Phone Number">
+                        </div>
+                        <div class="form-group">
+                          <label for="cust_discount" class=" form-control-label">Discount:</label>
+                          <input type=number id="cust_discount" name="cust_discount" class="form-control" min="0" max="100" placeholder="Enter Customer Discount">
+                        </div>
+                                
+                      </div>
+              
+
+                      </div>
+                  <div class="modal-footer" id="CustomerModalFooter">
+                      <button type="button" class="btn btn-danger waves-effect" data-dismiss="modal">Close</button>
+                      <button type="submit" class="btn btn-info ">Save</button>
+
+                  </div>
+            </form>
+
+
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+<!-- ----------------------------------------------------------------------------------------------------- -->
+<!-- ----------------------------------------------------------------------------------------------------- -->
+<!-- ----------------------------------------------------------------------------------------------------- -->
+
+
+<!-- Bill Modal                                         -->
+<!-- ----------------------------------------------------------------------------------------------------- -->
+
+<div id="BillModal" class="modal fade show " tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-modal="true" aria-hidden="true" style="color: black;">
+    <div class="modal-dialog" id="BillModalDialog">
+        <div class="modal-content" id="BillModalContent">
+           
+            <form name="billForm" enctype="multipart/form-data" id="billForm">
+              @csrf
+               <span class='arrow'>
+              <label class='error'></label>
+              </span>
+                  <div class="modal-header">
+                      <h4 class="modal-title" id="BillModalLabel"></h4>
+                      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                  </div>
+                  <div class="modal-body">
+                      <div class="" id="BillModalData">
+
+                        <input type="hidden" id="bill_id" name="bill_id">
+                        <input type="hidden" id="total_bill_amount" name="total_bill_amount">
+                        <input type="hidden" id="bill_cash_change" name="bill_cash_change">
+
+                        <h4>Customer: <span id="bill_cust_name"></span></h4>
+                        <hr>
+                        <p id="bill_total_item"></p>
+                        <p id="bill_total_amount"></p>
+                        <hr>
+                         <div class="form-group">
+                          <label for="payment_method" class=" form-control-label">Payment Method:</label>
+                          <select required="" onchange="CheckPaymentMethod(this.value)" name="payment_method" id="payment_method" class="form-control">
+                            <option value="">Select Payment Method</option>
+                          </select>
+                        </div>
+
+                         <div class="form-group" id="for_cash">
+                          <label for="payment_amount"  class=" form-control-label">Payment Amount:</label>
+                          <input type="number" required="" name="payment_amount" onkeyup="CalculateBillChange(this.value)" id="payment_amount" class="form-control">
+                          <br>
+                          <label for="payment_amount" class=" form-control-label">Change: <span id="bill_change">0</span></label>
+                        </div>
+
+                         <div class="form-group" style="display: none;" id="for_credit_card">
+                          <label for="payment_amount" class=" form-control-label">Credit Card Number:</label>
+                          <input type="text" required="" name="credit_card_number" id="credit_card_number" class="form-control">
+                          <br>
+                          <label for="payment_amount" class=" form-control-label">Credit Card Holder:</label>
+                          <input type="text" required="" name="credit_card_holder" id="credit_card_holder" class="form-control">
+                        </div>
+
+                        <div class="form-group" style="display: none;" id="for_cheque">
+                          <label for="payment_amount" class=" form-control-label">Cheque Number:</label>
+                          <input type="text" required="" name="cheque_number" id="cheque_number" class="form-control">
+                         
+                        </div>
+
+                                                
+                                
+                      </div>
+              
+
+                      </div>
+                  <div class="modal-footer" id="BillModalFooter">
+                      <button type="button" class="btn btn-danger waves-effect" data-dismiss="modal">Close</button>
+                      <button type="submit" class="btn btn-info ">Save</button>
+
+                  </div>
+            </form>
+
+
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+<!-- ----------------------------------------------------------------------------------------------------- -->
+<!-- ----------------------------------------------------------------------------------------------------- -->
+<!-- ----------------------------------------------------------------------------------------------------- -->
+
+
+<!-- Receipt Modal                                         -->
+<!-- ----------------------------------------------------------------------------------------------------- -->
+
+<div id="ReceiptModal" class="modal fade show " tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-modal="true" aria-hidden="true" style="color: black;">
+    <div class="modal-dialog" id="ReceiptModalDialog">
+        <div class="modal-content" id="ReceiptModalContent">
+           
+                  <div class="modal-header">
+                      <h4 class="modal-title" id="ReceiptModalLabel">Receipt</h4>
+                      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                  </div>
+                  <div class="modal-body">
+                      <div class="" id="ReceiptModalData" style="overflow: auto; max-height: 450px; padding: 0px 20px 0px 20px;">
+
+                                
+                      </div>
+              
+
+                  </div>
+                  <div class="modal-footer" id="ReceiptModalFooter">
+                      <button type="button" class="btn btn-danger waves-effect" data-dismiss="modal">Close</button>
+                      <button type="button" class="btn btn-info" onclick="PrintReceipt()">Print</button>
+
+                  </div>
+            </form>
+
+
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+<!-- ----------------------------------------------------------------------------------------------------- -->
+<!-- ----------------------------------------------------------------------------------------------------- -->
+<!-- ----------------------------------------------------------------------------------------------------- -->
+
+
+<!-- Sale Item Modal                                         -->
+<!-- ----------------------------------------------------------------------------------------------------- -->
+
+<div id="SaleItemModal" class="modal fade show " tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-modal="true" aria-hidden="true" style="color: black;">
+    <div class="modal-dialog" id="SaleItemModalDialog">
+        <div class="modal-content" id="SaleItemModalContent">
+           
+                  <div class="modal-header">
+                      <h4 class="modal-title" id="SaleItemModalLabel">Sale Item</h4>
+                      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                  </div>
+                  <div class="modal-body">
+                      <div class="" id="SaleItemModalData">
+
+                                
+                      </div>
+              
+
+                  </div>
+                  <div class="modal-footer" id="SaleItemModalFooter">
+                      <button type="button" class="btn btn-danger waves-effect" data-dismiss="modal">Close</button>
+                  </div>
+            </form>
+
+
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+<!-- ----------------------------------------------------------------------------------------------------- -->
+<!-- ----------------------------------------------------------------------------------------------------- -->
+<!-- ----------------------------------------------------------------------------------------------------- -->
 
 
 
@@ -427,9 +644,227 @@
   });
 
 
+//-------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------
 
 
 
+       $(function() {
+        $("form[name='customerForm']").validate({
+             errorPlacement: function(label, element) {
+        label.addClass('arrow');
+        label.css({"color": "red", "font-size": "12px" ,"width":"100%"});
+        label.insertAfter(element);
+    },
+    wrapper: 'span',
+
+    rules: {
+      
+    },
+    messages: {
+      
+     
+    },
+    submitHandler: function(form) {
+
+        let myForm = document.getElementById('custForm');
+        let formData = new FormData(myForm);
+
+         $.ajax({
+        type: "POST",
+        url: "{{ env('APP_URL')}}add-update-customer",
+        enctype: 'multipart/form-data',
+        data: formData,
+        processData: false,
+        contentType: false,
+        beforeSend: function(){
+                            $('#CustomerModal').modal('hide');
+                            $('#LoadingModal').modal('show');
+                        },
+        success: function(data) {
+           
+                            $('#LoadingModal').modal('hide');
+
+            get_status = data['status'];
+            get_msg    = data['msg'];
+
+                            if (get_status == "0") 
+                            {
+
+                             document.getElementById('toast').style.visibility = "visible";
+                                document.getElementById('toast').className = "alert alert-danger alert-rounded fadeIn animated";
+                                document.getElementById('toastMsg').innerHTML = "Failed, Try Again Later";
+
+
+                                 setTimeout(function() {
+                                document.getElementById('toast').className = "alert alert-danger alert-rounded fadeOut animated";
+
+                            }, 5000);
+
+                            }
+                            else
+                            {
+                                document.getElementById('toast').style.visibility = "visible";
+                                document.getElementById('toast').className = "alert alert-success alert-rounded fadeIn animated";
+                                document.getElementById('toastMsg').innerHTML = get_msg;
+
+
+                                 setTimeout(function() {
+                                document.getElementById('toast').className = "alert alert-success alert-rounded fadeOut animated";
+
+                                }, 5000);
+
+                                 if (document.getElementById("create_type") == "1") 
+                                 {
+
+                                       $.ajax({
+                                        type: "GET",
+
+                                        url: "{{ env('APP_URL')}}get-customers-list",
+                                        success: function(data_) {
+                                                
+                                                $('#customer_list').html(data_);
+
+
+
+                                        },
+                                        error: function(jqXHR, textStatus, errorThrown) {
+                                            alert('Exception:' + errorThrown);
+                                        }
+                                      }); 
+                                 }
+                                 else
+                                 {
+
+                                        var search_text = (document.getElementById("cust_search_text").value.trim() == "")?"0":document.getElementById("cust_search_text").value.trim();
+                                          $.ajax({
+                                          type: "GET",
+                                          url: "{{ env('APP_URL')}}get-customer-list-AJAX/"+search_text,
+                                          success: function(data) {
+
+                                              $('#custTBody').html(data);
+                                          },
+                                          error: function(jqXHR, textStatus, errorThrown) {
+                                              alert('Exception:' + errorThrown);
+                                          }
+                                      });
+  
+
+                                 }
+
+                            }
+
+
+
+    }
+  });
+
+    }
+  });
+  });
+
+//-------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------
+
+
+
+//-------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------
+
+
+
+       $(function() {
+        $("form[name='billForm']").validate({
+             errorPlacement: function(label, element) {
+        label.addClass('arrow');
+        label.css({"color": "red", "font-size": "12px" ,"width":"100%"});
+        label.insertAfter(element);
+    },
+    wrapper: 'span',
+
+    rules: {
+      
+    },
+    messages: {
+      
+     
+    },
+    submitHandler: function(form) {
+
+        let myForm = document.getElementById('billForm');
+        let formData = new FormData(myForm);
+
+         $.ajax({
+        type: "POST",
+        url: "{{ env('APP_URL')}}add-sale",
+        enctype: 'multipart/form-data',
+        data: formData,
+        processData: false,
+        contentType: false,
+        beforeSend: function(){
+                            $('#BillModal').modal('hide');
+                            $('#LoadingModal').modal('show');
+                        },
+        success: function(data) {
+           
+                            $('#LoadingModal').modal('hide');
+
+
+            get_status = data['status'];
+            get_msg    = data['msg'];
+
+                            if (get_status == "0") 
+                            {
+
+                             document.getElementById('toast').style.visibility = "visible";
+                                document.getElementById('toast').className = "alert alert-danger alert-rounded fadeIn animated";
+                                document.getElementById('toastMsg').innerHTML = "Failed, Try Again Later";
+
+
+                                 setTimeout(function() {
+                                document.getElementById('toast').className = "alert alert-danger alert-rounded fadeOut animated";
+                                document.getElementById('toast').style.visibility = "hidden";
+
+
+                            }, 5000);
+
+                            }
+                            else
+                            {
+                                $('#ReceiptModal').modal('show');
+                                createNewBill();
+                               
+                                 $.ajax({
+                                    type: "GET",
+
+                                    url: "{{ env('APP_URL')}}get-bill-receipt/"+data['sale_id'],
+                                    success: function(data) {
+                                           
+                                      $('#ReceiptModalData').html(data);
+
+                                    },
+                                    error: function(jqXHR, textStatus, errorThrown) {
+                                        alert('Exception:' + errorThrown);
+                                    }
+                                  });              
+                                  
+                            }
+
+
+
+    }
+  });
+
+    }
+  });
+  });
+
+//-------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------
 
 
 var product_loadFile = function(event) {

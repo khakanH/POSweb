@@ -73,12 +73,12 @@
 
                                         <div class="row form-group">
                                           <div class="col-lg-6">
-                                            <label for="discount" class=" form-control-label">Default Discount</label>
-                                            <input type="number" id="discount" name="discount" placeholder="Enter your company default discount" value="{{$company->default_discount}}" class="form-control">
+                                            <label for="discount" class=" form-control-label">Default Discount %</label>
+                                            <input type="number" id="discount" name="discount" placeholder="Enter your company default discount" value="{{$company->default_discount}}" min="0" max="100" class="form-control">
                                           </div>
                                           <div class="col-lg-6">
-                                            <label for="tax" class=" form-control-label">Default Tax</label>
-                                            <input type="number" id="tax" name="tax" placeholder="Enter your company default tax" value="{{$company->default_tax}}" class="form-control">
+                                            <label for="tax" class=" form-control-label">Default Tax %</label>
+                                            <input type="number" id="tax" name="tax" placeholder="Enter your company default tax" value="{{$company->default_tax}}" min="0" max="100" class="form-control">
                                           </div>
                                         </div>
 
