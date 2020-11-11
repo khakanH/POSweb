@@ -41,6 +41,13 @@ Route::post('/register', [AccountController::class, 'Register'])->name('register
 Route::post('/send-verification-code', [AccountController::class, 'SendVerificationCode'])->name('send-verification-code');
 Route::post('/check-verification-code', [AccountController::class, 'CheckVerificationCode'])->name('check-verification-code');
 
+Route::get('forgot-password/{email}',[AccountController::class, 'ForgotPassword'])->name('forgot-password');
+Route::get('reset-password/{email}',[AccountController::class, 'ResetPassword'])->name('reset-password');
+Route::post('save-new-password',[AccountController::class, 'SaveNewPassword'])->name('save-new-password');
+
+
+Route::get('settings',[AccountController::class, 'Settings'])->name('settings');
+Route::post('add-company-info',[AccountController::class, 'AddCompanyInfo'])->name('add-company-info');
 
 
 
@@ -48,8 +55,6 @@ Route::middleware(['LoginSession'])->group(function ()
 {
 	Route::get('dashboard',[DashboardController::class, 'Index'])->name('dashboard');
 
-	Route::get('settings',[AccountController::class, 'Settings'])->name('settings');
-	Route::post('add-company-info',[AccountController::class, 'AddCompanyInfo'])->name('add-company-info');
 	
 	
 	//_______C A T E G O R Y -- R O U T E S________________________________________

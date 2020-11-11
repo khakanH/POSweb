@@ -715,7 +715,7 @@
 
                                 }, 5000);
 
-                                 if (document.getElementById("create_type") == "1") 
+                                 if (document.getElementById("create_type").value == "1") 
                                  {
 
                                        $.ajax({

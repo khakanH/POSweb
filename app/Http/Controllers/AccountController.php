@@ -102,7 +102,7 @@ class AccountController extends Controller
             else
             {
 
-                return redirect()->route('signup')->with('failed','Something went wrong!');
+                return redirect()->back()->withInput()->with('failed','Something went wrong!');
                
             }
 
@@ -198,6 +198,63 @@ class AccountController extends Controller
     }
 
 
+     public function ForgotPassword(Request $request,$email)
+    {
+        try 
+        {
+            $input = $request->all();
+            $request->session()->put("success","Verification Code Successfully Send to your Email Address.");
+                    return view('verify_email',["email"=>$email,'verification_type'=>2]);
+            
+        } 
+        catch (Exception $e) 
+        {
+            
+        }
+    }
+
+
+    public function ResetPassword(Request $request,$email)
+    {
+        try 
+        {
+            $input = $request->all();
+            $request->session()->put("success","Email Address Verified Successfully. Kindly Reset Your Password.");
+            return view('reset_password',["email"=>$email]);
+            
+        } 
+        catch (Exception $e) 
+        {
+            
+        }
+    }
+
+    public function SaveNewPassword(Request $request)
+    {
+        try 
+        {
+            $input = $request->all();
+            
+            if(Members::where('email',$input['email'])->update(array('password'=>Hash::make($input['new_password']),'temp_password'=>$input['new_password'])))
+            {
+                $request->session()->put("success","Password Reset Successfully.");
+                return redirect()->route('index');
+            }
+            else
+            {
+                $request->session()->put("failed","Something Went Wrong Try Again Later.");
+                return redirect()->route('index');
+            }
+
+
+        } 
+        catch (Exception $e) 
+        {
+            
+        }
+    }
+
+
     public function Login(Request $request)
     {
          try 
@@ -284,7 +341,7 @@ class AccountController extends Controller
     {
         try 
         {
-            $user_id = session("login")["user_id"];
+            $user_id = isset(session("login")['user_id'])?session("login")['user_id']:0;
 
             $user_info = $this->checkUserAvailbility($user_id,$request);
 
@@ -304,7 +361,7 @@ class AccountController extends Controller
     {
         try 
         {
-            $user_id = session("login")["user_id"];
+            $user_id = isset(session("login")['user_id'])?session("login")['user_id']:0;
 
             $user_info = $this->checkUserAvailbility($user_id,$request);
 
@@ -362,7 +419,15 @@ class AccountController extends Controller
 
             if ($result) 
             {
-                    return array("status"=>"1","msg"=>"Company Information Saved Successfully.");
+                
+                Members::where('id',$user_id)->update(array('is_set_profile'=>1));
+                
+
+
+                $request->session()->put("login.is_set_profile",1);                
+
+
+                return array("status"=>"1","msg"=>"Company Information Saved Successfully.");
             }
             else
             {

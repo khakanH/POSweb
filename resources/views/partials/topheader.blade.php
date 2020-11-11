@@ -40,11 +40,7 @@
                                     <i class="fas fa-shopping-basket"></i>
                                     <span class="bot-line"></span>Sales</a>
                             </li>
-                            <li>
-                                <a href="#">
-                                    <i class="fas fa-shopping-basket"></i>
-                                    <span class="bot-line"></span>Reports</a>
-                            </li>
+                            
                             
                            
                         </ul>
@@ -73,7 +69,7 @@
                                             <span class="email">{{session('login')['user_email']}}</span>
                                         </div>
                                     </div>
-                                    <div class="account-dropdown__body">
+                                  <!--   <div class="account-dropdown__body">
                                         <div class="account-dropdown__item">
                                             <a href="#">
                                                 <i class="zmdi zmdi-account"></i>Account</a>
@@ -86,7 +82,7 @@
                                             <a href="#">
                                                 <i class="zmdi zmdi-money-box"></i>Billing</a>
                                         </div>
-                                    </div>
+                                    </div> -->
                                     <div class="account-dropdown__footer">
                                         <a href="{{route('signout')}}">
                                             <i class="zmdi zmdi-power"></i>Logout</a>
@@ -120,34 +116,37 @@
                 <div class="container-fluid">
                     <ul class="navbar-mobile__list list-unstyled">
                
-                        <li>
-                            <a href="$">
-                                <i class="fas fa-chart-bar"></i>POS</a>
-                        </li>
-                        <li class="{{ Request::is('category-list')? 'active' : ''}}">
-                            <a href="{{route('category-list')}}">
-                                <i class="fas fa-chart-bar"></i>Categories</a>
-                        </li>
-                        <li class="{{ Request::is('product-list')? 'active' : ''}}">
-                            <a href="{{route('product-list')}}">
-                                <i class="fas fa-chart-bar"></i>Products</a>
-                        </li>
-                        <li>
-                            <a href="$">
-                                <i class="fas fa-chart-bar"></i>Settings</a>
-                        </li>
-                        <li>
-                            <a href="$">
-                                <i class="fas fa-chart-bar"></i>Customers</a>
-                        </li>
-                        <li>
-                            <a href="$">
-                                <i class="fas fa-chart-bar"></i>Sales</a>
-                        </li>
-                        <li>
-                            <a href="$">
-                                <i class="fas fa-chart-bar"></i>Reports</a>
-                        </li>
+                     <li class="{{ Request::is('pos')? 'active' : ''}}">
+                                <a href="{{route('pos')}}">
+                                    <i class="fas fa-shopping-basket"></i>
+                                    <span class="bot-line"></span>POS</a>
+                            </li>
+                            <li class="{{ Request::is('category-list')? 'active' : ''}}">
+                                <a href="{{route('category-list')}}">
+                                    <i class="fas fa-shopping-basket"></i>
+                                    <span class="bot-line"></span>Categories</a>
+                            </li>
+                            <li class="{{ Request::is('product-list')? 'active' : ''}}">
+                                <a href="{{route('product-list')}}">
+                                    <i class="fas fa-shopping-basket"></i>
+                                    <span class="bot-line"></span>Products</a>
+                            </li>
+                            <li class="{{ Request::is('settings')? 'active' : ''}}">
+                                <a href="{{route('settings')}}">
+                                    <i class="fas fa-shopping-basket"></i>
+                                    <span class="bot-line"></span>Settings</a>
+                            </li>
+                            <li class="{{ Request::is('customers')? 'active' : ''}}">
+                                <a href="{{route('customers')}}">
+                                    <i class="fas fa-shopping-basket"></i>
+                                    <span class="bot-line"></span>Customers</a>
+                            </li>
+
+                           <li class="{{ Request::is('sales')? 'active' : ''}}">
+                                <a href="{{route('sales')}}">
+                                    <i class="fas fa-shopping-basket"></i>
+                                    <span class="bot-line"></span>Sales</a>
+                            </li>
                     </ul>
                 </div>
             </nav>
@@ -175,7 +174,7 @@
                                     <span class="email">{{session('login')['user_email']}}</span>
                                 </div>
                             </div>
-                            <div class="account-dropdown__body">
+                           <!--  <div class="account-dropdown__body">
                                 <div class="account-dropdown__item">
                                     <a href="#">
                                         <i class="zmdi zmdi-account"></i>Account</a>
@@ -188,7 +187,7 @@
                                     <a href="#">
                                         <i class="zmdi zmdi-money-box"></i>Billing</a>
                                 </div>
-                            </div>
+                            </div> -->
                             <div class="account-dropdown__footer">
                                 <a href="{{route('signout')}}">
                                     <i class="zmdi zmdi-power"></i>Logout</a>

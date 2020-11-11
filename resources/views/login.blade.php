@@ -75,7 +75,7 @@
                                 <br>
                                 <div class="form-group">
                                     <label>Email Address</label>
-                                    <input class="au-input au-input--full" type="email" name="email" placeholder="Email" required="">
+                                    <input class="au-input au-input--full" type="email" name="email" placeholder="Email" id="email" value="{{old('email')}}" required="">
                                 </div>
                                 <div class="form-group">
                                     <label>Password</label>
@@ -84,7 +84,7 @@
                                 <div class="form-group">
                                     
                                     <label>
-                                        <a href="#">Forgotten Password?</a>
+                                        <a href="javascript:void(0)" onclick="ForgotPassword()">Forgotten Password?</a>
                                     </label>
                                 </div>
                                 <button class="au-btn au-btn--block au-btn--green m-b-20" type="submit">sign in</button>
@@ -101,6 +101,11 @@
         </div>
 
     </div>
+    
+    <div class="alert alert-success alert-rounded fadeIn animated" id="toast" style="visibility: hidden; position: fixed; bottom: 5px; left: 30px; z-index: 999; font-size: 15px;">
+                                        <p id="toastMsg" style="float: left;"></p> 
+                                            <button type="button" class="close" onclick="hideToast('toast')" aria-label="Close" style="float: right;"> &nbsp;&nbsp;&nbsp;<span aria-hidden="true">×</span> </button>
+                                        </div>
 
     <!-- Jquery JS-->
     <script src="{{asset('vendor/jquery-3.2.1.min.js')}}"></script>
@@ -173,6 +178,64 @@
     }
   });
 });
+
+
+     function ForgotPassword()
+    {
+        if (document.getElementById('email').value.trim() == "" ) 
+        {
+            document.getElementById("email").style.border="solid red 2px";
+        }
+        else
+        {     
+
+                        var email  = document.getElementById('email').value.trim();
+                        $.ajax({
+                        type: "POST",
+                        url : "{{ env('APP_URL')}}send-verification-code",
+
+                        data: { 
+                                'email'  : email,
+                                "_token" : $('meta[name="csrf-token"]').attr('content') },
+                        success: function(data) {
+                            
+                            get_status = data['status'];
+                            get_msg    = data['msg'];
+
+                            if (get_status == "0") 
+                            {
+                                //failed
+                                 document.getElementById('toast').style.visibility = "visible";
+                                document.getElementById('toast').className = "alert alert-danger alert-rounded fadeIn animated";
+                                document.getElementById('toastMsg').innerHTML = get_msg;
+
+
+                                 setTimeout(function() {
+                                document.getElementById('toast').className = "alert alert-danger alert-rounded fadeOut animated";
+
+                            }, 5000);
+
+                            }
+                            else
+                            {
+                                //success
+                                window.location.href = "{{ env('APP_URL')}}forgot-password/"+email;
+
+
+                            }
+
+
+
+
+                        },
+                        error: function(jqXHR, textStatus, errorThrown) {
+                            alert('Exception:' + errorThrown);
+                        }
+                    });
+
+
+        }
+    }
 
 </script>
 

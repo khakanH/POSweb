@@ -29,9 +29,13 @@ class LoginSession
                 return redirect()->route('index');
             }
         }
+        elseif (session('login')['is_set_profile']==0) 
+        {
+            return redirect()->route('settings')->with('failed','Kindly Save Your Company Information First!');
+        }
         else
         {   
-            return $next($request);
+                return $next($request);
         }
     }
 }

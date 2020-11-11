@@ -106,11 +106,9 @@
                            </select></div>
                            <div class="col-5"> <input type="text" name="bar_code" class="form-control" placeholder="Enter Barcode"></div>
 
-                           <!-- ______________________________________________ -->
-                           <!-- H I D D E N -- C U R R E N T -- B I L L -- I D -->
+                           
                            <input type="hidden" name="current_bill_id" id="current_bill_id" value="{{$pending_bill[0]['id']}}">
-                           <!-- H I D D E N -- C U R R E N T -- B I L L -- I D -->
-                           <!-- ______________________________________________ -->
+                           
 
                            </div>
                           
@@ -370,9 +368,6 @@
           }
 
 
-
-        //______________ B I L L -- G E N E R A T I O N ___________________________
-
         function getBill(id)
         {
           $.ajax({
@@ -403,12 +398,12 @@
                             $('#LoadingModal').modal('show');
                         },
                     success: function(data) {
-                            $('#LoadingModal').modal('hide');
 
                             $.ajax({
                             type: "GET",
                             url: "{{ env('APP_URL')}}get-bill-nav-links/",
                             success: function(data_) {
+                              $('#LoadingModal').modal('hide');
                                     
                                     $('#nav-tab_').html(data_);
                                     $('#bill_pos').html(data);
@@ -440,13 +435,13 @@
                             $('#LoadingModal').modal('show');
                         },
                     success: function(data) {
-                            $('#LoadingModal').modal('hide');
 
                             $.ajax({
                             type: "GET",
                             url: "{{ env('APP_URL')}}get-bill-nav-links/",
                             success: function(data_) {
                                     
+                              $('#LoadingModal').modal('hide');
                                     $('#nav-tab_').html(data_);
                                     $('#bill_pos').html(data);
 
@@ -498,13 +493,13 @@
                                 }
                                 else
                                 { 
-                                    $('#LoadingModal').modal('hide');
 
                             $.ajax({
                             type: "GET",
                             url: "{{ env('APP_URL')}}get-pending-bill/"+id,
                             success: function(data_) {
                                     
+                                    $('#LoadingModal').modal('hide');
                                     $('#bill_pos').html(data_);
 
 
@@ -540,11 +535,7 @@
                     }
                 });
         }
-        //________________________________________________________________________
 
-
-
-        //______________ A D D -- P R O D U C T -- T O -- B I L L_________________
 
         function AddProductToBill(id,name,price)
         {
@@ -613,7 +604,6 @@
                             $('#LoadingModal').modal('show');
                         },
                   success: function(data) {
-                            $('#LoadingModal').modal('hide');
                           
                             $('#bill-prod-list'+bill_id).html(data);
 
@@ -623,6 +613,7 @@
                             url: "{{ env('APP_URL')}}calculate-total-bill/"+bill_id,
                             success: function(data_) {
                                     
+                            $('#LoadingModal').modal('hide');
                                     $('#bill-summary-total'+bill_id).html(data_);
 
 
@@ -799,12 +790,6 @@
           });
         }
 
-        //________________________________________________________________________
-
-
-
-        //______________ B I L L -- T A X -- D I S C O U N T _________________
-
 
         function ApplyBillTax(val,bill_id)
         {
@@ -866,7 +851,6 @@
          {
             if (val.substr(val.length - 1) == "%") 
             {
-              //apply discount as percentage
               val = parseFloat(val)?parseFloat(val):0;
               if(val < 0 || val > 100)
               {
@@ -885,7 +869,7 @@
                   data: { 
                           "bill_id":bill_id,
                           "discount":val,
-                          "type": 1, // for discount as percentage
+                          "type": 1, 
                           "_token": $('meta[name="csrf-token"]').attr('content') },
                           beforeSend: function(){
                             $('#LoadingModal').modal('show');
@@ -924,7 +908,6 @@
             else
             {
 
-              //apply discount as amount
               val = parseFloat(val)?parseFloat(val):0;
                                 $.ajax({
                   type: "POST",
@@ -932,7 +915,7 @@
                   data: { 
                           "bill_id":bill_id,
                           "discount":val,
-                          "type": 2, // for discount as amount
+                          "type": 2, 
                           "_token": $('meta[name="csrf-token"]').attr('content') },
                           beforeSend: function(){
                             $('#LoadingModal').modal('show');
@@ -967,10 +950,6 @@
             }
 
          }
-        //________________________________________________________________________
-
-        
-        //______________ -- C U S T O M E R S --  ________________________________
 
           function CreateNewCustomer()
           {
@@ -1044,7 +1023,7 @@
                                 {
                                    document.getElementById("bill_cust_name").innerHTML = data['result']['customer_name'];
                                    document.getElementById("bill_total_item").innerHTML = data['result']['total_item'];
-                                   document.getElementById("bill_total_amount").innerHTML = "<strong>Total:</strong> "+data['result']['total_bill'].toFixed(2);
+                                   document.getElementById("bill_total_amount").innerHTML = "<strong>Total:</strong> "+parseFloat(data['result']['total_bill']).toFixed(2);
                                    
                                    document.getElementById('total_bill_amount').value = data['result']['total_bill'];
                                    document.getElementById('payment_amount').value = data['result']['total_bill'];
@@ -1123,24 +1102,14 @@
 
                 total_bill = parseFloat(document.getElementById("total_bill_amount").value);
                 
-                change = val - total_bill;
+                change = parseFloat(val - total_bill);
 
                 document.getElementById("bill_change").innerHTML = change.toFixed(2);
                 document.getElementById("bill_cash_change").value = change.toFixed(2);
               }
 
 
-              function PrintReceipt()
-              {
-                
-                var divToPrint=document.getElementById('ReceiptModalData');
-                var newWin=window.open('','Print-Window');
-                newWin.document.open();
-                newWin.document.write('<html><body onload="window.print()">'+divToPrint.innerHTML+'</body></html>');
-                newWin.document.close();
-                setTimeout(function(){newWin.close();},1);
-
-              }
+              
 
               function ShowLastBill()
               {
@@ -1160,7 +1129,6 @@
                                     }
                                   });      
               }
-        //________________________________________________________________________
 
         </script>
                       

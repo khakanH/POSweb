@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr">
 
 <head>
     <!-- Required meta tags-->
@@ -9,7 +9,7 @@
     
 
     <!-- Title Page-->
-    <title>Signup</title>
+    <title>Email Verification</title>
 
     <!-- Fontfaces CSS-->
     <link href="{{asset('css/font-face.css')}}" rel="stylesheet" media="all">
@@ -32,17 +32,21 @@
     <!-- Main CSS-->
     <link href="{{asset('css/theme.css')}}" rel="stylesheet" media="all">
 
-
-
     <style type="text/css">
-        body { 
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+               -webkit-appearance: none;
+               margin: 0;
+            }
+              body { 
     background: url('{{asset('images/parallax/3.jpg')}}') no-repeat center center fixed;
     -moz-background-size: cover;
     -webkit-background-size: cover;
     -o-background-size: cover;
     background-size: cover;
 } 
-    </style>
+    </style> 
+    
 </head>
 
 <body class="animsition">
@@ -55,58 +59,61 @@
                                 <img src="{{env('IMG_URL')}}icon/logo.png" alt="CoolAdmin">
                             </a>
                         </div>
+
                         <center>
+
                         @if(session('success'))
-                        <p class="text-success pulse animated">{{ session('success') }}</p>
-                        {{ session()->forget('success') }}
-                        @elseif(session('failed'))
-                        <p class="text-danger pulse animated">{{ session('failed') }}</p>
-                        {{ session()->forget('failed') }}
+                             <span id="sendCodeMsg">
+                                <p class="text-success pulse animated">{{ session('success') }}</p>
+                                {{ session()->forget('success') }}</span>
+                            @elseif(session('failed'))
+                            <span id="sendCodeMsg">
+                                <p class="text-danger pulse animated">{{ session('failed') }}</p>
+                                {{ session()->forget('failed') }}</span>
                         @endif
-                        </center>
-                        <div class="login-form">
-                            <form action="{{route('register')}}" method="post" name="signupForm">
-                                @csrf
-                                <span class='arrow'>
-                                <label class='error'></label>
-                                </span>
-                                <br>
-                                <div class="form-group">
-                                    <input class="au-input au-input--full" type="text" name="username" required="" value="{{old('username')}}" placeholder="Username">
-                                </div>
-                                <div class="form-group">
-                                    <input class="au-input au-input--full" type="email" name="email" required="" value="{{old('email')}}" placeholder="Email">
-                                </div>
-                                <div class="form-group">
-                                    <input class="au-input au-input--full" type="password" name="password" id="password" required="" placeholder="Password">
-                                </div>
-                                <div class="form-group">
-                                    <input class="au-input au-input--full" type="password" name="confirm_password" required="" placeholder="Confirm Password">
-                                </div>
-                                <div class="form-group">
-                                    <label>
-                                        <input type="checkbox" required="" name="aggree">
-                                        Agree the terms and policy
-                                    </label>
+                        <p class="text-danger pulse animated" id="alertMsg2"></p>
+                        <br>
+                        <h3>Reset Password</h3>
+                        <br>
 
-                                </div>
-                                <button class="au-btn au-btn--block au-btn--green m-b-20" type="submit">register</button>
-                               
-                            </form>
-                            <div class="form-group">
-                                <p class="text-center">
-                                    Already have account?
-                                    <a href="{{route('index')}}">Sign In</a>
-                                </p>
-                            </div>
-                        </div>
+                         <form action="{{ route('save-new-password') }}" method="post" name="resetPasswordForm">
+                            @csrf
+                            <span class='arrow'>
+                            <label class='error'></label>
+                            </span>
+                            
+                            <input type="hidden" name="email" id="email" value="{{ $email }}">
+
+                        <div class="form-group">
+                        <i id="pass-eye" style="font-size: 18px;  z-index: 1; display: flex; position: absolute; margin: 12px 0px 0px 12px; cursor: pointer;" class="fa fa-eye" onclick="ShowPassword('new_password','pass-eye')"></i>
+                        <input type="password" style="padding-left: 45px;" class="form-control" name="new_password" id="new_password" placeholder="Enter New Password" autocomplete="off">
+                      </div>
+                       <div class="form-group">
+                        <i id="c_pass-eye" style="font-size: 18px;  z-index: 1; display: flex; position: absolute; margin: 12px 0px 0px 12px; cursor: pointer;" class="fa fa-eye" onclick="ShowPassword('confirm_new_password','c_pass-eye')"></i>
+                        <input type="password" style="padding-left: 45px;" class="form-control" name="confirm_new_password" id="confirm_new_password" placeholder="Confirm New password" autocomplete="off">
+                      </div>
+
+                        <br>
+                            
+                        <button class="btn btn-block btn-success" type="submit" style="display: inline-block; width: 100%; text-align: center;">Confirm</button>
+                        
+                        </form>   
+
                 </div>
-            </div>
         </div>
-
     </div>
+</div>
 
-     <!-- Jquery JS-->
+
+        
+
+    <div class="alert alert-success alert-rounded fadeIn animated" id="toast" style="visibility: hidden; position: fixed; bottom: 5px; left: 30px; z-index: 999; font-size: 15px;">
+                                        <p id="toastMsg" style="float: left;"></p> 
+                                            <button type="button" class="close" onclick="hideToast('toast')" aria-label="Close" style="float: right;"> &nbsp;&nbsp;&nbsp;<span aria-hidden="true">×</span> </button>
+                                        </div>
+
+
+    <!-- Jquery JS-->
     <script src="{{asset('vendor/jquery-3.2.1.min.js')}}"></script>
     <!-- Bootstrap JS-->
     <script src="{{asset('vendor/bootstrap-4.1/popper.min.js')}}"></script>
@@ -132,82 +139,66 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.2/jquery.validate.min.js"></script>
 
+    <script type="text/javascript">
 
-</body>
-
-<script type="text/javascript">
-      $.validator.addMethod('emailFormat', function(value, element) {
-        return this.optional(element) || (value.match(/^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$/));
-    },
-    'Please enter a valid email address.');
-     $(function() {
-    $("form[name='signupForm']").validate({
+                        $(function() {
+        $("form[name='resetPasswordForm']").validate({
              errorPlacement: function(label, element) {
         label.addClass('arrow');
         label.css({"color": "red", "font-size": "12px" ,"width":"100%"});
-        label.insertBefore(element);
+        label.insertAfter(element);
     },
     wrapper: 'span',
             
     rules: {
       
-     username: {
-        required:true,
-
-      },
-      email: {
-        required: true,
-        emailFormat: true,
-      },
-      password: {
+     new_password: {
         required: true,
         minlength: 6,
-
-
-
       },
-      confirm_password: {
-        required : true,
-        equalTo: "#password"
-
-
-      },
-      aggree :{
-        required: true,
-      },
-
+      confirm_new_password: {
+                    required: true,
+                    equalTo: "#new_password"
+                },
+     
     },
     messages: {
-     
-      username: {
-        required:"Please Provide a Username",
-
-      },
-      email: {
-        required: "Please Provide an Email Address",
-      },
-      password: {
+        
+        new_password: {
         required: "Please Provide a Password",
         minlength: "Password Must be at Least 6 Characters Long",
       },
-      confirm_password: {
-        required : "Please Provide a Confirm Password",
-        equalTo:"Password Mismatch",
-
-      },
-      aggree:{
-        required:"Please Check This Box If You Want To Proceed",
+      confirm_new_password:{
+          required: "Please Provide a Confirm Password",
+          equalTo:"Password Mismatch",
       }
       
     },
     submitHandler: function(form) {
-
       form.submit();
     }
   });
 });
 
-</script>
+    function ShowPassword(id,eye_id)
+    {
+        var i = document.getElementById(id);
+
+        if (i.type === "password") 
+        {
+            i.type = "text";
+            document.getElementById(eye_id).className="fas fa-eye-slash";
+        }
+        else
+        {
+            i.type = "password";
+            document.getElementById(eye_id).className="fas fa-eye";
+
+        }
+    }
+    
+    </script>
+
+  </body>
 
 </html>
-<!-- end document-->

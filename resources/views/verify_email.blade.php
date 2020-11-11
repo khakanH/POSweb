@@ -296,7 +296,7 @@
                                 }
                                 else
                                 {
-                                    window.location.href = "{{ env('APP_URL')}}/reset-password/"+email;
+                                    window.location.href = "{{ env('APP_URL')}}reset-password/"+email;
                                 }
 
                             }

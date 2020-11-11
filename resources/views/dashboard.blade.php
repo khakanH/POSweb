@@ -11,8 +11,8 @@
                     <div class="row">
                         <div class="col-md-6 col-lg-3">
                             <div class="statistic__item statistic__item--green">
-                                <h2 class="number">10,368</h2>
-                                <span class="desc">members online</span>
+                                <h2 class="number">{{$customer_count}}</h2>
+                                <span class="desc">Customers</span>
                                 <div class="icon">
                                     <i class="zmdi zmdi-account-o"></i>
                                 </div>
@@ -20,7 +20,7 @@
                         </div>
                         <div class="col-md-6 col-lg-3">
                             <div class="statistic__item statistic__item--orange">
-                                <h2 class="number">388,688</h2>
+                                <h2 class="number">{{$total_item}}</h2>
                                 <span class="desc">items sold</span>
                                 <div class="icon">
                                     <i class="zmdi zmdi-shopping-cart"></i>
@@ -29,16 +29,16 @@
                         </div>
                         <div class="col-md-6 col-lg-3">
                             <div class="statistic__item statistic__item--blue">
-                                <h2 class="number">1,086</h2>
-                                <span class="desc">this week</span>
+                                <h2 class="number">{{$product_count}}</h2>
+                                <span class="desc">Products in {{$category_count}} Categories</span>
                                 <div class="icon">
-                                    <i class="zmdi zmdi-calendar-note"></i>
+                                    <i class="fa fa-th-large"></i>
                                 </div>
                             </div>
                         </div>
                         <div class="col-md-6 col-lg-3">
                             <div class="statistic__item statistic__item--red">
-                                <h2 class="number">$1,060,386</h2>
+                                <h2 class="number">{{number_format($total_sale,2)}}</h2>
                                 <span class="desc">total earnings</span>
                                 <div class="icon">
                                     <i class="zmdi zmdi-money"></i>
@@ -90,6 +90,7 @@
                       
         <script type="text/javascript">
             
+    try{
           var sale = <?php echo '["' . implode('", "', $monthly_sale) . '"]' ?>;
 
                   var ctx = document.getElementById("team-chart");
@@ -173,6 +174,64 @@
                       }
                     });
                   }
+
+
+  } catch (error) {
+    console.log(error);
+  }
+
+
+        try {
+
+          var p_name = <?php echo '["' . implode('", "', $top_prod_name) . '"]' ?>;
+          var p_count = <?php echo '["' . implode('", "', $top_prod_count) . '"]' ?>;
+
+
+    //pie chart
+    var ctx = document.getElementById("pieChart");
+    if (ctx) {
+      ctx.height = 335;
+      var myChart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+          datasets: [{
+            data: p_count,
+            backgroundColor: [
+              "rgba(0, 123, 255,1.0)",
+              "rgba(0, 123, 255,0.8)",
+              "rgba(0, 123, 255,0.6)",
+              "rgba(0, 123, 255,0.4)",
+              "rgba(0, 123, 255,0.2)",
+            ],
+            hoverBackgroundColor: [
+              "rgba(0, 123, 255,1.0)",
+              "rgba(0, 123, 255,0.8)",
+              "rgba(0, 123, 255,0.6)",
+              "rgba(0, 123, 255,0.4)",
+              "rgba(0, 123, 255,0.2)",
+            ]
+
+          }],
+          labels: p_name
+        },
+        options: {
+          legend: {
+            position: 'top',
+            labels: {
+              fontFamily: 'Poppins'
+            }
+
+          },
+          responsive: true
+        }
+      });
+    }
+
+
+  } catch (error) {
+    console.log(error);
+  }
+
 
 
         </script>
