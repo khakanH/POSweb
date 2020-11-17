@@ -22,6 +22,7 @@ class LoginSession
             if($request->ajax()) 
             {
                 return response()->json(['status'=>"0",'msg' => 'Session expired'],401);
+                
             }
             else
             {

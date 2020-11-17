@@ -91,6 +91,20 @@
                                           </div>
                                         </div>
 
+                                        <div class="row form-group" style="background: #333; border: solid gray 2px; border-radius: 3px; color: white; padding: 25px;">
+                                          <div class="col-lg-12">
+                                            <label class="form-control-label">FBR Invoice Data:</label>
+                                            &nbsp;&nbsp;&nbsp;
+                                            <label class="switch switch-3d switch-primary switch-lg mr-3">
+                                              <input onclick="FBRToggle(this.value)" type="checkbox" class="switch-input" id="fbr_input" name="fbr_input" <?php if ($company->fbr_invoice ==1): ?>
+                                                  checked
+                                              <?php endif ?> value="{{$company->fbr_invoice}}">
+                                              <span class="switch-label"></span>
+                                              <span class="switch-handle"></span>
+                                            </label>
+                                          </div>
+                                        </div>
+
                                         <div class="row form-group">
                                           <div class="col-lg-12">
                                             <label for="company_logo_output" class="form-control-label">Company Logo:</label><br>
@@ -167,7 +181,22 @@
 //         shortcutsHint: false
 //       })
 //     })();
+    
   
+    function FBRToggle(val)
+    {
+      if (val == "1") 
+      {
+        document.getElementById("fbr_input").value = "0";
+        document.getElementById("fbr_input").checked = false;
+      }
+      else
+      {
+        document.getElementById("fbr_input").value = "1";
+        document.getElementById("fbr_input").checked = true; 
+      }
+    }
+
 
     $.validator.addMethod('emailFormat', function(value, element) {
         return this.optional(element) || (value.match(/^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$/));
@@ -224,9 +253,6 @@
 
         let myForm = document.getElementById('infoForm');
         let formData = new FormData(myForm);
-        var receipt_header = document.getElementById('receipt_header').value;
-
-        formData.append('receipt_header',receipt_header);
 
          $.ajax({
         type: "POST",

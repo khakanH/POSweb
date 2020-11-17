@@ -38,7 +38,7 @@
                                 <form method="post" action="{{route('upload-products-using-csv')}}" enctype="multipart/form-data">
                                         @csrf 
                                 <div class="table-data__tool-right">
-                                    <button class="au-btn au-btn-icon au-btn--green au-btn--small" onclick="AddProduct()">
+                                    <button class="au-btn au-btn-icon au-btn--green au-btn--small" onclick="AddProduct()" type="button">
                                         <i class="zmdi zmdi-plus"></i>Add Product</button>
 
                                            

@@ -23,6 +23,9 @@ class ProductController extends Controller
         $this->member_model         = new Members();
         $this->category_model       = new Category();
         $this->product_model       = new Product();
+
+
+        
     }
 
 
@@ -31,10 +34,12 @@ class ProductController extends Controller
     {
         $user_id = session("login")["user_id"];
 
+        $company_id = session("login")["company_id"];
+
         $user_info = $this->checkUserAvailbility($user_id,$request);
 
         $get_cate_list = $this->category_model
-                                      ->where('member_id',$user_id)
+                                      ->where('company_id',$company_id)
                                       ->where('is_deleted',0)
                                       ->paginate(15);
 
@@ -48,6 +53,8 @@ class ProductController extends Controller
         {   
             $user_id = session("login")["user_id"];
 
+            $company_id = session("login")["company_id"];
+            
             $user_info = $this->checkUserAvailbility($user_id,$request);
             
             $input = $request->all();
@@ -60,6 +67,7 @@ class ProductController extends Controller
                 $data = array(
                         "name"                  => $input['cate_name'],
                         "member_id"             => $user_id,
+                        "company_id"            => $company_id,
                         "is_deleted"            => 0,
                         "created_at"            => date('Y-m-d H:i:s'),
                         "updated_at"            => date('Y-m-d H:i:s'),
@@ -106,6 +114,7 @@ class ProductController extends Controller
         try 
         {   
             $user_id = session("login")["user_id"];
+            $company_id = session("login")["company_id"];
 
             $user_info = $this->checkUserAvailbility($user_id,$request);
             
@@ -113,14 +122,14 @@ class ProductController extends Controller
             if (empty($search_text)) 
             {       
                     $get_cate_list = $this->category_model
-                                      ->where('member_id',$user_id)
+                                      ->where('company_id',$company_id)
                                       ->where('is_deleted',0)
                                       ->paginate(15);
             }
             else
             {   
                     $get_cate_list = $this->category_model
-                                      ->where('member_id',$user_id)
+                                      ->where('company_id',$company_id)
                                       ->where('is_deleted',0)
                                       ->where('name','like','%'.$search_text.'%')
                                       ->paginate(15);
@@ -186,13 +195,14 @@ class ProductController extends Controller
         try 
         {   
             $user_id = session("login")["user_id"];
+            $company_id = session("login")["company_id"];
 
             $user_info = $this->checkUserAvailbility($user_id,$request);
             
 
                  
                     $get_cate_list = $this->category_model
-                                      ->where('member_id',$user_id)
+                                      ->where('company_id',$company_id)
                                       ->where('is_deleted',0)
                                       ->get();
            
@@ -237,11 +247,12 @@ class ProductController extends Controller
     public function ProductList(Request $request)
     {   
         $user_id = session("login")["user_id"];
+            $company_id = session("login")["company_id"];
 
         $user_info = $this->checkUserAvailbility($user_id,$request);
 
         $get_product_list = $this->product_model
-                                      ->where('member_id',$user_id)
+                                      ->where('company_id',$company_id)
                                       ->where('is_deleted',0)
                                       ->paginate(15);
 
@@ -257,6 +268,7 @@ class ProductController extends Controller
         try 
         {
             $user_id = session("login")["user_id"];
+            $company_id = session("login")["company_id"];
 
             $user_info = $this->checkUserAvailbility($user_id,$request);
             
@@ -327,6 +339,7 @@ class ProductController extends Controller
                         "tax"                   => (float)$importData[6],
                         "price"                 => (float)$importData[7],
                         "member_id"             => $user_id,
+                        "company_id"            => $company_id,
                         "is_deleted"            => 0,
                         "created_at"            => date("Y-m-d H:i:s"),
                         "updated_at"            => date("Y-m-d H:i:s"),
@@ -361,6 +374,7 @@ class ProductController extends Controller
         try 
         {   
             $user_id = session("login")["user_id"];
+            $company_id = session("login")["company_id"];
 
             $user_info = $this->checkUserAvailbility($user_id,$request);
             
@@ -405,6 +419,7 @@ class ProductController extends Controller
                         "tax"                   => $input['prod_tax'],
                         "price"                 => $input['prod_price'],
                         "member_id"             => $user_id,
+                        "company_id"            => $company_id,
                         "is_deleted"            => 0,
                         "created_at"            => date('Y-m-d H:i:s'),
                         "updated_at"            => date('Y-m-d H:i:s'),
@@ -469,6 +484,7 @@ class ProductController extends Controller
         try 
         {   
             $user_id = session("login")["user_id"];
+            $company_id = session("login")["company_id"];
 
             $user_info = $this->checkUserAvailbility($user_id,$request);
             
@@ -476,14 +492,14 @@ class ProductController extends Controller
             if (empty($search_text)) 
             {       
                     $get_prod_list = $this->product_model
-                                      ->where('member_id',$user_id)
+                                      ->where('company_id',$company_id)
                                       ->where('is_deleted',0)
                                       ->paginate(15);
             }
             else
             {   
                     $get_prod_list = $this->product_model
-                                      ->where('member_id',$user_id)
+                                      ->where('company_id',$company_id)
                                       ->where('is_deleted',0)
                                       ->where(function($query) use ($search_text)
                                             {
@@ -564,13 +580,14 @@ class ProductController extends Controller
     public function checkUserAvailbility($id,$request)
     {   
 
-        $user = $this->member_model->where('id',$id)->first();
+        $user = Members::where('id',$id)->where('is_blocked',0)->first();
 
 
         if ($user == "") 
         {   
-            $request->session()->put("failed","Session Time Out. You need to Login Again.");
-            header('Location:'.url('/'));
+            $request->session()->put("failed","Something went wrong.");
+            header('Location:'.url('signout'));
+            
             exit();
         }
         else

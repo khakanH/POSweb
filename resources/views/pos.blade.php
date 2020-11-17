@@ -41,20 +41,7 @@
                -webkit-appearance: none;
                margin: 0;
             }
- @media print {
-    .ReceiptModalData {
-        background-color: white;
-        height: 100%;
-        width: 100%;
-        position: fixed;
-        top: 0;
-        left: 0;
-        margin: 0;
-        padding: 15px;
-        font-size: 14px;
-        line-height: 18px;
-    }
-}
+
   </style>
     
   
@@ -104,7 +91,7 @@
                               value="{{$cust['id']}}">{{$cust['customer_name']}}</option>
                              @endforeach
                            </select></div>
-                           <div class="col-5"> <input type="text" name="bar_code" class="form-control" placeholder="Enter Barcode"></div>
+                           <div class="col-5"> <input type="text" autofocus="on" name="bar_code" id="bar_code" class="form-control" onkeypress="AddProductToBillBarCode(this.value)" placeholder="Enter Barcode"></div>
 
                            
                            <input type="hidden" name="current_bill_id" id="current_bill_id" value="{{$pending_bill[0]['id']}}">
@@ -126,16 +113,16 @@
 
 
                            <div class="table-responsive" style="min-height: 200px; max-height: 200px;">
-                                    <table class="table table-data2">
+                                    <table class="table table-data2 text-center">
                                         <thead class="text-sm-center">
                                             <tr>
-                                                <th width="5%">
+                                                <th width="2%">
                                                     
                                                 </th>
                                                 <th width="40%">Product</th>
                                                 <th width="10%">Price</th>
-                                                <th width="25%">Qty</th>
-                                                <th width="20%">Total</th>
+                                                <th width="33%">Qty</th>
+                                                <th width="15%">Total</th>
                                             </tr>
                                         </thead>
                                         <tbody class="text-sm-center" id="bill-prod-list{{$pending_bill[0]['id']}}">
@@ -157,7 +144,7 @@
                                                 <td>{{$bill_item['product_price']}}</td>
                                                 <td>
                                                   <div class="row" style="margin: auto; vertical-align: middle;">
-                                                  <button class="btn btn-primary qty-btn" onclick='DecreaseBillItem("{{$bill_item['id']}}","{{$bill_item['product_id']}}")'>-</button><input class="form-control qty-input" type="number" value="{{$bill_item['product_quantity']}}" onfocusout='ChangeBillProductQty(this.value,"{{$bill_item['id']}}","{{$bill_item['product_id']}}")' step="1" min="1" name="prod-qty" id="prod-qty{{$bill_item['id']}}"><button class="btn btn-primary qty-btn" onclick='IncreaseBillItem("{{$bill_item['id']}}","{{$bill_item['product_id']}}")'>+</button>
+                                                  <button class="btn btn-primary qty-btn" onclick='DecreaseBillItem("{{$bill_item['id']}}","{{$bill_item['product_id']}}")'>-</button><input class="form-control qty-input" type="number" value="{{$bill_item['product_quantity']}}" onkeypress='ChangeBillProductQty(this.value,"{{$bill_item['id']}}","{{$bill_item['product_id']}}")' step="1" min="1" name="prod-qty" id="prod-qty{{$bill_item['id']}}"><button class="btn btn-primary qty-btn" onclick='IncreaseBillItem("{{$bill_item['id']}}","{{$bill_item['product_id']}}")'>+</button>
                                                   </div>
                                                 </td>
                                                 <td>{{$bill_item['product_subtotal']}}</td>
@@ -173,8 +160,8 @@
                                     <tr><td width="50%" style="background: #ecf0f1;">SubTotal: </td><td>
                                       <span style="float: left;">{{$pending_bill[0]['subtotal']}}</span><i style="float: right;"><b>{{$pending_bill[0]['total_item']}}</b> items</i>
                                     </td></tr>
-                                    <tr><td width="50%" style="background: #ecf0f1;">Order Tax: </td><td><div class="d-flex"><span style="float: left;"><input autocomplete="off" type="text" class="form-control tax-dis-input" onfocusout='ApplyBillTax(this.value,"{{$pending_bill[0]['id']}}")' id="bill-tax-input{{$pending_bill[0]['id']}}" value="{{number_format($pending_bill[0]['tax_percentage'],1)}}%"></span><i style="float: right;">{{number_format($pending_bill[0]['tax_amount'],2)}}</i></div></td></tr>
-                                    <tr><td width="50%" style="background: #ecf0f1;">Discount: </td><td><div class="d-flex"><span style="float: left;"><input autocomplete="off" type="text" class="form-control tax-dis-input" onfocusout='ApplyBillDiscount(this.value,"{{$pending_bill[0]['id']}}")' id="bill-discount-input{{$pending_bill[0]['id']}}" value="{{number_format($pending_bill[0]['discount_percentage'],1)}}%"></span><i style="float: right;">{{number_format($pending_bill[0]['discount_amount'],2)}}</i></div></td></tr>
+                                    <tr><td width="50%" style="background: #ecf0f1;">Order Tax: </td><td><div class="d-flex"><span style="float: left;"><input autocomplete="off" type="text" class="form-control tax-dis-input" onkeypress='ApplyBillTax(this.value,"{{$pending_bill[0]['id']}}")' id="bill-tax-input{{$pending_bill[0]['id']}}" value="{{number_format($pending_bill[0]['tax_percentage'],1)}}%"></span><i style="float: right;">{{number_format($pending_bill[0]['tax_amount'],2)}}</i></div></td></tr>
+                                    <tr><td width="50%" style="background: #ecf0f1;">Discount: </td><td><div class="d-flex"><span style="float: left;"><input autocomplete="off" type="text" class="form-control tax-dis-input" onkeypress='ApplyBillDiscount(this.value,"{{$pending_bill[0]['id']}}")' id="bill-discount-input{{$pending_bill[0]['id']}}" value="{{number_format($pending_bill[0]['discount_percentage'],1)}}%"></span><i style="float: right;">{{number_format($pending_bill[0]['discount_amount'],2)}}</i></div></td></tr>
                                     <tr><td width="50%" style="background: #ecf0f1;">Total: </td><td>{{number_format($pending_bill[0]['total_bill'],2)}}</td></tr>
                                   </tbody>  
                                 </table>
@@ -287,8 +274,66 @@
 
         <script type="text/javascript">
           
-        
+       
 
+
+          function AddProductToBillBarCode(val)
+          { 
+            var x = event.which || event.keyCode;
+            if (!(x == 13 || x == 'Enter')) 
+            {
+              return false;
+            }
+
+            val = val.trim();
+            if (!val) 
+            {
+              return false;
+            }
+
+              $.ajax({
+                    type: "GET",
+                    url: "{{ env('APP_URL')}}get-pos-product-by-barcode/"+val,
+                     beforeSend: function(){
+                            $('#LoadingModal').modal('show');
+                        },
+                    success: function(data) {
+                            $('#LoadingModal').modal('hide');
+                            document.getElementById("bar_code").value ="";
+                            document.getElementById("bar_code").focus();
+
+                            get_status = data['status'];
+                            get_msg    = data['msg'];
+
+                                if (get_status == "0") 
+                                {
+
+                                 document.getElementById('toast').style.visibility = "visible";
+                                    document.getElementById('toast').className = "alert alert-danger alert-rounded fadeIn animated";
+                                    document.getElementById('toastMsg').innerHTML = get_msg;
+
+
+                                     setTimeout(function() {
+                                 document.getElementById('toast').style.visibility = "hidden";
+                                   
+
+                                }, 5000);
+
+                                }    
+                                else
+                                {
+                                    var bill_id = document.getElementById("current_bill_id").value;
+
+                                  AddProductToBill(data['result']['id'],data['result']['name'],data['result']['price']);
+                                }                        
+                          
+                          return;
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        alert('Exception:' + errorThrown);
+                    }
+              });
+          }          
 
           function GetAllProducts() 
           {
@@ -370,6 +415,7 @@
 
         function getBill(id)
         {
+
           $.ajax({
                     type: "GET",
                     url: "{{ env('APP_URL')}}get-pending-bill/"+id,
@@ -381,6 +427,7 @@
 
                             
                                     $('#bill_pos').html(data);
+                                    document.getElementById("bar_code").focus();
 
                     },
                     error: function(jqXHR, textStatus, errorThrown) {
@@ -393,20 +440,21 @@
         {
            $.ajax({
                     type: "GET",
-                    url: "{{ env('APP_URL')}}create-new-bill/",
+                    url: "{{ env('APP_URL')}}create-new-bill",
                     beforeSend: function(){
                             $('#LoadingModal').modal('show');
                         },
                     success: function(data) {
 
-                            $.ajax({
+                        $.ajax({
                             type: "GET",
-                            url: "{{ env('APP_URL')}}get-bill-nav-links/",
+                            url: "{{ env('APP_URL')}}get-bill-nav-links",
                             success: function(data_) {
                               $('#LoadingModal').modal('hide');
                                     
                                     $('#nav-tab_').html(data_);
                                     $('#bill_pos').html(data);
+                                    document.getElementById("bar_code").focus();
 
 
 
@@ -415,22 +463,20 @@
                                 alert('Exception:' + errorThrown);
                             }
                         });
-
-
-
-
-
+                            
                     },
                     error: function(jqXHR, textStatus, errorThrown) {
                         alert('Exception:' + errorThrown);
                     }
                 });
+
+         
         }
         function deleteLastBill()
         {
           $.ajax({
                     type: "GET",
-                    url: "{{ env('APP_URL')}}delete-last-bill/",
+                    url: "{{ env('APP_URL')}}delete-last-bill",
                     beforeSend: function(){
                             $('#LoadingModal').modal('show');
                         },
@@ -438,12 +484,13 @@
 
                             $.ajax({
                             type: "GET",
-                            url: "{{ env('APP_URL')}}get-bill-nav-links/",
+                            url: "{{ env('APP_URL')}}get-bill-nav-links",
                             success: function(data_) {
                                     
                               $('#LoadingModal').modal('hide');
                                     $('#nav-tab_').html(data_);
                                     $('#bill_pos').html(data);
+                                    document.getElementById("bar_code").focus();
 
 
 
@@ -465,7 +512,8 @@
         }
 
         function CancelBill(id)
-        {
+        { 
+
           $.ajax({
                     type: "GET",
                     url: "{{ env('APP_URL')}}cancel-bill/"+id,
@@ -486,7 +534,8 @@
 
 
                                      setTimeout(function() {
-                                    document.getElementById('toast').className = "alert alert-danger alert-rounded fadeOut animated";
+                                 document.getElementById('toast').style.visibility = "hidden";
+                                    
 
                                 }, 5000);
 
@@ -501,6 +550,7 @@
                                     
                                     $('#LoadingModal').modal('hide');
                                     $('#bill_pos').html(data_);
+                                    document.getElementById("bar_code").focus();
 
 
 
@@ -515,7 +565,7 @@
 
 
                                      setTimeout(function() {
-                                    document.getElementById('toast').className = "alert alert-success alert-rounded fadeOut animated";
+                                   
                                     document.getElementById('toast').style.visibility = "hidden";
 
                                 }, 5000);
@@ -740,6 +790,13 @@
         function ChangeBillProductQty(val,bill_item_id,prod_id)
         {
 
+            var x = event.which || event.keyCode;
+            if (!(x == 13 || x == 'Enter')) 
+            {
+              return false;
+            }
+
+
           if (val < 1) 
           {
             return;
@@ -759,7 +816,6 @@
                             $('#LoadingModal').modal('show');
                         },
                   success: function(data) {
-                            $('#LoadingModal').modal('hide');
                           
                             $('#bill-prod-list'+bill_id).html(data);
                            
@@ -770,6 +826,7 @@
                             url: "{{ env('APP_URL')}}calculate-total-bill/"+bill_id,
                             success: function(data_) {
                                     
+                                    $('#LoadingModal').modal('hide');
                                     $('#bill-summary-total'+bill_id).html(data_);
 
 
@@ -793,6 +850,14 @@
 
         function ApplyBillTax(val,bill_id)
         {
+
+          var x = event.which || event.keyCode;
+            if (!(x == 13 || x == 'Enter')) 
+            {
+              return false;
+            }
+
+
           val = parseFloat(val)?parseFloat(val):0;
 
           if(val < 0 || val > 100)
@@ -816,7 +881,6 @@
                             $('#LoadingModal').modal('show');
                         },
                   success: function(data) {
-                            $('#LoadingModal').modal('hide');
 
                              $.ajax({
                             type: "GET",
@@ -824,6 +888,7 @@
                             url: "{{ env('APP_URL')}}calculate-total-bill/"+bill_id,
                             success: function(data_) {
                                     
+                                    $('#LoadingModal').modal('hide');
                                     $('#bill-summary-total'+bill_id).html(data_);
 
 
@@ -849,6 +914,14 @@
         }
          function ApplyBillDiscount(val,bill_id)
          {
+
+          var x = event.which || event.keyCode;
+            if (!(x == 13 || x == 'Enter')) 
+            {
+              return false;
+            }
+
+
             if (val.substr(val.length - 1) == "%") 
             {
               val = parseFloat(val)?parseFloat(val):0;
@@ -875,7 +948,6 @@
                             $('#LoadingModal').modal('show');
                         },
                   success: function(data) {
-                            $('#LoadingModal').modal('hide');
 
                              $.ajax({
                             type: "GET",
@@ -883,6 +955,7 @@
                             url: "{{ env('APP_URL')}}calculate-total-bill/"+bill_id,
                             success: function(data_) {
                                     
+                                    $('#LoadingModal').modal('hide');
                                     $('#bill-summary-total'+bill_id).html(data_);
 
 
@@ -921,7 +994,6 @@
                             $('#LoadingModal').modal('show');
                         },
                   success: function(data) {
-                            $('#LoadingModal').modal('hide');
 
                              $.ajax({
                             type: "GET",
@@ -929,6 +1001,7 @@
                             url: "{{ env('APP_URL')}}calculate-total-bill/"+bill_id,
                             success: function(data_) {
                                     
+                                    $('#LoadingModal').modal('hide');
                                     $('#bill-summary-total'+bill_id).html(data_);
 
 
@@ -1014,7 +1087,8 @@
 
 
                                      setTimeout(function() {
-                                    document.getElementById('toast').className = "alert alert-danger alert-rounded fadeOut animated";
+                                 document.getElementById('toast').style.visibility = "hidden";
+                                   
 
                                 }, 5000);
 
@@ -1130,6 +1204,14 @@
                                   });      
               }
 
+              function PrintReceipt()
+              {
+                  var divToPrint=document.getElementById("ReceiptModalData");
+                   newWin= window.open("Print");
+                   newWin.document.write(divToPrint.innerHTML);
+                   newWin.print();
+                   newWin.close();
+              }
         </script>
                       
 

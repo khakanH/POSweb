@@ -152,7 +152,7 @@
                         <div class="row">
                           <div class="col-lg-6"> 
                             <label>Product Image:</label><br>
-                            <img id="product_image_output" src="{{ env('IMG_URL')}}choose_img.png" width="130" height="130" style="border-radius: 2%; border: solid gray 1px; object-position: top; object-fit: cover;">&nbsp;&nbsp;<input type="file"  name="product_image" onchange="product_loadFile(event)"  accept="image/*" required=""></div>
+                            <img id="product_image_output" src="{{ env('IMG_URL')}}choose_img.png" width="130" height="130" style="border-radius: 2%; border: solid gray 1px; object-position: top; object-fit: cover;">&nbsp;&nbsp;<input type="file"  name="product_image" onchange="product_loadFile(event)"  accept="image/*" ></div>
                           <div class="col-lg-6"> 
                             <label>Product Description:</label>
                             <textarea class="form-control" name="prod_descrip" id="prod_descrip" rows="5" placeholder="Enter Product Description"></textarea></div>
@@ -290,7 +290,7 @@
 
                          <div class="form-group" style="display: none;" id="for_credit_card">
                           <label for="payment_amount" class=" form-control-label">Credit Card Number:</label>
-                          <input type="text" required="" name="credit_card_number" id="credit_card_number" class="form-control">
+                          <input required="" name="credit_card_number" id="credit_card_number" class="form-control" type="tel" inputmode="numeric" pattern="[0-9\s]{13,19}" autocomplete="cc-number" maxlength="19" placeholder="xxxx xxxx xxxx xxxx">
                           <br>
                           <label for="payment_amount" class=" form-control-label">Credit Card Holder:</label>
                           <input type="text" required="" name="credit_card_holder" id="credit_card_holder" class="form-control">
@@ -403,9 +403,91 @@
 
 
 
+
+<!-- Category Modal                                         -->
+<!-- ----------------------------------------------------------------------------------------------------- -->
+
+<div id="UserModal" class="modal fade show " tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-modal="true" aria-hidden="true" style="color: black;">
+    <div class="modal-dialog" id="UserModalDialog">
+        <div class="modal-content" id="UserModalContent">
+           
+            <form name="userForm" enctype="multipart/form-data" id="userForm">
+              @csrf
+               <span class='arrow'>
+              <label class='error'></label>
+              </span>
+                  <div class="modal-header">
+                      <h4 class="modal-title" id="UserModalLabel"></h4>
+                      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                  </div>
+                  <div class="modal-body">
+                      <div class="" id="UserModalData">
+
+
+
+                        
+                        <div class="form-group">
+                          <input type="text" id="user_name" name="user_name" class="form-control" placeholder="Enter User Name"><br>
+                          <input type="email" id="user_email" name="user_email" class="form-control" placeholder="Enter User Email"><br>
+                          <input type="password" id="user_password" name="user_password" class="form-control" placeholder="Enter User password"><br>
+                          <select class="form-control" name="user_type" id="user_type">
+                          </select>
+                        </div>
+                                
+                      </div>
+              
+
+                      </div>
+                  <div class="modal-footer" id="UserModalFooter">
+                      <button type="button" class="btn btn-danger waves-effect" data-dismiss="modal">Close</button>
+                      <button type="submit" class="btn btn-info ">Save</button>
+
+                  </div>
+            </form>
+
+
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+<!-- ----------------------------------------------------------------------------------------------------- -->
+<!-- ----------------------------------------------------------------------------------------------------- -->
+<!-- ----------------------------------------------------------------------------------------------------- -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.10/jquery.mask.js"></script>
+
 <script type="text/javascript">
 
-     $(function() {
+      $("#credit_card_number").mask("9999-9999-9999-9999");
+
+
+    $(function() {
         $("form[name='categoryForm']").validate({
              errorPlacement: function(label, element) {
         label.addClass('arrow');
@@ -542,9 +624,7 @@
       prod_price: {
         required: true,
       },
-      product_image: {
-        required: true,
-      },
+     
 
     },
     messages: {
@@ -566,9 +646,7 @@
       prod_price: {
         required: "Please Provide a Product Priver",
       },
-      product_image: {
-        required: "Please Provide a Product Image",
-      },
+      
     },
     submitHandler: function(form) {
 
@@ -865,6 +943,137 @@
 //-------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------
+
+  
+
+     $.validator.addMethod('emailFormat', function(value, element) {
+        return this.optional(element) || (value.match(/^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$/));
+    },
+    'Please enter a valid email address.');
+
+    $(function() {
+        $("form[name='userForm']").validate({
+             errorPlacement: function(label, element) {
+        label.addClass('arrow');
+        label.css({"color": "red", "font-size": "12px" ,"width":"100%"});
+        label.insertAfter(element);
+    },
+    wrapper: 'span',
+
+    rules: {
+      user_name: {
+        required: true,
+      },
+      user_email: {
+        required: true,
+        emailFormat:true,
+      },
+      user_type: {
+        required: true,
+      },
+      user_password: {
+        required: true,
+        minlength: 6,
+      },
+
+    },
+    messages: {
+      user_name: {
+        required: "Please Provide a User Name",
+      },
+      user_email: {
+        required: "Please Provide a User Email",
+      },
+      user_type: {
+        required: "Please Select a User Type",
+      },
+     user_password: {
+        required: "Please Provide a User Password",
+        minlength: "Password Must be at Least 6 Characters Long",
+
+      },
+    },
+    submitHandler: function(form) {
+
+        let myForm = document.getElementById('userForm');
+        let formData = new FormData(myForm);
+
+         $.ajax({
+        type: "POST",
+        url: "{{ env('APP_URL')}}add-user",
+        enctype: 'multipart/form-data',
+        data: formData,
+        processData: false,
+        contentType: false,
+        beforeSend: function(){
+                            $('#UserModal').modal('hide');
+                            $('#LoadingModal').modal('show');
+                        },
+        success: function(data) {
+           
+                            $('#LoadingModal').modal('hide');
+
+            get_status = data['status'];
+            get_msg    = data['msg'];
+
+                            if (get_status == "0") 
+                            {
+
+                             document.getElementById('toast').style.visibility = "visible";
+                                document.getElementById('toast').className = "alert alert-danger alert-rounded fadeIn animated";
+                                document.getElementById('toastMsg').innerHTML = "Failed, Try Again Later";
+
+
+                                 setTimeout(function() {
+                                document.getElementById('toast').className = "alert alert-danger alert-rounded fadeOut animated";
+
+                            }, 5000);
+
+                            }
+                            else
+                            {
+                                document.getElementById('toast').style.visibility = "visible";
+                                document.getElementById('toast').className = "alert alert-success alert-rounded fadeIn animated";
+                                document.getElementById('toastMsg').innerHTML = get_msg;
+
+
+                                 setTimeout(function() {
+                                document.getElementById('toast').className = "alert alert-success alert-rounded fadeOut animated";
+
+                            }, 5000);
+
+
+                            }
+
+
+        var search_text = (document.getElementById("user_search_text").value.trim() == "")?"0":document.getElementById("user_search_text").value.trim();
+        $.ajax({
+        type: "GET",
+        url: "{{ env('APP_URL')}}get-user-list-AJAX/"+search_text,
+        success: function(data) {
+
+            $('#userTBody').html(data);
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            alert('Exception:' + errorThrown);
+        }
+    });
+
+    }
+  });
+
+    }
+  });
+  });
+
+//-------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------
+
+
+
+
+
 
 
 var product_loadFile = function(event) {

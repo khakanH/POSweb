@@ -8,6 +8,21 @@
    
 
     <script type="text/javascript">
+
+         $( document ).ajaxError(function( event, jqxhr, settings, thrownError ) {
+
+            if (jqxhr.status == 401) 
+            {
+                alert("Session expired. You'll be take to the login page");
+                location.href = "{{ env('APP_URL')}}"; 
+            }
+            else
+            {
+                alert("Something Went Wrong");
+            }
+    
+
+    });
         function hideToast(id)
         {
             document.getElementById(id).style.visibility = "hidden";

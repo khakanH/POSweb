@@ -8,6 +8,16 @@
             <!-- STATISTIC-->
             <section class="statistic statistic2">
                 <div class="container">
+
+                   <center>
+            @if(session('success'))
+                        <p class="text-success pulse animated">{{ session('success') }}</p>
+                        {{ session()->forget('success') }}
+                        @elseif(session('failed'))
+                        <p class="text-danger pulse animated">{{ session('failed') }}</p>
+                        {{ session()->forget('failed') }}
+            @endif
+            </center>
                     <div class="row">
                         <div class="col-md-6 col-lg-3">
                             <div class="statistic__item statistic__item--green">

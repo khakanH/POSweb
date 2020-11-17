@@ -9,38 +9,37 @@
                     <div class="header__navbar">
                         <ul class="list-unstyled">
                            
-                            <li class="{{ Request::is('pos')? 'active' : ''}}">
-                                <a href="{{route('pos')}}">
-                                    <i class="fas fa-shopping-basket"></i>
-                                    <span class="bot-line"></span>POS</a>
-                            </li>
-                            <li class="{{ Request::is('category-list')? 'active' : ''}}">
-                                <a href="{{route('category-list')}}">
-                                    <i class="fas fa-shopping-basket"></i>
-                                    <span class="bot-line"></span>Categories</a>
-                            </li>
-                            <li class="{{ Request::is('product-list')? 'active' : ''}}">
-                                <a href="{{route('product-list')}}">
-                                    <i class="fas fa-shopping-basket"></i>
-                                    <span class="bot-line"></span>Products</a>
-                            </li>
-                            <li class="{{ Request::is('settings')? 'active' : ''}}">
-                                <a href="{{route('settings')}}">
-                                    <i class="fas fa-shopping-basket"></i>
-                                    <span class="bot-line"></span>Settings</a>
-                            </li>
-                            <li class="{{ Request::is('customers')? 'active' : ''}}">
-                                <a href="{{route('customers')}}">
-                                    <i class="fas fa-shopping-basket"></i>
-                                    <span class="bot-line"></span>Customers</a>
-                            </li>
 
-                           <li class="{{ Request::is('sales')? 'active' : ''}}">
-                                <a href="{{route('sales')}}">
-                                    <i class="fas fa-shopping-basket"></i>
-                                    <span class="bot-line"></span>Sales</a>
-                            </li>
+
+
+
+
+
+
+
+
+
+
+
+                        <?php
+
+                            $menus = (new App\Helpers\MenuHelper)->getMenu();
+                        ?>
                             
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                             
                            
                         </ul>
@@ -116,37 +115,37 @@
                 <div class="container-fluid">
                     <ul class="navbar-mobile__list list-unstyled">
                
-                     <li class="{{ Request::is('pos')? 'active' : ''}}">
-                                <a href="{{route('pos')}}">
-                                    <i class="fas fa-shopping-basket"></i>
-                                    <span class="bot-line"></span>POS</a>
-                            </li>
-                            <li class="{{ Request::is('category-list')? 'active' : ''}}">
-                                <a href="{{route('category-list')}}">
-                                    <i class="fas fa-shopping-basket"></i>
-                                    <span class="bot-line"></span>Categories</a>
-                            </li>
-                            <li class="{{ Request::is('product-list')? 'active' : ''}}">
-                                <a href="{{route('product-list')}}">
-                                    <i class="fas fa-shopping-basket"></i>
-                                    <span class="bot-line"></span>Products</a>
-                            </li>
-                            <li class="{{ Request::is('settings')? 'active' : ''}}">
-                                <a href="{{route('settings')}}">
-                                    <i class="fas fa-shopping-basket"></i>
-                                    <span class="bot-line"></span>Settings</a>
-                            </li>
-                            <li class="{{ Request::is('customers')? 'active' : ''}}">
-                                <a href="{{route('customers')}}">
-                                    <i class="fas fa-shopping-basket"></i>
-                                    <span class="bot-line"></span>Customers</a>
-                            </li>
+                            
 
-                           <li class="{{ Request::is('sales')? 'active' : ''}}">
-                                <a href="{{route('sales')}}">
-                                    <i class="fas fa-shopping-basket"></i>
-                                    <span class="bot-line"></span>Sales</a>
-                            </li>
+
+
+
+
+
+
+
+
+
+
+                           <?php
+
+                            $menus = (new App\Helpers\MenuHelper)->getMenu();
+                        ?>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     </ul>
                 </div>
             </nav>
@@ -158,7 +157,7 @@
                     <div class="account-item account-item--style2 clearfix js-item-menu">
                       
                         <div class="content">
-                            <a class="js-acc-btn" href="#">john doe</a>
+                            <a class="js-acc-btn" href="#">{{session('login.user_name')}}</a>
                         </div>
                         <div class="account-dropdown js-dropdown">
                             <div class="info clearfix">

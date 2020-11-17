@@ -27,18 +27,21 @@ class DashboardController extends Controller
     {	
         $user_id = session("login")["user_id"];
 
+        $company_id = session("login")["company_id"];
+
+
         $user_info = $this->checkUserAvailbility($user_id,$request);
 
-        $customer_count = Customers::where('member_id',$user_id)->where('is_deleted',0)->count();
-        $category_count = Category::where('member_id',$user_id)->where('is_deleted',0)->count();
-        $product_count = Product::where('member_id',$user_id)->where('is_deleted',0)->count();
-        $total_sale    = Sales::where('member_id',$user_id)->sum('total_bill');
-        $total_item    = Sales::where('member_id',$user_id)->sum('total_item');
+        $customer_count = Customers::where('company_id',$company_id)->where('is_deleted',0)->count();
+        $category_count = Category::where('company_id',$company_id)->where('is_deleted',0)->count();
+        $product_count = Product::where('company_id',$company_id)->where('is_deleted',0)->count();
+        $total_sale    = Sales::where('company_id',$company_id)->sum('total_bill');
+        $total_item    = Sales::where('company_id',$company_id)->sum('total_item');
 
         $get_top_prod = SalesItems::select('product_id', DB::raw('COUNT(id) as count'))
         ->groupBy('product_id')
         ->orderBy(DB::raw('COUNT(id)'), 'DESC')
-        ->where('member_id',$user_id)
+        ->where('company_id',$company_id)
         ->whereYear('created_at',date("Y"))
         ->take(5)
         ->get();
@@ -48,7 +51,7 @@ class DashboardController extends Controller
     	$monthly_sale = array();
         for ($i=1; $i <= 12  ; $i++) 
         {   
-            $monthly_sale[] = Sales::where('member_id',$user_id)->whereMonth('created_at',$i)->sum('total_bill');
+            $monthly_sale[] = Sales::where('company_id',$company_id)->whereMonth('created_at',$i)->sum('total_bill');
         }
 
         $top_prod_name = array();
@@ -72,13 +75,15 @@ class DashboardController extends Controller
     public function checkUserAvailbility($id,$request)
     {   
 
-        $user = Members::where('id',$id)->first();
+       
+        $user = Members::where('id',$id)->where('is_blocked',0)->first();
 
 
         if ($user == "") 
         {   
-            $request->session()->put("failed","Session Time Out. You need to Login Again.");
-            header('Location:'.url('/'));
+            $request->session()->put("failed","Something went wrong.");
+            header('Location:'.url('signout'));
+            
             exit();
         }
         else

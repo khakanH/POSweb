@@ -7,6 +7,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\POSController;
 use App\Http\Controllers\BillController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -46,12 +47,12 @@ Route::get('reset-password/{email}',[AccountController::class, 'ResetPassword'])
 Route::post('save-new-password',[AccountController::class, 'SaveNewPassword'])->name('save-new-password');
 
 
-Route::get('settings',[AccountController::class, 'Settings'])->name('settings');
-Route::post('add-company-info',[AccountController::class, 'AddCompanyInfo'])->name('add-company-info');
+Route::get('settings',[AccountController::class, 'Settings'])->name('settings')->middleware('CheckMemberRoles');
+Route::post('add-company-info',[AccountController::class, 'AddCompanyInfo'])->name('add-company-info')->middleware('CheckMemberRoles');
 
 
 
-Route::middleware(['LoginSession'])->group(function () 
+Route::middleware(['LoginSession','CheckMemberRoles'])->group(function () 
 {
 	Route::get('dashboard',[DashboardController::class, 'Index'])->name('dashboard');
 
@@ -98,6 +99,10 @@ Route::middleware(['LoginSession'])->group(function ()
 	Route::get('calculate-total-bill/{id}',[POSController::class, 'CalculateTotalBill'])->name('calculate-total-bill');
 	Route::post('delete-product-from-bill',[POSController::class,'DeleteProductFromBill'])->name('delete-product-from-bill');
 
+	Route::get('get-pos-product-by-barcode/{val}',[POSController::class, 'GetPOSProductByBarcode'])->name('get-pos-product-by-barcode');
+
+
+
 	Route::post('decrease-bill-product-item',[POSController::class,'DecreaseBillProductItem'])->name('decrease-bill-product-item');
 	Route::post('increase-bill-product-item',[POSController::class,'IncreaseBillProductItem'])->name('increase-bill-product-item');
 	Route::post('change-bill-product-quantity',[POSController::class,'ChangeBillProductQuantity'])->name('change-bill-product-quantity');
@@ -135,12 +140,29 @@ Route::middleware(['LoginSession'])->group(function ()
 	//_______________________________ S A L E S -- R O U T E S ________________________
 
 	Route::get('sales',[BillController::class,'Index'])->name('sales');
-	Route::get('get-sale-list-AJAX/{search_text}',[BillController::class,'SaleListAJAX'])->name('get-sale-list-AJAX');
+	Route::post('get-sale-list-AJAX',[BillController::class,'SaleListAJAX'])->name('get-sale-list-AJAX');
 	Route::get('delete-sale/{id}',[BillController::class,'DeleteSale'])->name('delete-sale');
 	
 	Route::get('get-bill-sale-items/{id}',[BillController::class,'BillSaleItems'])->name('get-bill-sale-items');
+	Route::get('export-sale-csv',[BillController::class,'ExportSaleCSV'])->name('export-sale-csv');
 
 	//_________________________________________________________________________________
+
+
+
+
+
+	//___________________ M E M B E R -- T Y P E -- M A N A G E M E N T____________________
+
+	Route::get('users',[UserController::class,'Index'])->name('users');
+	Route::get('get-user-list-AJAX/{search_text}',[UserController::class,'UserListAJAX'])->name('get-user-list-AJAX');
+	Route::post('add-user',[UserController::class,'AddUser'])->name('add-user');
+	// Route::get('delete-user/{id}',[UserController::class,'DeleteUser'])->name('delete-user');
+	Route::get('block-unblock-user/{id}',[UserController::class,'BlockUnblockUser'])->name('block-unblock-user');
+	Route::get('get-member-type',[UserController::class,'MemberType'])->name('get-member-type');
+
+	//_________________________________________________________________________________
+
 
 
 

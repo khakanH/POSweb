@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\Members;
+use App\Models\MemberType;
 use App\Models\CompanyInfo;
 use App\Models\Countries;
 
@@ -46,7 +47,7 @@ class AccountController extends Controller
            
            
 
-            $get_email = $this->member_model->where('email',$input['email'])->first();
+            $get_email = $this->member_model->where('email',strtolower(trim($input['email'])))->first();
 
              //check email Already
             if ($get_email != "") 
@@ -62,7 +63,7 @@ class AccountController extends Controller
 
             $data = array(  
                             'username'          => $input['username'],
-                            'email'             => $input['email'],
+                            'email'             => strtolower(trim($input['email'])),
                             'password'          => Hash::make($input['password']),
                             'user_image'        => "/default_user_icon.png",
                             'verification_code' => $code,
@@ -70,6 +71,8 @@ class AccountController extends Controller
                             'is_set_profile'    => 0,
                             'is_blocked'        => 0,
                             'temp_password'     => $input['password'],
+                            'member_type'       => 1,
+                            'parent_id'         => 0,
                             'created_at'        => date("Y-m-d H:i:s"),
                             'updated_at'        => date("Y-m-d H:i:s"),
                          );
@@ -90,6 +93,7 @@ class AccountController extends Controller
                                             'receipt_footer'    => "",
                                             'logo'              => "choose_img.png",
                                             'member_id'         => $id,
+                                            'fbr_invoice'       => 0,
                                             'created_at'        => date("Y-m-d H:i:s"),
                                             'updated_at'        => date("Y-m-d H:i:s"),
 
@@ -97,7 +101,7 @@ class AccountController extends Controller
                     CompanyInfo::insert($company_info);
 
                     $request->session()->put("success","Account Created Successfully!");
-                    return view('verify_email',["email"=>$input['email'],'verification_type'=>1]);
+                    return view('verify_email',["email"=>strtolower(trim($input['email'])),'verification_type'=>1]);
             }
             else
             {
@@ -122,7 +126,7 @@ class AccountController extends Controller
             $code = 1234;
             // $code = rand(1111,9999);
             
-            $get_account = $this->member_model->where('email',$input['email'])->first();
+            $get_account = $this->member_model->where('email',strtolower(trim($input['email'])))->first();
 
 
             if($get_account == "")
@@ -130,7 +134,7 @@ class AccountController extends Controller
                 return array("status"=>"0","msg"=>"Sorry, This Email is not Associated with any Account.");
             }               
 
-            if($this->member_model->where('email',$input['email'])->update(array('verification_code'=>$code,
+            if($this->member_model->where('email',strtolower(trim($input['email'])))->update(array('verification_code'=>$code,
                                                                             "is_verified" =>0,
 
                                                                       )))
@@ -169,13 +173,13 @@ class AccountController extends Controller
             
 
 
-            if($this->member_model->where('email',$input['email'])
+            if($this->member_model->where('email',strtolower(trim($input['email'])))
                                   ->where('verification_code',(int)$input['pin_code'])
                                   ->count() == 1)
                                  
             {   
 
-                $this->member_model->where('email',$input['email'])
+                $this->member_model->where('email',strtolower(trim($input['email'])))
                                    ->update(array('verification_code'=>0,'is_verified'=>1));
 
 
@@ -235,7 +239,7 @@ class AccountController extends Controller
         {
             $input = $request->all();
             
-            if(Members::where('email',$input['email'])->update(array('password'=>Hash::make($input['new_password']),'temp_password'=>$input['new_password'])))
+            if(Members::where('email',strtolower(trim($input['email'])))->update(array('password'=>Hash::make($input['new_password']),'temp_password'=>$input['new_password'])))
             {
                 $request->session()->put("success","Password Reset Successfully.");
                 return redirect()->route('index');
@@ -278,7 +282,7 @@ class AccountController extends Controller
 
 
            
-                $check_account = $this->member_model->where('email',$input['email'])
+                $check_account = $this->member_model->where('email',strtolower(trim($input['email'])))
                                                     ->first();
                 if ($check_account == "") 
                 {
@@ -287,7 +291,11 @@ class AccountController extends Controller
                 }
 
            
+                if ($check_account->is_blocked == 1) 
+                {
+                    return redirect()->back()->withInput()->with('failed','Sorry, This Account is Blocked By Admin');
 
+                }
 
 
                 if (!Hash::check($input['password'],$check_account->password)) 
@@ -313,14 +321,24 @@ class AccountController extends Controller
                 }
 
 
+            if ($check_account->member_type == 1) 
+            {
+                $company_id  = CompanyInfo::where('member_id',$check_account->id)->first()->id;
+            }
+            else
+            {   
+                $get_admin_id = Members::where('id',$check_account->parent_id)->first()->id;
+                $company_id  = CompanyInfo::where('member_id',$get_admin_id)->first()->id;
 
-           
+            }
 
             $result = array(    
                                 "user_id"           => $check_account->id,
                                 "user_name"         => $check_account->username,
                                 "user_email"        => $check_account->email,
                                 "user_image"        => $check_account->user_image,
+                                "user_type"         => $check_account->member_type,
+                                "company_id"        => $company_id,
                                 "is_set_profile"    => $check_account->is_set_profile,
                            );
 
@@ -407,14 +425,15 @@ class AccountController extends Controller
             $result = CompanyInfo::where('member_id',$user_id)
                                  ->update(array(
                                     'name'              => $input['name'],
-                                    'email'             => $input['email'],
+                                    'email'             => strtolower(trim($input['email'])),
                                     'phone'             => $input['phone'],
-                                    'logo'             =>  $path,
+                                    'logo'              => $path,
                                     'country_id'        => $input['country'],
                                     'default_discount'  => $input['discount'],
                                     'default_tax'       => $input['tax'],
                                     'receipt_header'    => $input['receipt_header'],
                                     'receipt_footer'    => $input['receipt_footer'],
+                                    'fbr_invoice'       => isset($input['fbr_input'])?$input['fbr_input']:0,
                                  ));
 
             if ($result) 
@@ -464,13 +483,14 @@ class AccountController extends Controller
     public function checkUserAvailbility($id,$request)
     {   
 
-        $user = $this->member_model->where('id',$id)->first();
+        $user = Members::where('id',$id)->where('is_blocked',0)->first();
 
 
         if ($user == "") 
         {   
-            $request->session()->put("failed","Session Time Out. You need to Login Again.");
-            header('Location:'.url('/'));
+            $request->session()->put("failed","Something went wrong.");
+            header('Location:'.url('signout'));
+            
             exit();
         }
         else

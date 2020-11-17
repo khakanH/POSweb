@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use App\Models\Members;
 use App\Models\Customers;
 
-
+use Session;
 
 class CustomerController extends Controller
 {
@@ -22,10 +22,12 @@ class CustomerController extends Controller
     public function Index(Request $request)
     {	
         $user_id = session("login")["user_id"];
+        
+        $company_id = session("login")["company_id"];
 
         $user_info = $this->checkUserAvailbility($user_id,$request);
     	
-    	$customer = Customers::where('member_id',$user_id)->where('is_deleted',0)->get();
+    	$customer = Customers::where('company_id',$company_id)->where('is_deleted',0)->get();
         return view('customers',compact('customer'));
     }
 
@@ -35,18 +37,20 @@ class CustomerController extends Controller
         {   
             $user_id = session("login")["user_id"];
 
+            $company_id = session("login")["company_id"];
+
             $user_info = $this->checkUserAvailbility($user_id,$request);
             
 
             if (empty($search_text)) 
             {       
-                    $get_cust_list = Customers::where('member_id',$user_id)
+                    $get_cust_list = Customers::where('company_id',$company_id)
                                       ->where('is_deleted',0)
                                       ->paginate(15);
             }
             else
             {   
-                    $get_cust_list = Customers::where('member_id',$user_id)
+                    $get_cust_list = Customers::where('company_id',$company_id)
                                       ->where('is_deleted',0)
                                       ->where('customer_name','like','%'.$search_text.'%')
                                       ->paginate(15);
@@ -111,13 +115,14 @@ class CustomerController extends Controller
     public function checkUserAvailbility($id,$request)
     {   
 
-        $user = Members::where('id',$id)->first();
+        $user = Members::where('id',$id)->where('is_blocked',0)->first();
 
 
         if ($user == "") 
         {   
-            $request->session()->put("failed","Session Time Out. You need to Login Again.");
-            header('Location:'.url('/'));
+            $request->session()->put("failed","Something went wrong.");
+            header('Location:'.url('signout'));
+            
             exit();
         }
         else

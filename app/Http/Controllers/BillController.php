@@ -32,39 +32,63 @@ class BillController extends Controller
     public function Index(Request $request)
     {   
         $user_id = session("login")["user_id"];
+        $company_id = session("login")["company_id"];
 
         $user_info = $this->checkUserAvailbility($user_id,$request);
         
-        $sales = Sales::where('member_id',$user_id)->get();
+        $sales = Sales::where('company_id',$company_id)->get();
         return view('sales',compact('sales'));
     }
 
-    public function SaleListAJAX(Request $request, $search_text)
+    public function SaleListAJAX(Request $request)
     {
         try 
         {   
             $user_id = session("login")["user_id"];
+            $company_id = session("login")["company_id"];
 
             $user_info = $this->checkUserAvailbility($user_id,$request);
             
+            $input = $request->all();
 
-            if (empty($search_text)) 
+
+            if (empty($input['search'])) 
             {       
-                    $get_sale_list = Sales::where('member_id',$user_id)
-                                      ->paginate(15);
+                if (empty($input['start_date']) && empty($input['end_date'])) 
+                {
+                    $get_sale_list = Sales::where('company_id',$company_id)
+                                      ->get();
+                }
+                else
+                {
+                    $get_sale_list = Sales::where('company_id',$company_id)
+                                          ->whereDate('created_at','>=',$input['start_date'])
+                                          ->whereDate('created_at','<=',$input['end_date'])
+                                          ->get();
+                }
             }
             else
             {   
-                    $get_sale_list = Sales::where('member_id',$user_id)
-                                      ->where('bill_code','like','%'.$search_text.'%')
-                                      ->paginate(15);
-
+                if (empty($input['start_date']) && empty($input['end_date'])) 
+                {   
+                    $get_sale_list = Sales::where('company_id',$company_id)
+                                      ->where('bill_code','like','%'.$input['search'].'%')
+                                      ->get();
+                }
+                else
+                {
+                    $get_sale_list = Sales::where('company_id',$company_id)
+                                        ->whereDate('created_at','>=',$input['start_date'])
+                                        ->whereDate('created_at','<=',$input['end_date'])
+                                        ->where('bill_code','like','%'.$input['search'].'%')
+                                        ->get();
+                }
             }
             
             if (count($get_sale_list)==0) 
             {
                 ?>
-                <tr><td colspan="8" class="text-center tx-18">No Sale Found</td></tr>
+                <tr><td colspan="9" class="text-center tx-18">No Sale Found</td></tr>
                 <?php
             }
             else
@@ -79,10 +103,11 @@ class BillController extends Controller
                       <td scope="row"><b><?php echo $count; ?></b></td>
                       <td><?php echo $key['bill_code']?></td>
                       <td><?php echo isset($key->customer_name['customer_name'])?$key->customer_name['customer_name']:"Walk In Customer"?></td>
-                      <td><?php echo $key['tax']?>%</td>
-                      <td><?php echo $key['discount']?>%</td>
+                      <td><?php echo number_format($key['tax'],1)?>%</td>
+                      <td><?php echo number_format($key['discount'],1)?>%</td>
                       <td><?php echo $key['total_bill']?></td>
                       <td><?php echo $key['total_item']?></td>
+                      <td><?php echo date("d-M-Y",strtotime($key['created_at']))?></td>
                       <td class="text-center"><a class="btn btn-primary" href="javascript:void(0)" onclick='ViewSaleItem("<?php echo $key['id']?>","<?php echo $key['bill_code']?>")'><i class="fa fa-eye tx-15"></i></a>&nbsp;&nbsp;&nbsp;<!-- <a class="btn btn-danger" onclick='DeleteSale("<?php //echo $key['id'] ?>")' href="javascript:void(0)"><i class="fa fa-trash tx-15"></i></a> --></td>
                     </tr>
 
@@ -104,11 +129,12 @@ class BillController extends Controller
         try 
         {   
             $user_id = session("login")["user_id"];
+            $company_id = session("login")["company_id"];
 
             $user_info = $this->checkUserAvailbility($user_id,$request);
             
 
-            $get_sale_item = SalesItems::where('member_id',$user_id)
+            $get_sale_item = SalesItems::where('company_id',$company_id)
                                     ->where('sale_id',$id) 
                                       ->get();
            
@@ -179,6 +205,7 @@ class BillController extends Controller
         try 
         {   
             $user_id = session("login")["user_id"];
+            $company_id = session("login")["company_id"];
 
             $user_info = $this->checkUserAvailbility($user_id,$request);
             
@@ -194,6 +221,7 @@ class BillController extends Controller
                         "customer_phone"        => $input['cust_phone'],
                         "customer_discount"     => (float)$input['cust_discount'],
                         "member_id"             => $user_id,
+                        "company_id"            => $company_id,
                         "is_deleted"            => 0,
                         "created_at"            => date('Y-m-d H:i:s'),
                         "updated_at"            => date('Y-m-d H:i:s'),
@@ -241,9 +269,10 @@ class BillController extends Controller
         try 
         {   
             $user_id = session("login")["user_id"];
+            $company_id = session("login")["company_id"];
             $user_info = $this->checkUserAvailbility($user_id,$request);
             
-        	$customers = Customers::where('member_id',$user_id)->where('is_deleted',0)->get();
+        	$customers = Customers::where('company_id',$company_id)->where('is_deleted',0)->get();
         	?>
         		<option value="0">Walk in Customer</option>
             <?php
@@ -267,23 +296,24 @@ class BillController extends Controller
         	$cust_id = (int)$cust_id;
 
             $user_id = session("login")["user_id"];
+            $company_id = session("login")["company_id"];
             $user_info = $this->checkUserAvailbility($user_id,$request);
             
 
 
             if ($cust_id == 0) 
             {
-    			$company  = CompanyInfo::where('member_id',$user_id)->first();
+    			$company  = CompanyInfo::where('id',$company_id)->first();
             	
-            	PendingBills::where('member_id',$user_id)->where('id',$bill_id)->update(array('customer_id'=>0,"discount_percentage"=>$company->default_discount));
+            	PendingBills::where('company_id',$company_id)->where('id',$bill_id)->update(array('customer_id'=>0,"discount_percentage"=>$company->default_discount));
 
-		        	PendingBillItems::where('member_id',$user_id)->where('pending_bill_id',$bill_id)->update(array('customer_id'=>0));
+		        	PendingBillItems::where('company_id',$company_id)->where('pending_bill_id',$bill_id)->update(array('customer_id'=>0));
 	                
 	                return array("status"=>"1","msg"=>"Customer Updated Successfully.");
             }
             else
             {
-	        	$check_customer = Customers::where('member_id',$user_id)->where('id',$cust_id)->where('is_deleted',0)->first();
+	        	$check_customer = Customers::where('company_id',$company_id)->where('id',$cust_id)->where('is_deleted',0)->first();
 
 	        	if ($check_customer == "") 
 	        	{
@@ -291,9 +321,9 @@ class BillController extends Controller
 	        	}
 	        	else
 	        	{
-		        	PendingBills::where('member_id',$user_id)->where('id',$bill_id)->update(array('customer_id'=>$cust_id,"discount_percentage"=>$check_customer->customer_discount));
+		        	PendingBills::where('company_id',$company_id)->where('id',$bill_id)->update(array('customer_id'=>$cust_id,"discount_percentage"=>$check_customer->customer_discount));
 
-		        	PendingBillItems::where('member_id',$user_id)->where('pending_bill_id',$bill_id)->update(array('customer_id'=>$cust_id));
+		        	PendingBillItems::where('company_id',$company_id)->where('pending_bill_id',$bill_id)->update(array('customer_id'=>$cust_id));
 
 	                return array("status"=>"1","msg"=>"Customer Updated Successfully.");
 	        	}
@@ -310,10 +340,11 @@ class BillController extends Controller
         try 
         {
             $user_id = session("login")["user_id"];
+            $company_id = session("login")["company_id"];
 
             $user_info = $this->checkUserAvailbility($user_id,$request);
             
-            $get_bill = PendingBills::where('member_id',$user_id)->where('id',$id)->first();
+            $get_bill = PendingBills::where('company_id',$company_id)->where('id',$id)->first();
 
             if ($get_bill == "") 
             {
@@ -353,6 +384,8 @@ class BillController extends Controller
         {
             $user_id = session("login")["user_id"];
 
+            $company_id = session("login")["company_id"];
+            
             $user_info = $this->checkUserAvailbility($user_id,$request);
 
             $payment_method = PaymentMethods::get();
@@ -377,11 +410,13 @@ class BillController extends Controller
         {
             $user_id = session("login")["user_id"];
 
+            $company_id = session("login")["company_id"];
+
             $user_info = $this->checkUserAvailbility($user_id,$request);
             
             $input = $request->all();
 
-            $get_bill = PendingBills::where('member_id',$user_id)->where('id',$input['bill_id'])->first();
+            $get_bill = PendingBills::where('company_id',$company_id)->where('id',$input['bill_id'])->first();
             if ($get_bill == "") 
             {
                     return array("status"=>"0","msg"=>"Something went wrong");
@@ -391,6 +426,7 @@ class BillController extends Controller
                 $sale_id = Sales::insertGetId(array(
                                 'bill_code'             => $get_bill->bill_code,
                                 'member_id'             => $user_id,
+                                'company_id'            => $company_id,
                                 'customer_id'           => $get_bill->customer_id,
                                 'tax'                   => $get_bill->tax_percentage,
                                 'discount'              => $get_bill->discount_percentage,
@@ -409,13 +445,14 @@ class BillController extends Controller
 
 
 
-                $get_bill_item = PendingBillItems::where('member_id',$user_id)->where('pending_bill_id',$input['bill_id'])->get();
+                $get_bill_item = PendingBillItems::where('company_id',$company_id)->where('pending_bill_id',$input['bill_id'])->get();
 
                 foreach ($get_bill_item as $key) 
                 {
                     SalesItems::insert(array(
                                 "sale_id"           => $sale_id,
                                 "member_id"         => $user_id,
+                                "company_id"        => $company_id,
                                 "customer_id"       => $get_bill->customer_id,
                                 "product_id"        => $key['product_id'],
                                 "product_name"      => $key['product_name'],
@@ -428,8 +465,8 @@ class BillController extends Controller
                 }
 
             
-                PendingBills::where('member_id',$user_id)->where('id',$input['bill_id'])->delete();
-                PendingBillItems::where('member_id',$user_id)->where('pending_bill_id',$input['bill_id'])->delete();
+                PendingBills::where('company_id',$company_id)->where('id',$input['bill_id'])->delete();
+                PendingBillItems::where('company_id',$company_id)->where('pending_bill_id',$input['bill_id'])->delete();
 
                     return array("status"=>"1","msg"=>"Success","sale_id"=>$sale_id);
 
@@ -446,6 +483,72 @@ class BillController extends Controller
         }
     }
 
+    public function ExportSaleCSV(Request $request)
+    {
+        try 
+        {
+            $user_id = session("login")["user_id"];
+
+            $company_id = session("login")["company_id"];
+
+            $user_info = $this->checkUserAvailbility($user_id,$request);
+
+            $company  = CompanyInfo::where('id',$company_id)->first();
+
+            $fileName = $company->name.'_sale_report.csv';
+            
+            $sales = Sales::where('company_id',$company_id)->orderBy('created_at','asc')->get();
+
+            
+
+            $columns = array('S_No', 'Bill_Code', 'Customers', 'Tax', 'Discount','Subtotal','Total_Item','Total_Bill','Payment_Type','Cash_Paid','Cash_Change','Credit_Card_Holder','Credit_Card_Number','Cheque_Number','Created_At');
+
+           
+                $file = fopen($fileName, 'w+');
+                fputcsv($file, $columns);
+
+                $count=1;
+                foreach ($sales as $sale) {
+                    $row['S_No']        = $count;
+                    $row['Bill_Code']   = $sale['bill_code'];
+                    $row['Customers']   = isset($sale->customer_name['customer_name'])?$sale->customer_name['customer_name']:"Walk In Customer";
+                    $row['Tax']         = number_format($sale['tax'],1)."%";
+                    $row['Discount']    = number_format($sale['discount'],1)."%";
+                    $row['Subtotal']    = number_format($sale['subtotal_bill'],2);
+                    $row['Total_Item']  = number_format($sale['total_item'],2);
+                    $row['Total_Bill']  = $sale['total_bill'];
+
+                    $row['Payment_Type']        = $sale->payment_method_name['name'];
+                    $row['Cash_Paid']           = $sale['cash_paid'];
+                    $row['Cash_Change']         = $sale['cash_change'];
+                    $row['Credit_Card_Holder']  = $sale['credit_card_holder'];
+                    $row['Credit_Card_Number']  = $sale['credit_card_number'];
+                    $row['Cheque_Number']       = $sale['cheque_number'];
+                    $row['Created_At']          = $sale['created_at'];
+
+                    fputcsv($file, array($row['S_No'], $row['Bill_Code'], $row['Customers'], $row['Tax'], $row['Discount'], $row['Subtotal'], $row['Total_Item'], $row['Total_Bill'], $row['Payment_Type'], $row['Cash_Paid'], $row['Cash_Change'], $row['Credit_Card_Holder'], $row['Credit_Card_Number'], $row['Cheque_Number'], $row['Created_At']));
+                    $count++;
+                }
+
+                fclose($file);
+                 $headers = array(
+                    "Content-type" => "text/csv",
+                    "Content-Disposition" => "attachment; filename=file.csv",
+                    "Pragma" => "no-cache",
+                    "Cache-Control" => "must-revalidate, post-check=0, pre-check=0",
+                    "Expires" => "0"
+                  );
+
+
+             return response()->download($fileName, $fileName,$headers);
+             // return redirect()->route('sales')->with('success','File Exported Successfully');
+        } 
+        catch (Exception $e) 
+        {
+            
+        }
+    }
+
 
 
     public function GetBillReceipt(Request $request,$id)
@@ -454,17 +557,19 @@ class BillController extends Controller
         {
             $user_id = session("login")["user_id"];
 
+            $company_id = session("login")["company_id"];
+
             $user_info = $this->checkUserAvailbility($user_id,$request);
             
-            $company  = CompanyInfo::where('member_id',$user_id)->first();
+            $company  = CompanyInfo::where('id',$company_id)->first();
 
             if (empty($id)) 
             {
-                $get_bill = Sales::where('member_id',$user_id)->orderBy('id','desc')->first();
+                $get_bill = Sales::where('company_id',$company_id)->orderBy('id','desc')->first();
             }
             else
             {
-                $get_bill = Sales::where('member_id',$user_id)->where('id',$id)->first();
+                $get_bill = Sales::where('company_id',$company_id)->where('id',$id)->first();
 
             }
 
@@ -476,11 +581,12 @@ class BillController extends Controller
             }
             else
             {   
-                $get_bill_item = SalesItems::where('sale_id',$get_bill->id)->where('member_id',$user_id)->get();
+                $get_bill_item = SalesItems::where('sale_id',$get_bill->id)->where('company_id',$company_id)->get();
                 ?>
                     <center>
+                        <img src="<?php echo env('IMG_URL').$company->logo; ?>" height="100" width="100">
                         <h3>Title Here</h3>
-                        <p><?php echo $company->receipt_header; ?></p>
+                        <p style="word-wrap: break-word;"><?php echo $company->receipt_header; ?></p>
                         <p style="font-size: 18px;">Sale No. <?php echo $get_bill->bill_code; ?></p>
                     </center>
                     <span>Date: <?php echo $get_bill->created_at; ?></span>
@@ -512,7 +618,7 @@ class BillController extends Controller
                         <tbody>
                             <tr>
                                 <td width="25%">Total Items</td>
-                                <td style="text-align: right;" width="25%"><?php echo $get_bill->total_item ?></td>
+                                <td style="text-align: center;" width="25%"><?php echo $get_bill->total_item ?></td>
                                 <td width="25%">Total</td>
                                 <td style="text-align: right;" width="25%"><?php echo $get_bill->subtotal_bill ?></td>
                             </tr>
@@ -589,13 +695,14 @@ class BillController extends Controller
     public function checkUserAvailbility($id,$request)
     {   
 
-        $user = Members::where('id',$id)->first();
+        $user = Members::where('id',$id)->where('is_blocked',0)->first();
 
 
         if ($user == "") 
         {   
-            $request->session()->put("failed","Session Time Out. You need to Login Again.");
-            header('Location:'.url('/'));
+            $request->session()->put("failed","Something went wrong.");
+            header('Location:'.url('signout'));
+            
             exit();
         }
         else

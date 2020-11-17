@@ -14,4 +14,8 @@ class Sales extends Model
     public function customer_name(){
         return $this->hasOne('App\Models\Customers','id','customer_id');
     }
+
+    public function payment_method_name(){
+        return $this->hasOne('App\Models\PaymentMethods','id','payment_method');
+    }
 }
