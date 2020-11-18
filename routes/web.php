@@ -47,6 +47,12 @@ Route::get('reset-password/{email}',[AccountController::class, 'ResetPassword'])
 Route::post('save-new-password',[AccountController::class, 'SaveNewPassword'])->name('save-new-password');
 
 
+
+
+Route::get('verify-email/{phone}',[AccountController::class, 'VerifyEmail'])->name('verify-email');
+
+
+
 Route::get('settings',[AccountController::class, 'Settings'])->name('settings')->middleware('CheckMemberRoles');
 Route::post('add-company-info',[AccountController::class, 'AddCompanyInfo'])->name('add-company-info')->middleware('CheckMemberRoles');
 
@@ -55,6 +61,14 @@ Route::post('add-company-info',[AccountController::class, 'AddCompanyInfo'])->na
 Route::middleware(['LoginSession','CheckMemberRoles'])->group(function () 
 {
 	Route::get('dashboard',[DashboardController::class, 'Index'])->name('dashboard');
+	
+
+	Route::get('edit-profile',[AccountController::class, 'EditProfile'])->name('edit-profile');
+	Route::post('save-profile',[AccountController::class, 'SaveProfile'])->name('save-profile');
+	Route::post('change-email-address-check',[AccountController::class, 'ChangeEmailAddressCheck'])->name('change-email-address-check');
+	Route::post('change-password',[AccountController::class, 'ChangePassword'])->name('change-password');
+
+
 
 	
 	

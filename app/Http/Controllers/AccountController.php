@@ -462,9 +462,201 @@ class AccountController extends Controller
 
 
 
+    public function EditProfile(Request $request)
+    {
+        try 
+        {
+            $user_id = session("login")['user_id'];
+
+            $user_info = $this->checkUserAvailbility($user_id,$request);
+
+            return view('edit_profile',compact('user_info'));
+
+        } 
+        catch (Exception $e) 
+        {
+            
+        }
+    }
+
+     public function SaveProfile(Request $request)
+    {
+        try 
+        {
+            $user_id = session("login")['user_id'];
+
+            $user_info = $this->checkUserAvailbility($user_id,$request);
+
+            $input = $request->all();
+
+            $image= $request->file('profile_image');
+            if (empty($image)) 
+            {
+
+                $path = $user_info['user_image'];
+                
+            }
+            else
+            {
+
+                if ($user_info['user_image'] != "user/default_user_icon.png") 
+                {
+                    $image_path = public_path('images/'.$user_info['user_image']);  // Value is not URL but directory file path
+
+                    if(File::exists($image_path)) {
+                        File::delete($image_path);
+                    }
+                }
+
+                $input['imagename'] =  uniqid().'.webp';
+               
+                $destinationPath = public_path('/images/user');
+
+                if($image->move($destinationPath, $input['imagename']))
+                {
+                        $path =  'user/'.$input['imagename'];
+                }
+                else
+                {
+                        return redirect()->back()->withInput()->with("failed","Something Went Wrong for Image Uploading");
+                }
+
+            }
+             
+
+            $result = Members::where('id',$user_id)
+                                 ->update(array(
+                                    'username'              => $input['name'],
+                                    'user_image'        => $path,
+                                 ));
+
+            if ($result) 
+            {
+
+                $request->session()->put("login.user_name",$input['name']);                
+                $request->session()->put("login.user_image",$path);                
+
+
+                return array("status"=>"1","msg"=>"Profile Information Saved Successfully.");
+            }
+            else
+            {
+                return array("status"=>"0","msg"=>"Failed.");
+
+            }
+        } 
+        catch (Exception $e) 
+        {
+            return response()->json($e,500);
+        }
+    }
 
 
 
+    public function ChangeEmailAddressCheck(Request $request)
+    {
+        try 
+        {
+
+            $user_id = session("login")["user_id"];
+
+            $user_info = $this->checkUserAvailbility($user_id,$request);
+
+            $input = $request->all();
+            
+            $new_email_add = strtolower(trim($input['new_email']));
+
+            if (!Hash::check($input['password'],$user_info->password)) 
+            {
+                return array("status"=>"0","msg"=>"Sorry, Invalid Account Password Entered.");
+            }
+            else
+            {
+                if (Members::where('email',$new_email_add)->count() != 0) 
+                {
+                    return array("status"=>"0","msg"=>"Sorry, This Email Address (".$new_email_add.") Already Exist.");
+                }
+                else
+                {   
+                    // $code = rand(1111,9999);
+                    $code = 1234;
+                    $username = empty($user_info->username)?"0":$user_info->username;
+
+                    // $text_notes = "Change Email Address Verification.";
+                    // $this->SendMailVerification($username,$code,$new_email_add,$text_notes);
+                   
+                    if(Members::where('id',$user_id)->update(array('email'=>$new_email_add,'is_verified'=>0,'verification_code'=>$code)))
+                    {   
+                        $request->session()->forget(['login']); 
+                        return array("status"=>"1","msg"=>"Email Address Updated Successfully");
+
+                    }
+                }
+            }
+
+
+
+        } 
+        catch (Exception $e) 
+        {
+            
+        }
+    
+    }
+
+    public function VerifyEmail(Request $request,$email)
+    {
+        try 
+        {
+            $input = $request->all();
+                        $request->session()->put("success","Eamil Address Updated Successfully. Kindly Verify Your New Email Address.");
+                    return view('verify_email',["email"=>$email,'verification_type'=>1]);
+            
+        } 
+        catch (Exception $e) 
+        {
+            
+        }
+    }
+
+
+
+     public function ChangePassword(Request $request)
+    {
+        try 
+        {
+
+            $user_id = session("login")["user_id"];
+
+            $user_info = $this->checkUserAvailbility($user_id,$request);
+
+            $input = $request->all();
+            
+            if (!Hash::check($input['current_pass'],$user_info->password)) 
+            {
+                return array("status"=>"0","msg"=>"Sorry, Invalid Current Password Entered.");
+            }
+            else
+            {
+                if (Members::where('id',$user_id)->update(array('password'=>Hash::make($input['new_pass']),'temp_password'=>$input['new_pass']))) 
+                {
+                    return array("status"=>"1","msg"=>"Password Updated Successfully.");
+                }
+                else
+                {
+                    return array("status"=>"0","msg"=>"Ops, Something Went Wrong, Try Again Later");
+                }
+            }
+
+
+
+        } 
+        catch (Exception $e) 
+        {
+            
+        }
+    
+    }
 
 
 

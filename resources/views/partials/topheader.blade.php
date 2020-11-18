@@ -49,39 +49,39 @@
                         <div class="account-wrap">
                             <div class="account-item account-item--style2 clearfix js-item-menu">
                                 <div class="image">
-                                    <img src="{{env('IMG_URL')}}user{{session('login')['user_image']}}" alt="John Doe" />
+                                    <img style="min-width: 50px; min-height: 50px; " src="{{env('IMG_URL')}}{{session('login')['user_image']}}" alt="John Doe" />
                                 </div>
                                 <div class="content">
-                                    <a class="js-acc-btn" href="#">{{session('login')['user_name']}}</a>
+                                    <a class="js-acc-btn" href="#">{{explode(" ",session('login')['user_name'])[0]}}</a>
                                 </div>
                                 <div class="account-dropdown js-dropdown">
                                     <div class="info clearfix">
                                         <div class="image">
                                             <a href="#">
-                                                <img src="{{env('IMG_URL')}}user{{session('login')['user_image']}}" alt="John Doe" />
+                                                <img style="min-width: 70px; min-height: 70px; " src="{{env('IMG_URL')}}{{session('login')['user_image']}}" alt="John Doe" />
                                             </a>
                                         </div>
                                         <div class="content">
                                             <h5 class="name">
-                                                <a href="#">{{session('login')['user_name']}}</a>
+                                                <a href="#">{{explode(" ",session('login')['user_name'])[0]}}</a>
                                             </h5>
                                             <span class="email">{{session('login')['user_email']}}</span>
                                         </div>
                                     </div>
-                                  <!--   <div class="account-dropdown__body">
+                                    <div class="account-dropdown__body">
                                         <div class="account-dropdown__item">
-                                            <a href="#">
+                                            <a href="{{route('edit-profile')}}">
                                                 <i class="zmdi zmdi-account"></i>Account</a>
                                         </div>
-                                        <div class="account-dropdown__item">
+                                        <!-- <div class="account-dropdown__item">
                                             <a href="#">
                                                 <i class="zmdi zmdi-settings"></i>Setting</a>
                                         </div>
                                         <div class="account-dropdown__item">
                                             <a href="#">
                                                 <i class="zmdi zmdi-money-box"></i>Billing</a>
-                                        </div>
-                                    </div> -->
+                                        </div> -->
+                                    </div>
                                     <div class="account-dropdown__footer">
                                         <a href="{{route('signout')}}">
                                             <i class="zmdi zmdi-power"></i>Logout</a>
