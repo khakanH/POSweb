@@ -109,6 +109,7 @@
         document.getElementById('prod_cost').value = "";
         document.getElementById('prod_descrip').value = "";
         document.getElementById('prod_id').value = "";
+        document.getElementById("product_image").value = "";
         document.getElementById('product_image_output').src = "{{ env('IMG_URL')}}choose_img.png";
         $('#ProductModal').modal('show');
         $('#ProductModalLabel').html('Add New Product');

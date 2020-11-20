@@ -152,7 +152,7 @@
                         <div class="row">
                           <div class="col-lg-6"> 
                             <label>Product Image:</label><br>
-                            <img id="product_image_output" src="{{ env('IMG_URL')}}choose_img.png" width="130" height="130" style="border-radius: 2%; border: solid gray 1px; object-position: top; object-fit: cover;">&nbsp;&nbsp;<input type="file"  name="product_image" onchange="product_loadFile(event)"  accept="image/*" ></div>
+                            <img id="product_image_output" src="{{ env('IMG_URL')}}choose_img.png" width="130" height="130" style="border-radius: 2%; border: solid gray 1px; object-position: top; object-fit: cover;">&nbsp;&nbsp;<input type="file"  name="product_image" id="product_image" onchange="product_loadFile(event)"  accept="image/*" ></div>
                           <div class="col-lg-6"> 
                             <label>Product Description:</label>
                             <textarea class="form-control" name="prod_descrip" id="prod_descrip" rows="5" placeholder="Enter Product Description"></textarea></div>

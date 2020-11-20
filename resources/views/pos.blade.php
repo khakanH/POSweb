@@ -1206,11 +1206,25 @@
 
               function PrintReceipt()
               {
+                  var ua = navigator.userAgent.toLowerCase();
+                  var isAndroid = ua.indexOf("android") > -1; //&& ua.indexOf("mobile");
+                  
                   var divToPrint=document.getElementById("ReceiptModalData");
                    newWin= window.open("Print");
                    newWin.document.write(divToPrint.innerHTML);
-                   newWin.print();
-                   newWin.close();
+                   
+                  if (isAndroid) 
+                  {
+                    // https://developers.google.com/cloud-print/docs/gadget
+                    // var gadget = new cloudprint.Gadget();
+                    // gadget.setPrintDocument("url", $('title').html(), window.location.href, "utf-8");
+                    // gadget.openPrintDialog();
+                  } 
+                  else 
+                  {
+                  }
+                  newWin.print();
+                  newWin.close();
               }
         </script>
                       

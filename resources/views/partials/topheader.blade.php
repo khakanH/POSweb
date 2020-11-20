@@ -100,7 +100,7 @@
             <div class="header-mobile__bar">
                 <div class="container-fluid">
                     <div class="header-mobile-inner">
-                        <a class="logo" href="index.html">
+                        <a class="logo" href="{{route('dashboard')}}">
                             <img src="{{env('IMG_URL')}}icon/logo-white.png" alt="CoolAdmin" />
                         </a>
                         <button class="hamburger hamburger--slider" type="button">
@@ -163,7 +163,7 @@
                             <div class="info clearfix">
                                 <div class="image">
                                     <a href="#">
-                                        <img src="{{env('IMG_URL')}}user{{session('login')['user_image']}}" alt="John Doe" />
+                                        <img src="{{env('IMG_URL')}}{{session('login')['user_image']}}" alt="John Doe" />
                                     </a>
                                 </div>
                                 <div class="content">
@@ -173,20 +173,12 @@
                                     <span class="email">{{session('login')['user_email']}}</span>
                                 </div>
                             </div>
-                           <!--  <div class="account-dropdown__body">
+                            <div class="account-dropdown__body">
                                 <div class="account-dropdown__item">
-                                    <a href="#">
-                                        <i class="zmdi zmdi-account"></i>Account</a>
+                                    <a href="{{route('edit-profile')}}">
+                                    <i class="zmdi zmdi-account"></i>Account</a>
                                 </div>
-                                <div class="account-dropdown__item">
-                                    <a href="#">
-                                        <i class="zmdi zmdi-settings"></i>Setting</a>
-                                </div>
-                                <div class="account-dropdown__item">
-                                    <a href="#">
-                                        <i class="zmdi zmdi-money-box"></i>Billing</a>
-                                </div>
-                            </div> -->
+                            </div>
                             <div class="account-dropdown__footer">
                                 <a href="{{route('signout')}}">
                                     <i class="zmdi zmdi-power"></i>Logout</a>

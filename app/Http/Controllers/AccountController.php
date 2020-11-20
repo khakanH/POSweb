@@ -12,10 +12,14 @@ use App\Models\Countries;
 
 use File;
 
+
+use App\Traits\CommonTrait;
+
 class AccountController extends Controller
 {
 
     protected $member_model;
+    use CommonTrait;
 
     public function __construct(Request $request)
     {   
@@ -59,13 +63,13 @@ class AccountController extends Controller
             // $code = rand(1111,9999);
             $code = 1234;
             $text_notes = "Thank you for Registering on ......";
-            // $this->SendMailVerification("0",$code,$input['email'],$text_notes);
+            $this->SendMailVerification("0",$code,$input['email'],$text_notes);
 
             $data = array(  
                             'username'          => $input['username'],
                             'email'             => strtolower(trim($input['email'])),
                             'password'          => Hash::make($input['password']),
-                            'user_image'        => "/default_user_icon.png",
+                            'user_image'        => "user/default_user_icon.png",
                             'verification_code' => $code,
                             'is_verified'       => 0,
                             'is_set_profile'    => 0,
@@ -144,7 +148,7 @@ class AccountController extends Controller
                 $username = empty($get_account->username)?"0":$get_account->username;
 
                 $text_notes = "Account Verification.";
-                // $this->SendMailVerification($username,$code,$get_account->email,$text_notes);
+                $this->SendMailVerification($username,$code,$get_account->email,$text_notes);
                 // $msg = "Your Dazaran Verification Code is";
                 // $this->TwilioSendSMS($input['phone'],$msg,$code);
                     return array("status"=>"1","msg"=>"Verification Code Successfully Send to your Email Address");
@@ -310,7 +314,7 @@ class AccountController extends Controller
                     $username = empty($check_account->username)?"0":$check_account->username;
 
                     $text_notes = "Account Verification.";
-                    // $this->SendMailVerification($username,$code,$check_account->email,$text_notes);
+                    $this->SendMailVerification($username,$code,$check_account->email,$text_notes);
                                    
                     $this->member_model->where('id',$check_account->id)->update(array('verification_code'=>$code));
 
@@ -581,9 +585,8 @@ class AccountController extends Controller
                     // $code = rand(1111,9999);
                     $code = 1234;
                     $username = empty($user_info->username)?"0":$user_info->username;
-
-                    // $text_notes = "Change Email Address Verification.";
-                    // $this->SendMailVerification($username,$code,$new_email_add,$text_notes);
+                    $text_notes = "Change Email Address Verification.";
+                    $this->SendMailVerification($username,$code,$new_email_add,$text_notes);
                    
                     if(Members::where('id',$user_id)->update(array('email'=>$new_email_add,'is_verified'=>0,'verification_code'=>$code)))
                     {   
@@ -621,7 +624,7 @@ class AccountController extends Controller
 
 
 
-     public function ChangePassword(Request $request)
+    public function ChangePassword(Request $request)
     {
         try 
         {

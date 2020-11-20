@@ -20,16 +20,16 @@
           @endif
           </center>
                                     
-                                    <div class="row" style="margin: 0px 12px 0px -2px;">
-                                        <div class="col-4"> <input class="au-input au-input--full" type="text" name="search_text" id="sale_search_text" required="" style="padding-right: 75px;" placeholder="Enter Sale Code" onfocusout="SearchSale(this.value)">
+                                    <div class="row" style="margin: 0px 0px 0px -2px;">
+                                        <div class="col-lg-4 m-b-10"> <input class="au-input au-input--full" type="text" name="search_text" id="sale_search_text" required="" style="padding-right: 75px;" placeholder="Enter Sale Code" onfocusout="SearchSale(this.value)">
                                     <button class="btn btn-primary" style="float: right;position: absolute; margin: 0px 0px 0px -43px; height: 44px;"><i class="fa fa-search"></i></button></div>
-                                        <div class="col-3"><input style="height: 44px;" type="date" name="from_date" max="{{date('Y-m-d')}}" onfocus="ToNormal()" id="from_date" class="form-control"> </div>
-                                        <div class="col-3"><input style="height: 44px;" type="date" name="to_date" max="{{date('Y-m-d')}}" onfocus="ToNormal()" id="to_date" class="form-control"> </div>
-                                        <div class="col-1 text-center">
+                                        <div class="col-lg-3 m-b-10"><input style="height: 44px;" type="date" name="from_date" max="{{date('Y-m-d')}}" onfocus="ToNormal()" id="from_date" class="form-control"> </div>
+                                        <div class="col-lg-3 m-b-10"><input style="height: 44px;" type="date" name="to_date" max="{{date('Y-m-d')}}" onfocus="ToNormal()" id="to_date" class="form-control"> </div>
+                                        <div class="col-lg-1 text-center m-b-10">
                                             <button class="btn btn-primary" onclick="FilterSale()" style="width: 100%; height: 44px;">Filter</button>
                                         </div>
-                                        <div class="col-1 text-center">
-                                            <a href="{{route('export-sale-csv')}}" target="_blank"><button class="btn btn-success" style="width: 100%; height: 44px;">Export csv</button></a>
+                                        <div class="col-lg-1 text-center m-b-10">
+                                            <a style="width: 100%;" href="{{route('export-sale-csv')}}" target="_blank"><button style="width: 100%; height: 44px;" class="btn btn-success" >Export csv</button></a>
                                         </div>
                                                                            
                                     </div>
