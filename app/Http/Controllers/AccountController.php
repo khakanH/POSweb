@@ -438,6 +438,7 @@ class AccountController extends Controller
                                     'receipt_header'    => $input['receipt_header'],
                                     'receipt_footer'    => $input['receipt_footer'],
                                     'fbr_invoice'       => isset($input['fbr_input'])?$input['fbr_input']:0,
+                                    'pos_id'            => isset($input['pos_id'])?$input['pos_id']:"",
                                  ));
 
             if ($result) 

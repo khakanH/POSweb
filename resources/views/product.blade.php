@@ -74,7 +74,7 @@
                                                 <td scope="row"><b>{{$loop->iteration}}</b></td>
                                                 <td>{{$key['product_code']}}</td>
                                                 <td>{{$key['name']}}</td>
-                                                <td>{{$key->category_name->name}}</td>
+                                                <td>{{isset($key->category_name->name)?$key->category_name->name:"-"}}</td>
                                                 <td>{{Str::limit($key['description'],35)}}</td>
                                                 <td>{{$key['cost']}}</td>
                                                 <td>{{$key['tax']}}</td>

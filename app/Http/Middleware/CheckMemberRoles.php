@@ -26,18 +26,29 @@ class CheckMemberRoles
         else
         {
             $check = MemberRoles::where('member_type',session('login.user_type'))->where('module_id',$module_id->id)->first();
-             if ($check == "") 
-            {   
-               echo 'Sorry, You\'re not allowed to visit requested page.';
+            if ($check == "") 
+            { 
 
-               ?>
-               <br>
-               <br>
-               <br>
-                <a href="<?php echo route('dashboard'); ?>">Goto Home</a>
-               <?php
+              if($request->ajax()) 
+              {
+                  return response()->json(['status'=>"0",'msg' => 'Restricted Page'],403);
+                  
+              }
+              else
+              {
 
-               exit();
+
+                 echo 'Sorry, You\'re not allowed to visit requested page.';
+
+                 ?>
+                 <br>
+                 <br>
+                 <br>
+                  <a href="<?php echo route('dashboard'); ?>">Goto Home</a>
+                 <?php
+
+                 exit();
+              }
             }
             else
             {

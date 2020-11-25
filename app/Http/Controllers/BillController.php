@@ -2,6 +2,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Http;
 
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
@@ -11,6 +12,7 @@ use App\Models\PendingBills;
 use App\Models\PendingBillItems;
 use App\Models\CompanyInfo;
 use App\Models\PaymentMethods;
+use App\Models\Product;
 
 use App\Models\Sales;
 use App\Models\SalesItems;
@@ -36,7 +38,7 @@ class BillController extends Controller
 
         $user_info = $this->checkUserAvailbility($user_id,$request);
         
-        $sales = Sales::where('company_id',$company_id)->get();
+        $sales = Sales::where('company_id',$company_id)->orderBy('created_at','desc')->get();
         return view('sales',compact('sales'));
     }
 
@@ -57,6 +59,7 @@ class BillController extends Controller
                 if (empty($input['start_date']) && empty($input['end_date'])) 
                 {
                     $get_sale_list = Sales::where('company_id',$company_id)
+                                      ->orderBy('created_at','desc')
                                       ->get();
                 }
                 else
@@ -64,6 +67,7 @@ class BillController extends Controller
                     $get_sale_list = Sales::where('company_id',$company_id)
                                           ->whereDate('created_at','>=',$input['start_date'])
                                           ->whereDate('created_at','<=',$input['end_date'])
+                                          ->orderBy('created_at','desc')
                                           ->get();
                 }
             }
@@ -73,6 +77,7 @@ class BillController extends Controller
                 {   
                     $get_sale_list = Sales::where('company_id',$company_id)
                                       ->where('bill_code','like','%'.$input['search'].'%')
+                                      ->orderBy('created_at','desc')
                                       ->get();
                 }
                 else
@@ -81,6 +86,7 @@ class BillController extends Controller
                                         ->whereDate('created_at','>=',$input['start_date'])
                                         ->whereDate('created_at','<=',$input['end_date'])
                                         ->where('bill_code','like','%'.$input['search'].'%')
+                                        ->orderBy('created_at','desc')
                                         ->get();
                 }
             }
@@ -133,22 +139,57 @@ class BillController extends Controller
 
             $user_info = $this->checkUserAvailbility($user_id,$request);
             
+             $get_sale = Sales::where('company_id',$company_id)
+                                    ->where('id',$id) 
+                                    ->first();
 
             $get_sale_item = SalesItems::where('company_id',$company_id)
                                     ->where('sale_id',$id) 
                                       ->get();
            
             
-            if (count($get_sale_item)==0) 
+            if ($get_sale=="") 
             {
                 ?>
-                <center><p> No Sale Item Found </p></center>
+                <center><p> No Sale Details Found </p></center>
                 <?php
             }
             else
             {
 
                 ?>
+
+                <div class="au-card au-card--bg-blue au-card-top-countries m-b-30"> 
+                    <div class="au-card-inner">
+                    <table class="table table-top-countries">
+                    <tbody>
+                    <tr>
+                        <td>Payment Type: <?php echo $get_sale->payment_method_name->name; ?></td>
+                        <?php if($get_sale->payment_method ==1): ?>
+                        <td>Cash Paid: <?php echo number_format($get_sale->cash_paid,2); ?></td>
+                        <td>Cash Change: <?php echo number_format($get_sale->cash_change,2); ?></td>
+                        <?php elseif($get_sale->payment_method ==2): ?>
+                        <td>Credit Card Holder: <?php echo $get_sale->credit_card_holder; ?></td>
+                        <td>Credit Card Number: <?php echo $get_sale->credit_card_number; ?></td>
+                        <?php elseif($get_sale->payment_method ==3): ?>
+                        <td colspan="2">Cheque Number: <?php echo $get_sale->cheque_number; ?></td>
+                        <td></td>
+                        <?php endif; ?>
+
+                    </tr>
+                    <tr>
+                        <td>FBR Integarated: <?php echo empty($get_sale->fbr_invoice_number)?"No":"Yes"; ?> </td>
+                        <?php if(!empty($get_sale->fbr_invoice_number)): ?>
+                        <td colspan="2">FBR Invoice Number: <?php echo $get_sale->fbr_invoice_number; ?> </td>
+                        <?php endif; ?>
+
+                    </tr>
+                    </tbody>
+                    </table>
+                    </div>
+                </div>
+
+                
                     <table class="table text-center">
                         <thead>
                             <tr>
@@ -413,6 +454,9 @@ class BillController extends Controller
             $company_id = session("login")["company_id"];
 
             $user_info = $this->checkUserAvailbility($user_id,$request);
+
+            $company  = CompanyInfo::where('id',$company_id)->first();
+
             
             $input = $request->all();
 
@@ -462,13 +506,77 @@ class BillController extends Controller
                                 "created_at"        => date("Y-m-d H:i:s"),
                                 "updated_at"        => date("Y-m-d H:i:s"),
                     ));
+                    
                 }
 
             
                 PendingBills::where('company_id',$company_id)->where('id',$input['bill_id'])->delete();
                 PendingBillItems::where('company_id',$company_id)->where('pending_bill_id',$input['bill_id'])->delete();
+                if ($company->fbr_invoice == 1) 
+                {   
 
-                    return array("status"=>"1","msg"=>"Success","sale_id"=>$sale_id);
+                    foreach ($get_bill_item as $key) 
+                    {
+                        $item = Product::where('id',$key['product_id'])->where('company_id',$company_id)->first();
+                        $arr[]=array(
+                            "ItemCode"      => (string)isset($item->product_code)?$item->product_code:"",
+                            "ItemName"      => $key['product_name'],
+                            "Quantity"      => (float)$key['product_quantity'],
+                            "PCTCode"       => (string)"1",
+                            "TaxRate"       => (float)isset($item->tax)?$item->tax:0.00,
+                            "SaleValue"     => (float)$key['product_price'],
+                            "TotalAmount"   => (float)$key['product_subtotal'],
+                            "TaxCharged"    => (float)($key['product_price']*(isset($item->tax)?$item->tax:0.00/100)),
+                            "Discount"      => (float)"0.00",
+                            "FurtherTax"    => (float)"0.00",
+                            "InvoiceType"   => ($input['payment_method']==2)?2:1,
+                            "RefUSIN"       => ""
+                        );
+                    }
+
+                    $response = Http::post('http://localhost:8524/api/IMSFiscal/GetInvoiceNumberByModel',[
+    
+                                "InvoiceNumber"      => "",
+                                "POSID"              => (int)"",
+                                "USIN"               => (int)"",
+                                "DateTime"           => date("Y-m-d H:i:s"),
+                                "BuyerNTN"           => "",
+                                "BuyerCNIC"          => "",
+                                "BuyerName"          => "",
+                                "BuyerPhoneNumber"   => "",
+                                "TotalBillAmount"    => (float)$get_bill->total_bill,
+                                "TotalQuantity"      => (float)$get_bill->total_item,
+                                "TotalSaleValue"     => (float)$get_bill->subtotal,
+                                "TotalTaxCharged"    => (float)$get_bill->tax_amount,
+                                "Discount"           => (float)"0.00",
+                                "FurtherTax"         => (float)"0.00",
+                                "PaymentMode"        => (int)($input['payment_method']==1?1:($input['payment_method']==2?2:($input['payment_method']==3?6:1))),
+                                "RefUSIN"            => "",
+                                "InvoiceType"        => ($input['payment_method']==2)?2:1,
+                                "Items"              => $arr
+
+                    ])->json();
+
+                   info($response);
+                    
+                    if ($response['Code'] == 100) 
+                    {
+                        $status = "1";
+                        $msg = "Sale Added and ".$response['Response'];
+                        Sales::where('id',$sale_id)->update(array('fbr_invoice_number'=>$response['InvoiceNumber']));
+                    }
+                    else
+                    {
+                        $status = "2";
+                        $msg = "Sale Added but ".$response['Response'];
+                    }
+                }
+                else
+                {       
+                    $status = "1";
+                    $msg = "Sale Added Successfully ";
+                }
+                return array("status"=>$status,"msg"=>$msg,"sale_id"=>$sale_id);
 
 
             }
@@ -672,6 +780,14 @@ class BillController extends Controller
                     
                   
                     <br>
+                    
+                    <?php if (!empty($get_bill->fbr_invoice_number)): ?>
+                    <div style="width: auto; padding: 5px; border: solid black 1px;">
+                        FBR Invoice Number: <?php echo $get_bill->fbr_invoice_number; ?>
+                    </div>
+                    <?php endif; ?>
+
+
                     <br>
 
                     <div style="background: black; color: white; width: 100%; text-align: center; padding: 10px;">

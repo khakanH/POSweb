@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\DashboardController;
@@ -8,6 +9,11 @@ use App\Http\Controllers\POSController;
 use App\Http\Controllers\BillController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\UserController;
+
+//for Admin
+use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\MemberController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -19,6 +25,66 @@ use App\Http\Controllers\UserController;
 | contains the "web" middleware group. Now create something great!
 |
 */
+Route::get('/api', function () {
+
+
+		$response = Http::withToken('1298b5eb-b252-3d97-8622-a4a69d5bf818')->post('https://gw.fbr.gov.pk/imsp/v1/api/Live/PostData',[
+		    
+		"InvoiceNumber"=>"",
+		"POSID"=>110014,
+		"USIN"=>"USIN0",
+		"DateTime"=>"2020-01-01 12:00:00",
+		"BuyerNTN"=>"1234567-8",
+		"BuyerCNIC"=>"12345-1234567-8",
+		"BuyerName"=>"Buyer Name",
+		"BuyerPhoneNumber"=>"0000-0000000",
+		"TotalBillAmount"=>0.0,
+		"TotalQuantity"=>0.0,
+		"TotalSaleValue"=>0.0,
+		"TotalTaxCharged"=>0.0,
+		"Discount"=>0.0,
+		"FurtherTax"=>0.0,
+		"PaymentMode"=>1,
+
+		"RefUSIN"=>null,
+		"InvoiceType"=>1,
+		"Items"=>[
+		[
+		"ItemCode"=>"IT_1011",
+		"ItemName"=>"Test Item",
+		"Quantity"=>1.0,
+		"PCTCode"=>"",
+		"TaxRate"=>0.0,
+		"SaleValue"=>0.0,
+		"TotalAmount"=>0.0,
+		"TaxCharged"=>0.0,
+		"Discount"=>0.0,
+		"FurtherTax"=>0.0,
+		"InvoiceType"=>1,
+		"RefUSIN"=>null
+		],
+
+		[
+		"ItemCode"=>"IT_1012",
+		"ItemName"=>"Test Item",
+		"Quantity"=>1.0,
+		"PCTCode"=>"",
+		"TaxRate"=>0.0,
+		"SaleValue"=>0.0,
+		"TotalAmount"=>0.0,
+		"TaxCharged"=>0.0,
+		"Discount"=>0.0,
+		"FurtherTax"=>0.0,
+		"InvoiceType"=>1,
+		"RefUSIN"=>null
+		]
+		]
+
+		])->json();
+
+		dump($response);
+});
+
 
 Route::get('/', function () {
     return view('login');
@@ -29,7 +95,7 @@ Route::post('/login', [AccountController::class, 'Login'])->name('login');
 
 
 
-	Route::get('signout',[AccountController::class, 'SignOut'])->name('signout');
+Route::get('signout',[AccountController::class, 'SignOut'])->name('signout');
 
 
 Route::get('/signup', function () {
@@ -177,9 +243,29 @@ Route::middleware(['LoginSession','CheckMemberRoles'])->group(function ()
 
 	//_________________________________________________________________________________
 
+});
 
 
 
 
+//Admin Route
+Route::prefix('admin')->group(function () {
+	
+	Route::get('/',function(){
+		return view('admin.login');
+	})->name('admin_index')->middleware('AdminCheckLogin');
+	Route::post('sign-in',[AdminController::class,'Login'])->name('sign-in');
+	Route::get('sign-out',[AdminController::class,'Logout'])->name('sign-out');
 
+	Route::middleware(['AdminLoginSession'])->group(function () 
+	{
+        Route::get('admin_dashboard',[AdminController::class,'Dashboard'])->name('admin_dashboard');
+
+
+
+        Route::get('members-list',[MemberController::class,'MemberList'])->name('members-list');
+        Route::get('get-member-details/{id}',[MemberController::class,'MemberDetails'])->name('get-member-details');
+
+
+	});
 });

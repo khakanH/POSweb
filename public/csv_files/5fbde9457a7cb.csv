@@ -1,0 +1,16 @@
+S. No,product_code,name,description,cost,tax,price
+1,d001,Computer,123,0,0,12000
+2,d002,Mouse,123,0,0,450
+3,d003,Keyboard,123,0,0,1200
+4,f001,Kiwi,123,0,0,500
+5,f002,Papaya,123,0,0,250
+6,f003,Tomato,123,0,0,450
+7,b001,Bread,123,0,0,100
+8,b002,Cake,123,0,0,490
+9,b003,Cookies,123,0,0,500
+10,d011,Milk,123,0,0,110
+11,d012,Butter,123,0,0,350
+12,d013,Cheese,123,0,0,500
+13,g001,Apple,123,0,0,120
+14,g002,Banana,123,0,0,400
+15,g003,Strawberry,123,0,0,1980

@@ -38,6 +38,7 @@
                                         <thead>
                                             <tr>
                                                 <th>S No.</th>
+                                                <th>ID</th>
                                                 <th>Name</th>
                                                 <th>Action</th>
                                             </tr>
@@ -46,6 +47,7 @@
                                             @foreach($category_list as $key)
                                             <tr id="cate<?php echo $key['id']?>">
                                                 <td scope="row"><b>{{$loop->iteration}}</b></td>
+                                                <td>{{$key['id']}}</td>
                                                 <td>{{$key['name']}}</td>
                                                 <td><a class="btn btn-primary" href="javascript:void(0)" onclick='EditCategory("<?php echo $key['id']?>","<?php echo $key['name']?>")'><i class="fa fa-edit tx-15"></i></a>&nbsp;&nbsp;&nbsp;<a class="btn btn-danger" onclick='DeleteCategory("<?php echo $key['id'] ?>")' href="javascript:void(0)"><i class="fa fa-trash tx-15"></i></a></td>
                                             </tr>

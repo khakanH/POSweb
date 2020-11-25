@@ -5,7 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 
-class LoginSession
+class AdminLoginSession
 {
     /**
      * Handle an incoming request.
@@ -16,8 +16,7 @@ class LoginSession
      */
     public function handle(Request $request, Closure $next)
     {
-        
-        if (!session('login')) 
+        if (!session('admin_login')) 
         {   
             if($request->ajax()) 
             {
@@ -27,19 +26,12 @@ class LoginSession
             else
             {
                 $request->session()->put('failed', "Kindly Login First!");
-                return redirect()->route('index');
+                return redirect()->route('admin_index');
             }
         }
         else
         {   
-            if (session('login')['is_set_profile']==0) 
-            {
-                return redirect()->route('settings')->with('failed','Kindly Save Your Company Information First!');
-            }
-            else
-            {
-                return $next($request);
-            }
+            return $next($request);
         }
     }
 }

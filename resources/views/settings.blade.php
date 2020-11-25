@@ -92,7 +92,7 @@
                                         </div>
 
                                         <div class="row form-group" style="background: #333; border: solid gray 2px; border-radius: 3px; color: white; padding: 25px;">
-                                          <div class="col-lg-12">
+                                          <div class="col-lg-6">
                                             <label class="form-control-label">FBR Invoice Data:</label>
                                             &nbsp;&nbsp;&nbsp;
                                             <label class="switch switch-3d switch-primary switch-lg mr-3">
@@ -102,6 +102,19 @@
                                               <span class="switch-label"></span>
                                               <span class="switch-handle"></span>
                                             </label>
+                                          </div>
+                                          <div class="col-lg-6" id="POSID_div" <?php if ($company->fbr_invoice ==1): ?>
+                                            style="display: block;"
+                                          <?php else: ?>
+                                            style="display: none;"
+                                          
+                                          <?php endif ?> >
+
+                                            
+                                            <label class="form-control-label" style="">POS ID:</label>&nbsp;&nbsp;&nbsp;
+                                            <input required="" type="text" class="form-control" name="pos_id" value="{{$company->pos_id}}">
+
+
                                           </div>
                                         </div>
 
@@ -189,11 +202,15 @@
       {
         document.getElementById("fbr_input").value = "0";
         document.getElementById("fbr_input").checked = false;
+        document.getElementById("POSID_div").style.display = "none";
+
       }
       else
       {
         document.getElementById("fbr_input").value = "1";
         document.getElementById("fbr_input").checked = true; 
+        document.getElementById("POSID_div").style.display = "block";
+
       }
     }
 
@@ -230,6 +247,12 @@
       company_logo: {
         required: false,
       },
+      pos_id: {
+        required: true,
+        minlength: 6,
+        maxlength: 6,
+        digits: true,
+      },
     },
     messages: {
       name: {
@@ -246,6 +269,11 @@
       },
       company_logo: {
         required: "Please Provide a Company Logo",
+      },
+       pos_id: {
+        required: "Please Provide a POS ID",
+        minlength: "POS ID Must be of 6 Digits",
+        maxlength: "POS ID Must be of 6 Digits",
       },
      
     },

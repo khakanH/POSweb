@@ -46,9 +46,10 @@ class UserController extends Controller
              
 
              //check email Already
-            if (Members::where('email',strtolower(trim($input['user_email'])))->where('member_type',$input['user_type'])->where('parent_id',$user_id)->count() > 0) 
+            if (Members::where('email',strtolower(trim($input['user_email'])))->count() > 0) 
             {
-                return redirect()->route('users')->with('failed','Requested User Email Address Already Exist');
+                return array("status"=>"0","msg"=>"Requested User Email Address Already Exist");
+
             }
 
             // $code = rand(1111,9999);
@@ -61,7 +62,7 @@ class UserController extends Controller
                             'username'          => $input['user_name'],
                             'email'             => strtolower(trim($input['user_email'])),
                             'password'          => Hash::make($input['user_password']),
-                            'user_image'        => "/default_user_icon.png",
+                            'user_image'        => "user/default_user_icon.png",
                             'verification_code' => $code,
                             'is_verified'       => 0,
                             'is_set_profile'    => 1,

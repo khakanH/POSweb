@@ -1,4 +1,2 @@
 S_No,Bill_Code,Customers,Tax,Discount,Subtotal,Total_Item,Total_Bill,Payment_Type,Cash_Paid,Cash_Change,Credit_Card_Holder,Credit_Card_Number,Cheque_Number,Created_At
-1,00001,"Walk In Customer",10.0%,0.7%,"14,100.00",3.00,15410,Cash,16000,590,,,,"2020-11-17 15:14:46"
-2,00002,"Walk In Customer",0.0%,0.0%,"1,550.00",4.00,1550,"Credit Card",1550,,ruiewi,4234-3243-2432-4234,,"2020-11-17 15:45:34"
-3,00005,"Walk In Customer",0.0%,0.0%,700.00,2.00,700,Cash,700,,,,,"2020-11-17 15:47:29"
+1,00001,"Walk In Customer",40.0%,15.0%,"16,800.00",4.00,21000,Cash,22000,1000,,,,"2020-11-20 10:55:50"

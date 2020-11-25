@@ -29,7 +29,7 @@
                                             <button class="btn btn-primary" onclick="FilterSale()" style="width: 100%; height: 44px;">Filter</button>
                                         </div>
                                         <div class="col-lg-1 text-center m-b-10">
-                                            <a style="width: 100%;" href="{{route('export-sale-csv')}}" target="_blank"><button style="width: 100%; height: 44px;" class="btn btn-success" >Export csv</button></a>
+                                            <a style="width: 100%;" href="{{route('export-sale-csv')}}" target="_blank"><button style="width: 100%; height: 44px; font-size: 15px;" class="btn btn-success" >Export csv</button></a>
                                         </div>
                                                                            
                                     </div>

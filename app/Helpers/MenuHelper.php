@@ -13,7 +13,7 @@ class MenuHelper{
   	{	
  		$get_module_id = MemberRoles::where('member_type',session('login.user_type'))->pluck('module_id');
 
- 		$get_module = Modules::whereIn('id',$get_module_id)->get();
+ 		$get_module = Modules::whereIn('id',$get_module_id)->where('parent_id',0)->get();
 
 
  		foreach ($get_module as $key) 

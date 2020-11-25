@@ -121,8 +121,11 @@
                         
                         <div class="row">
                           <div class="col-lg-6"> 
-                            <label>Product Code:</label>
+                            <label>Product Code: <i style="font-size: 12px">(Barcode)</i></label>
                             <input type="text" id="prod_code" name="prod_code" class="form-control" placeholder="Enter Product Code"></div>
+                            <!-- <div class="col-lg-3"> 
+                            <label>PCT Code: <i style="font-size: 12px">(optional)</i></label>
+                            <input type="text" id="pct_code" name="pct_code" class="form-control" placeholder="Enter PCT Code"  data-toggle="tooltip" title="Only Required For FBR Integration"></div> -->
                           <div class="col-lg-6"> 
                             <label>Product Name:</label>
                             <input type="text" id="prod_name" name="prod_name" class="form-control" placeholder="Enter Product Name"></div>
@@ -136,17 +139,17 @@
                             </select>
                           </div>
                           <div class="col-lg-6"> 
-                            <label>Product Cost:</label>
-                            <input type="number" id="prod_cost" name="prod_cost" class="form-control" placeholder="Enter Product Cost"></div>
+                            <label>Product Cost: <i style="font-size: 12px">(without tax)</i> </label>
+                            <input type="number" onkeyup="GetProdPrice()" onchange="GetProdPrice()" onclick="ToNormal()" id="prod_cost" name="prod_cost" class="form-control" placeholder="Enter Product Cost"></div>
                         </div>
                         <br>
                         <div class="row">
                           <div class="col-lg-6"> 
-                            <label>Product Tax:</label>
-                            <input type="number" id="prod_tax" name="prod_tax" class="form-control" placeholder="Enter Product Tax"></div>
+                            <label>Product Tax: <i style="font-size: 12px">(percentage value)</i></label>
+                            <input type="number" min="0" max="100" onkeyup="GetProdPrice()" onchange="GetProdPrice()" id="prod_tax" name="prod_tax" class="form-control" placeholder="Enter Product Tax"></div>
                           <div class="col-lg-6"> 
-                            <label>Product Price:</label>
-                            <input type="number" id="prod_price" name="prod_price" class="form-control" placeholder="Enter Product Price"></div>
+                            <label>Product Price: <i style="font-size: 12px">(sale price including tax)</i></label>
+                            <input type="number" id="prod_price" name="prod_price" class="form-control" placeholder="Enter Product Price" readonly=""></div>
                         </div>
                         <br>
                         <div class="row">
@@ -369,7 +372,7 @@
 <!-- ----------------------------------------------------------------------------------------------------- -->
 
 <div id="SaleItemModal" class="modal fade show " tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-modal="true" aria-hidden="true" style="color: black;">
-    <div class="modal-dialog" id="SaleItemModalDialog">
+    <div class="modal-dialog modal-lg" id="SaleItemModalDialog">
         <div class="modal-content" id="SaleItemModalContent">
            
                   <div class="modal-header">
@@ -483,6 +486,33 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.10/jquery.mask.js"></script>
 
 <script type="text/javascript">
+  function ToNormal()
+  {
+    document.getElementById("prod_cost").style.border = "solid lightgray 1px"
+  }
+
+  function GetProdPrice()
+  {
+    val = parseFloat(document.getElementById("prod_tax").value);
+    cost = parseFloat(document.getElementById("prod_cost").value);
+    document.getElementById("prod_cost").style.border = "solid lightgray 1px"
+
+    if (!cost) 
+    {
+      document.getElementById("prod_cost").style.border = "solid red 1px"
+      return false;
+    }
+
+    if (val < 0 || val > 100 ) 
+    {
+      return false;
+    }
+
+
+    document.getElementById("prod_price").value = +cost + +(cost*val/100);
+
+  }
+
 
       $("#credit_card_number").mask("9999-9999-9999-9999");
 
@@ -899,11 +929,11 @@
 
                              document.getElementById('toast').style.visibility = "visible";
                                 document.getElementById('toast').className = "alert alert-danger alert-rounded fadeIn animated";
-                                document.getElementById('toastMsg').innerHTML = "Failed, Try Again Later";
+                                document.getElementById('toastMsg').innerHTML = get_msg;
 
 
                                  setTimeout(function() {
-                                document.getElementById('toast').className = "alert alert-danger alert-rounded fadeOut animated";
+                                
                                 document.getElementById('toast').style.visibility = "hidden";
 
 
@@ -912,6 +942,23 @@
                             }
                             else
                             {
+                              if (get_status == "1") 
+                              {
+                                document.getElementById('toast').className = "alert alert-success alert-rounded fadeIn animated";
+                              }
+                              else if (get_status == "2")
+                              {
+                                document.getElementById('toast').className = "alert alert-warning alert-rounded fadeIn animated";
+                              }
+                              document.getElementById('toast').style.visibility = "visible";
+                              document.getElementById('toastMsg').innerHTML = get_msg;
+                              setTimeout(function() {
+                                
+                                document.getElementById('toast').style.visibility = "hidden";
+
+
+                              }, 10000);
+
                                 $('#ReceiptModal').modal('show');
                                 createNewBill();
                                
@@ -1021,7 +1068,7 @@
 
                              document.getElementById('toast').style.visibility = "visible";
                                 document.getElementById('toast').className = "alert alert-danger alert-rounded fadeIn animated";
-                                document.getElementById('toastMsg').innerHTML = "Failed, Try Again Later";
+                                document.getElementById('toastMsg').innerHTML = get_msg;
 
 
                                  setTimeout(function() {

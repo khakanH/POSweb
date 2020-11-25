@@ -139,7 +139,7 @@ class ProductController extends Controller
             if (count($get_cate_list)==0) 
             {
                 ?>
-                <tr><td colspan="3" class="text-center tx-18">No Category Found</td></tr>
+                <tr><td colspan="4" class="text-center tx-18">No Category Found</td></tr>
                 <?php
             }
             else
@@ -152,6 +152,7 @@ class ProductController extends Controller
 
                     <tr id="cate<?php echo $key['id']?>">
                       <td scope="row"><b><?php echo $count; ?></b></td>
+                      <td><?php echo $key['id']?></td>
                       <td><?php echo $key['name']?></td>
                       <td><a class="btn btn-primary" href="javascript:void(0)" onclick='EditCategory("<?php echo $key['id']?>","<?php echo $key['name']?>")'><i class="fa fa-edit tx-15"></i></a>&nbsp;&nbsp;&nbsp;<a class="btn btn-danger" onclick='DeleteCategory("<?php echo $key['id'] ?>")' href="javascript:void(0)"><i class="fa fa-trash tx-15"></i></a></td>
                     </tr>
@@ -254,7 +255,7 @@ class ProductController extends Controller
         $get_product_list = $this->product_model
                                       ->where('company_id',$company_id)
                                       ->where('is_deleted',0)
-                                      ->paginate(15);
+                                      ->get();
 
         return view('product',['product_list'=>$get_product_list]);
     }
@@ -333,11 +334,11 @@ class ProductController extends Controller
                         "product_code"          => (string)$importData[1],
                         "name"                  => (string)$importData[2],
                         "image"                 => "product/default_product.png",
-                        "category_id"           => (int)$importData[3],
-                        "description"           => (string)$importData[4],
-                        "cost"                  => (float)$importData[5],
-                        "tax"                   => (float)$importData[6],
-                        "price"                 => (float)$importData[7],
+                        "category_id"           => 0,
+                        "description"           => (string)$importData[3],
+                        "cost"                  => (float)$importData[4],
+                        "tax"                   => (float)$importData[5],
+                        "price"                 => (float) $importData[4] + ((float)$importData[4]*(float)$importData[5]/100),
                         "member_id"             => $user_id,
                         "company_id"            => $company_id,
                         "is_deleted"            => 0,
@@ -417,7 +418,7 @@ class ProductController extends Controller
                         "description"           => $input['prod_descrip'],
                         "cost"                  => $input['prod_cost'],
                         "tax"                   => $input['prod_tax'],
-                        "price"                 => $input['prod_price'],
+                        "price"                 => (float) $input['prod_cost'] + ($input['prod_cost']*$input['prod_tax']/100),
                         "member_id"             => $user_id,
                         "company_id"            => $company_id,
                         "is_deleted"            => 0,
@@ -494,7 +495,7 @@ class ProductController extends Controller
                     $get_prod_list = $this->product_model
                                       ->where('company_id',$company_id)
                                       ->where('is_deleted',0)
-                                      ->paginate(15);
+                                      ->get();
             }
             else
             {   
@@ -506,7 +507,7 @@ class ProductController extends Controller
                                                 $query->where('name','like','%'.$search_text.'%')
                                                 ->orWhere('product_code','like','%'.$search_text.'%');
                                             })
-                                      ->paginate(15);
+                                      ->get();
 
             }
             
@@ -528,7 +529,7 @@ class ProductController extends Controller
                       <td scope="row"><b><?php echo $count; ?></b></td>
                       <td><?php echo $key['product_code']?></td>
                       <td><?php echo $key['name']?></td>
-                      <td><?php echo $key->category_name->name?></td>
+                      <td><?php echo isset($key->category_name->name)?$key->category_name->name:"-"?></td>
                       <td><?php Str::limit($key['description'],35)?></td>
                       <td><?php echo $key['cost']?></td>
                       <td><?php echo $key['tax']?></td>

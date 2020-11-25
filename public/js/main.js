@@ -77,10 +77,10 @@
       var myChart = new Chart(ctx, {
         type: 'line',
         data: {
-          labels: ['January', 'February', 'March', 'April', 'May', 'June'],
+          labels: ['January', 'February', 'March', 'April', 'May', 'June','July','Aug','Sept','Oct','Nov','Dec'],
           type: 'line',
           datasets: [{
-            data: [1, 18, 9, 17, 34, 22],
+            data: [1, 2, 9, 17, 34, 22,34,5,16,17,23,21],
             label: 'Dataset',
             backgroundColor: 'transparent',
             borderColor: 'rgba(255,255,255,.55)',
