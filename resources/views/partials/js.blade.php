@@ -24,6 +24,12 @@
                 alert("Sorry, You're not allowed to visit requested page. Taking you to Dashboard Page.");
                 location.href = "{{ env('APP_URL')}}";
             }
+            else if(jqxhr.status == 440)
+            {   
+                //for admin
+                alert("Session expired. You'll be take to the login page");
+                location.href = "{{ env('APP_URL')}}admin";
+            }
             else
             {
                 alert("Something Went Wrong");

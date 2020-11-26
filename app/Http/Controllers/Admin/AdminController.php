@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\Admin;
+use App\Models\Members;
+use App\Models\CompanyInfo;
 use DB;
 
 class AdminController extends Controller
@@ -97,9 +99,22 @@ class AdminController extends Controller
             //     //for other users
             //       return view('admin.dashboard_other');
             // }
+
+
+            $member_count = array();
+            for ($i=1; $i <= 12  ; $i++) 
+            {   
+                $member_count[] = Members::whereMonth('created_at',$i)->count();
+            }
+
+            $company_count = array();
+            for ($i=1; $i <= 12  ; $i++) 
+            {   
+                $company_count[] = CompanyInfo::whereMonth('created_at',$i)->count();
+            }
             
 
-            return view('admin.dashboard');
+            return view('admin.dashboard',compact("member_count","company_count"));
 
 
         } 

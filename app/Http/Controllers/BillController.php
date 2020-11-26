@@ -429,7 +429,7 @@ class BillController extends Controller
             
             $user_info = $this->checkUserAvailbility($user_id,$request);
 
-            $payment_method = PaymentMethods::get();
+            $payment_method = PaymentMethods::where('is_show',1)->get();
 
             foreach ($payment_method as $key) 
             {

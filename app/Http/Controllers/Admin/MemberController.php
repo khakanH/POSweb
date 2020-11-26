@@ -57,7 +57,11 @@ class MemberController extends Controller
             $product    = Product::where('company_id',$company->id)->count();
             $customer   = Customers::where('company_id',$company->id)->count();
             $sale       = Sales::where('company_id',$company->id)->count();
-            $sub_member = Members::where('parent_id',$id)->count();
+            $sub_member = Members::where('parent_id',$id)->get();
+
+
+
+
             if ($member == "" || $company == "") 
             {
                 ?>
@@ -127,7 +131,7 @@ class MemberController extends Controller
 
             </div>
             <hr>
-            <table class="table">
+            <table class="table tx-14">
                 <tbody>
                     <tr>
                         <td>Total Categories: <?php echo $category; ?> </td>
@@ -135,12 +139,47 @@ class MemberController extends Controller
                         <td>Total Customers: <?php echo $customer; ?></td>
                     </tr>
                     <tr>
-                        <td>Total Sub-Member: <?php echo $sub_member; ?></td>
+                        <td>Total Sub-Member: <?php echo count($sub_member); ?></td>
                         <td>Total Sale Receipt:  <?php echo $sale; ?> </td>
                         <td>Account Created:  <?php echo date("d-M-Y h:i a",strtotime($member->created_at)); ?></td>
                     </tr>
                 </tbody>
             </table>
+
+            <hr>
+            <center><h5>Sub-Member Details</h5></center>
+            <br>
+
+            <?php if(count($sub_member) == 0): ?>
+            <p class="tx-danger tx-center">No Sub-Member Found</p>
+            <?php else: ?>
+                    <table class="table tx-12">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Account Type</th>
+                                <th>Status</th>
+                            </tr>                                
+                        </thead>
+                        <tbody>
+                            <?php foreach ($sub_member as $key): ?>
+                            <tr>
+                                <td><?php echo $key['username']; ?> </td>
+                                <td><?php echo $key['email']; ?></td>
+                                <td><?php echo $key->member_type_name['name']; ?></td>
+                                <td>
+                                    <?php if($key['is_verified'] == 0): ?>
+                                        <span class="badge badge-danger">Not Verified</span>
+                                    <?php else: ?>
+                                        <span class="badge badge-success">Verified</span>
+                                    <?php endif; ?>
+                                </td>
+                            </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+            <?php endif; ?>
 
 
             <?php
@@ -151,6 +190,37 @@ class MemberController extends Controller
             return response()->json($e,500);
         }
 
+    }
+
+
+    public function BlockUnblockMember(Request $request,$id)
+    {
+        try 
+        {   
+            $user_id = session("admin_login.user_id");
+
+            $user_info = $this->checkUserAvailbility($user_id,$request);
+
+            $status =Members::where('id',$id)->first();
+
+            if($status->is_blocked == 0)
+            {
+                Members::where('id',$id)->update(array('is_blocked' =>1));
+                Members::where('parent_id',$status->id)->update(array('is_blocked' =>1));
+                return array("status"=>"1","msg"=>"User Blocked Successfully.");
+            }
+            else
+            {
+                Members::where('id',$id)->update(array('is_blocked' => 0));
+                Members::where('parent_id',$status->id)->update(array('is_blocked' =>0));
+                return array("status"=>"1","msg"=>"User Unblocked Successfully.");
+            }
+
+           
+        } catch (Exception $e) 
+        {
+            
+        }
     }
 
 

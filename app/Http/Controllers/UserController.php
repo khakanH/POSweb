@@ -230,7 +230,11 @@ class UserController extends Controller
     public function BlockUnblockUser(Request $request,$id)
     {
         try 
-        {
+        {   
+            $user_id = session("login")["user_id"];
+
+            $user_info = $this->checkUserAvailbility($user_id,$request);
+            
             $status =Members::where('id',$id)->first()->is_blocked;
 
             if($status == 0)

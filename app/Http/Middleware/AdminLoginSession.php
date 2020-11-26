@@ -20,7 +20,7 @@ class AdminLoginSession
         {   
             if($request->ajax()) 
             {
-                return response()->json(['status'=>"0",'msg' => 'Session expired'],401);
+                return response()->json(['status'=>"0",'msg' => 'Session expired'],440);
                 
             }
             else

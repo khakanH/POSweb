@@ -13,6 +13,8 @@ use App\Http\Controllers\UserController;
 //for Admin
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\MemberController;
+use App\Http\Controllers\Admin\OptionsController;
+use App\Http\Controllers\Admin\ModuleController;
 
 
 /*
@@ -265,6 +267,32 @@ Route::prefix('admin')->group(function () {
 
         Route::get('members-list',[MemberController::class,'MemberList'])->name('members-list');
         Route::get('get-member-details/{id}',[MemberController::class,'MemberDetails'])->name('get-member-details');
+		Route::get('block-unblock-member/{id}',[MemberController::class,'BlockUnblockMember'])->name('block-unblock-member');
+	//_________________________________________________________________________________
+
+
+        Route::get('country-list',[OptionsController::class,'CountryList'])->name('country-list');
+		Route::get('get-country-list-AJAX/{search_text}',[OptionsController::class,'CountryListAJAX'])->name('get-country-list-AJAX');
+		Route::post('add-update-country',[OptionsController::class,'AddUpdateCountry'])->name('add-update-country');
+		Route::get('delete-country/{id}',[OptionsController::class,'DeleteCountry'])->name('delete-country');
+		Route::get('change-country-availability/{id}/{status}',[OptionsController::class,'ChangeCountryAvailability'])->name('change-country-availability');
+        
+	//_________________________________________________________________________________
+
+
+        Route::get('payment-method-list',[OptionsController::class,'PaymentMethodList'])->name('payment-method-list');
+		Route::get('get-payment-list-AJAX/{search_text}',[OptionsController::class,'PaymentListAJAX'])->name('get-payment-list-AJAX');
+		Route::post('add-update-payment-method',[OptionsController::class,'AddUpdatePayment'])->name('add-update-payment-method');
+		Route::get('delete-payment-method/{id}',[OptionsController::class,'DeletePayment'])->name('delete-payment-method');
+		Route::get('change-payment-availability/{id}/{status}',[OptionsController::class,'ChangePaymentAvailability'])->name('change-payment-availability');
+
+
+	//_________________________________________________________________________________
+
+        Route::get('website-modules',[ModuleController::class,'WebsiteModule'])->name('website-modules');
+		Route::get('get-module-list-AJAX/{search_text}',[ModuleController::class,'ModuleListAJAX'])->name('get-module-list-AJAX');
+		Route::post('add-update-module',[ModuleController::class,'AddUpdateModule'])->name('add-update-module');
+
 
 
 	});

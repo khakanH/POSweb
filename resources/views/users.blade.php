@@ -45,15 +45,15 @@
 
                                 <!-- DATA TABLE-->
                                 <div class="table-responsive m-b-40">
-                                    <table class="table table-borderless table-data3">
+                                    <table class="table table-borderless table-data3 tx-14">
                                         <thead>
                                             <tr>
-                                                <th>S No.</th>
-                                                <th>Name</th>
-                                                <th>Email</th>
-                                                <th>Type</th>
-                                                <th>Status</th>
-                                                <th>Action</th>
+                                                <th width="5%">S No.</th>
+                                                <th width="10%">Name</th>
+                                                <th width="15%">Email</th>
+                                                <th width="20%">Type</th>
+                                                <th width="10%">Status</th>
+                                                <th width="10%">Action</th>
                                             </tr>
                                         </thead>
                                         <tbody id="userTBody">

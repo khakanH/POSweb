@@ -1,9 +1,7 @@
  <!-- MENU SIDEBAR-->
         <aside class="menu-sidebar2">
             <div class="logo">
-                <a href="#">
                     logo here
-                </a>
             </div>
             <div class="menu-sidebar2__content js-scrollbar1 ps ps--active-y">
                 <div class="account2">
@@ -16,17 +14,17 @@
                         
                        
                         <li>
-                            <a href="#">
+                            <a href="{{route('admin_dashboard')}}">
                             <i class="fas fa-tachometer-alt"></i>Dashboard</a>
                         </li>
 
                         <li>
-                            <a href="">
+                            <a href="{{route('country-list')}}">
                             <i class="fas fa-circle"></i>Countries</a>
                         </li>
 
                         <li>
-                            <a href="">
+                            <a href="{{route('payment-method-list')}}">
                             <i class="fas fa-circle"></i>Payment Methods</a>
                         </li>
 
@@ -35,10 +33,10 @@
                             <i class="fas fa-users"></i>Members</a>
                         </li>
 
-                        <!-- <li>
-                            <a href="#">
-                            <i class="fas fa-user"></i>User</a>
-                        </li> -->
+                        <li>
+                            <a href="{{route('website-modules')}}">
+                            <i class="fas fa-th"></i>Website Modules</a>
+                        </li>
                        
                       
                     </ul>

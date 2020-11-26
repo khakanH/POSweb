@@ -6,34 +6,33 @@
   <div class="section__content section__content--p30">
     <div class="container-fluid">
                         
-       <div class="user-data m-b-30">
+        <div class="user-data m-b-30">
                   
-                                    <div class="table-responsive table-data">
                                         <table class="table text-center">
                                             <thead>
                                                 <tr>
-                                                    <td width="2%">
+                                                    <!-- <td width="2%">
                                                         <label class="au-checkbox">
                                                             <input type="checkbox">
                                                             <span class="au-checkmark"></span>
                                                         </label>
-                                                    </td>
-                                                    <td width="5%">name</td>
-                                                    <td width="15%">email</td>
-                                                    <td width="10%">account</td>
-                                                    <td width="10%">profile</td>
-                                                    <td width="20%" class="text-center">Action</td>
+                                                    </td> -->
+                                                    <th width="5%">Name</th>
+                                                    <th width="15%">Email</th>
+                                                    <th width="10%">Account</th>
+                                                    <th width="10%">Profile</th>
+                                                    <th width="20%" class="text-center">Action</th>
                                                 </tr>
                                             </thead>
                                             <tbody style="font-size: 14px;">
                                                 @foreach($members as $key)
                                                 <tr id="row{{$key['id']}}">
-                                                    <td>
+                                                    <!-- <td>
                                                         <label class="au-checkbox">
                                                             <input type="checkbox">
                                                             <span class="au-checkmark"></span>
                                                         </label>
-                                                    </td>
+                                                    </td> -->
                                                     <td>
                                                         {{$key['username']}}
                                                     </td>
@@ -71,8 +70,7 @@
                                                 @endforeach
                                             </tbody>
                                         </table>
-                                    </div>
-                                </div>
+        </div>
 
     
     </div>
@@ -102,6 +100,71 @@
             alert('Exception:' + errorThrown);
         }
         });   
+    }
+
+    function BlockUnblockMember(id)
+    {
+
+
+        $.ajax({
+            type: "GET",
+            url: "{{ env('APP_URL')}}admin/block-unblock-member/" + id,
+            success: function(data) {
+                
+
+                get_status = data['status'];
+                get_msg    = data['msg'];
+
+                                if (get_status == "0") 
+                                {
+
+                                 document.getElementById('toast').style.visibility = "visible";
+                                    document.getElementById('toast').className = "alert alert-danger alert-rounded fadeIn animated";
+                                    document.getElementById('toastMsg').innerHTML = get_msg;
+
+
+                                     setTimeout(function() {
+                                    document.getElementById('toast').className = "alert alert-danger alert-rounded fadeOut animated";
+
+                                }, 5000);
+
+                                }
+                                else
+                                {
+
+                                  if (document.getElementById("status-btn-color"+id).className == "btn btn-danger") 
+                                  {
+                                    document.getElementById("status-btn-color"+id).className = "btn btn-success";
+                                    document.getElementById("status-btn-icon"+id).className = "fa fa-unlock tx-15";
+                                    
+                                  }
+                                  else
+                                  {
+                                    document.getElementById("status-btn-color"+id).className = "btn btn-danger";
+                                    document.getElementById("status-btn-icon"+id).className = "fa fa-lock tx-15";
+
+                                  }
+
+                                    document.getElementById('toast').style.visibility = "visible";
+                                    document.getElementById('toast').className = "alert alert-success alert-rounded fadeIn animated";
+                                    document.getElementById('toastMsg').innerHTML =  get_msg;
+
+
+                                     setTimeout(function() {
+                                    document.getElementById('toast').className = "alert alert-success alert-rounded fadeOut animated";
+
+                                }, 5000);
+
+
+                                }
+
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                alert('Exception:' + errorThrown);
+            }
+        });
+
+
     }
 </script>
 

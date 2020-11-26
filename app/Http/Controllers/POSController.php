@@ -584,8 +584,9 @@ class POSController extends Controller
     public function AddProductToBill(Request $request)
     {
         $user_id = session("login")["user_id"];
-            $company_id = session("login")["company_id"];
         $user_info = $this->checkUserAvailbility($user_id,$request);
+        
+        $company_id = session("login")["company_id"];
         
         $input = $request->all();
 
