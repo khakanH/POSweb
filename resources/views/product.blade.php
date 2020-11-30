@@ -63,7 +63,7 @@
                                                 <th>Category</th>
                                                 <th>Description</th>
                                                 <th>Cost</th>
-                                                <th>Tax</th>
+                                                <th>Tax %</th>
                                                 <th>Price</th>
                                                 <th class="text-center">Action</th>
                                             </tr>
@@ -77,7 +77,7 @@
                                                 <td>{{isset($key->category_name->name)?$key->category_name->name:"-"}}</td>
                                                 <td>{{Str::limit($key['description'],35)}}</td>
                                                 <td>{{$key['cost']}}</td>
-                                                <td>{{$key['tax']}}</td>
+                                                <td>{{$key['tax']}}%</td>
                                                 <td>{{$key['price']}}</td>
                                                 <td><a class="btn btn-primary" href="javascript:void(0)" onclick='EditProduct("<?php echo $key['id']?>","<?php echo $key['product_code']?>","<?php echo $key['name']?>","<?php echo $key['category_id']?>","<?php echo $key['cost']?>","<?php echo $key['tax']?>","<?php echo $key['price']?>","<?php echo $key['description']?>","<?php echo $key['image']?>")'><i class="fa fa-edit tx-15"></i></a>&nbsp;&nbsp;&nbsp;<a class="btn btn-danger" onclick='DeleteProduct("<?php echo $key['id'] ?>")' href="javascript:void(0)"><i class="fa fa-trash tx-15"></i></a>&nbsp;&nbsp;&nbsp;<a href="{{env('IMG_URL')}}{{$key['image']}}" class="btn btn-success"><i class="fa fa-picture-o"></i></a>
 											</td>

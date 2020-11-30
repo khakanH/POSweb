@@ -313,7 +313,7 @@
                       </div>
                   <div class="modal-footer" id="BillModalFooter">
                       <button type="button" class="btn btn-danger waves-effect" data-dismiss="modal">Close</button>
-                      <button type="submit" class="btn btn-info ">Save</button>
+                      <button type="submit" id="bill-payment-btn" class="btn btn-info ">Save</button>
 
                   </div>
             </form>

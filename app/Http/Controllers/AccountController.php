@@ -368,7 +368,7 @@ class AccountController extends Controller
             $user_info = $this->checkUserAvailbility($user_id,$request);
 
             $country  =Countries::where('is_show',1)->get();
-            $company  = CompanyInfo::where('member_id',$user_id)->first();
+            $company  = CompanyInfo::where('id',session('login.company_id'))->first();
 
             return view('settings',compact('company','country'));
 
@@ -389,7 +389,7 @@ class AccountController extends Controller
 
             $input = $request->all();
 
-            $old_logo = CompanyInfo::where('member_id',$user_id)->first();
+            $old_logo = CompanyInfo::where('id',session('login.company_id'))->first();
 
             $image= $request->file('company_logo');
             if (empty($image)) 
@@ -426,7 +426,7 @@ class AccountController extends Controller
             }
              
 
-            $result = CompanyInfo::where('member_id',$user_id)
+            $result = CompanyInfo::where('id',session('login.company_id'))
                                  ->update(array(
                                     'name'              => $input['name'],
                                     'email'             => strtolower(trim($input['email'])),

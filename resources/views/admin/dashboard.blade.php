@@ -150,7 +150,7 @@ try
           type: 'line',
           datasets: [{
             data: company,
-            label: 'Members',
+            label: 'Companies',
             backgroundColor: 'transparent',
             borderColor: 'rgba(255,255,255,.55)',
           },]

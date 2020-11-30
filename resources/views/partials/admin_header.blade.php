@@ -19,7 +19,7 @@
                                         </form>
                                     </div>
                                 </div>
-                                <div class="header-button-item has-noti js-item-menu">
+                                <!-- <div class="header-button-item has-noti js-item-menu">
                                     <i class="zmdi zmdi-notifications"></i>
                                     <div class="notifi-dropdown js-dropdown">
                                         <div class="notifi__title">
@@ -56,26 +56,26 @@
                                             <a href="#">All notifications</a>
                                         </div>
                                     </div>
-                                </div>
+                                </div> -->
                                 <div class="header-button-item mr-0 js-sidebar-btn">
                                     <i class="zmdi zmdi-menu"></i>
                                 </div>
                                 <div class="setting-menu js-right-sidebar d-none d-lg-block">
                                     <div class="account-dropdown__body">
                                         <div class="account-dropdown__item">
-                                            <a href="#">
+                                            <a href="{{route('admin_account')}}">
                                                 <i class="zmdi zmdi-account"></i>Account</a>
                                         </div>
-                                        <div class="account-dropdown__item">
+                                        <!-- <div class="account-dropdown__item">
                                             <a href="#">
                                                 <i class="zmdi zmdi-settings"></i>Setting</a>
                                         </div>
                                         <div class="account-dropdown__item">
                                             <a href="#">
                                                 <i class="zmdi zmdi-money-box"></i>Billing</a>
-                                        </div>
+                                        </div> -->
                                     </div>
-                                    <div class="account-dropdown__body">
+                                   <!--  <div class="account-dropdown__body">
                                         <div class="account-dropdown__item">
                                             <a href="#">
                                                 <i class="zmdi zmdi-globe"></i>Language</a>
@@ -92,7 +92,7 @@
                                             <a href="#">
                                                 <i class="zmdi zmdi-notifications"></i>Notifications</a>
                                         </div>
-                                    </div>
+                                    </div> -->
                                 </div>
                             </div>
                         </div>
@@ -108,15 +108,56 @@
                 <div class="menu-sidebar2__content js-scrollbar2 ps">
                     <div class="account2">
                        
-                        <h4 class="name">{{session('admin_login.user_name')}}</h4>
+                        <a href="{{route('admin_account')}}"><h4 class="name">{{session('admin_login.user_name')}}</h4></a>
                         <a href="{{route('sign-out')}}">Sign out</a>
+
                     </div>
+                        
+                        <div class="account-dropdown__body">
+                                        <div class="account-dropdown__item">
+                                            <a href="{{route('admin_account')}}">
+                                                <i class="zmdi zmdi-account"></i>Account</a>
+                                        </div>
+                                        <!-- <div class="account-dropdown__item">
+                                            <a href="#">
+                                                <i class="zmdi zmdi-settings"></i>Setting</a>
+                                        </div>
+                                        <div class="account-dropdown__item">
+                                            <a href="#">
+                                                <i class="zmdi zmdi-money-box"></i>Billing</a>
+                                        </div> -->
+                        </div>
+
+                   <hr>
                     <nav class="navbar-sidebar2">
                         <ul class="list-unstyled navbar__list">
-                            <li>
-                                <a href="#">
-                                <i class="fas fa-tachometer-alt"></i>Dashboard</a>
-                            </li>
+                            
+                        
+                       
+                        <li>
+                            <a href="{{route('admin_dashboard')}}">
+                            <i class="fas fa-tachometer-alt"></i>Dashboard</a>
+                        </li>
+
+                        <li>
+                            <a href="{{route('country-list')}}">
+                            <i class="fa fa-globe"></i>Countries</a>
+                        </li>
+
+                        <li>
+                            <a href="{{route('payment-method-list')}}">
+                            <i class="fas fa-dollar"></i>Payment Methods</a>
+                        </li>
+
+                        <li>
+                            <a href="{{route('members-list')}}">
+                            <i class="fas fa-users"></i>Members</a>
+                        </li>
+
+                        <li>
+                            <a href="{{route('website-modules')}}">
+                            <i class="fas fa-th"></i>Website Modules</a>
+                        </li>
                         </ul>
                     </nav>
                

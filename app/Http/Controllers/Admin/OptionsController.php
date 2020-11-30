@@ -87,7 +87,6 @@ class OptionsController extends Controller
                         "country_code"          => $input['country_code'],
                         "currency_short_name"   => $input['currency_short_name'],
                         "currency_standard_name" => $input['currency_standard_name'],
-                        "flag_icon"             => $input['flag_icon'],
                         );
                 if(Countries::where('id',$input['country_id'])->update($data))
                 {
@@ -155,7 +154,7 @@ class OptionsController extends Controller
                                                           <span class="switch-handle"></span>
                                                         </label>
                       </td>
-                      <td class="text-center"> <a class="btn btn-primary" href="javascript:void(0)" onclick='EditCountry("<?php echo $key['id']?>","<?php echo $key['name']?>","<?php echo $key['country_code']?>","<?php echo $key['currency_short_name']?>","<?php echo $key['currency_standard_name']?>","<?php echo $key['flag_icon']?>")'><i class="fa fa-edit tx-15"></i></a>&nbsp;&nbsp;&nbsp;<a class="btn btn-danger" onclick='DeleteCountry("<?php echo $key['id'] ?>")' href="javascript:void(0)"><i class="fa fa-trash tx-15"></i></a></td>
+                      <td class="text-center"> <a class="btn btn-primary" href="javascript:void(0)" onclick='EditCountry("<?php echo $key['id']?>","<?php echo $key['name']?>","<?php echo $key['country_code']?>","<?php echo $key['currency_short_name']?>","<?php echo $key['currency_standard_name']?>")'><i class="fa fa-edit tx-15"></i></a>&nbsp;&nbsp;&nbsp;<a class="btn btn-danger" onclick='DeleteCountry("<?php echo $key['id'] ?>")' href="javascript:void(0)"><i class="fa fa-trash tx-15"></i></a></td>
                     </tr>
 
                 <?php
@@ -235,6 +234,9 @@ class OptionsController extends Controller
 
 
 
+    //_________________________________________________________________________________
+    //_________________________________________________________________________________
+    //_________________________________________________________________________________
 
 
 
@@ -370,7 +372,7 @@ class OptionsController extends Controller
                 {
                 ?>
 
-                    <tr id="country<?php echo $key['id']?>">
+                    <tr id="payment<?php echo $key['id']?>">
                       <td><?php echo $key['name']?></td>
                       <td class="tx-center">
                                                         <label class="switch switch-3d switch-primary mr-3">
@@ -382,7 +384,7 @@ class OptionsController extends Controller
                                                         </label>
                                                     </td>
                                                     <td class="tx-center">
-                                                         <a class="btn btn-primary" href="javascript:void(0)" onclick='EditPayment("<?php echo $key['id']?>","<?php echo $key['name']?>")'><i class="fa fa-edit tx-15"></i></a>&nbsp;&nbsp;&nbsp;<a class="btn btn-danger" onclick='DeletePayment("<?php echo $key['id'] ?>")' href="javascript:void(0)"><i class="fa fa-trash tx-15"></i></a>
+                                                         <a class="btn btn-primary" href="javascript:void(0)" onclick='EditPayment("<?php echo $key['id']?>","<?php echo $key['name']?>")'><i class="fa fa-edit tx-15"></i></a>&nbsp;&nbsp;&nbsp;<!-- <a class="btn btn-danger" onclick='DeletePayment("<?php //echo $key['id'] ?>")' href="javascript:void(0)"><i class="fa fa-trash tx-15"></i></a> -->
                                                     </td>
 
                     </tr>

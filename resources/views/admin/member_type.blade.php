@@ -11,14 +11,14 @@
 
                 <div class="form-group">
                                         
-                    <input class="au-input au-input--full" type="text" name="search_text" id="payment_search_text" required="" style="padding-right: 105px;" placeholder="Enter Payment Name" onfocusout="SearchPayment(this.value)">
+                    <input class="au-input au-input--full" type="text" name="search_text" id="member_type_search_text" required="" style="padding-right: 105px;" placeholder="Enter Member Type Name" onfocusout="SearchMemberType(this.value)">
                     <button class="btn btn-primary" style="float: right;position: absolute; margin: 0px 0px 0px -43px; height: 44px;"><i class="fa fa-search"></i></button>
                 </div>
                                     
             </div>
             
             <div class="table-data__tool-right">
-                <button class="au-btn au-btn-icon au-btn--green au-btn--small" onclick="AddPayment()" type="button"><i class="zmdi zmdi-plus"></i>Add Payment Method</button>
+                <button class="au-btn au-btn-icon au-btn--green au-btn--small" onclick="AddMemberType()" type="button"><i class="zmdi zmdi-plus"></i>Add Member Type</button>
                                    
             </div>
         </div>
@@ -41,9 +41,9 @@
                                                     <th width="20%" class="tx-center">Action</th>
                                                 </tr>
                                             </thead>
-                                            <tbody style="font-size: 14px;" id="paymentTBody">
-                                                @foreach($payment_method as $key)
-                                                <tr id="payment{{$key['id']}}">
+                                            <tbody style="font-size: 14px;" id="member_typeTBody">
+                                                @foreach($member_type as $key)
+                                                <tr id="member_type{{$key['id']}}">
                                                     <!-- <td>
                                                         <label class="au-checkbox">
                                                             <input type="checkbox">
@@ -55,8 +55,8 @@
                                                     </td>
                                                    
                                                     <td class="tx-center">
-                                                         <label class="switch switch-3d switch-primary mr-3">
-                                                          <input id="visibility_value<?php echo $key['id']?>" onclick='PaymentStatus("<?php echo $key['id']?>","<?php echo $key['is_show']; ?>")' type="checkbox" class="switch-input"  <?php if ($key['is_show'] ==1): ?>
+                                                         <label  class="switch switch-3d switch-primary mr-3">
+                                                          <input  id="visibility_value<?php echo $key['id']?>" onclick='MemberTypeStatus("<?php echo $key['id']?>","<?php echo $key['is_show']; ?>")' type="checkbox" class="switch-input"  <?php if ($key['is_show'] ==1): ?>
                                                               checked
                                                           <?php endif ?> value="<?php echo $key['is_show'] ?>">
                                                           <span class="switch-label"></span>
@@ -64,7 +64,7 @@
                                                         </label>
                                                     </td>
                                                     <td class="tx-center">
-                                                         <a class="btn btn-primary" href="javascript:void(0)" onclick='EditPayment("<?php echo $key['id']?>","<?php echo $key['name']?>")'><i class="fa fa-edit tx-15"></i></a>&nbsp;&nbsp;&nbsp;<!-- <a class="btn btn-danger" onclick='DeletePayment("<?php //echo $key['id'] ?>")' href="javascript:void(0)"><i class="fa fa-trash tx-15"></i></a> -->
+                                                         <a class="btn btn-primary" href="javascript:void(0)" onclick='EditEMemberType("<?php echo $key['id']?>","<?php echo $key['name']?>")'><i class="fa fa-edit tx-15"></i></a>&nbsp;&nbsp;&nbsp;<!-- <a class="btn btn-danger" onclick='DeleteMemberType("<?php // echo $key['id'] ?>")' href="javascript:void(0)"><i class="fa fa-trash tx-15"></i></a> -->
                                                     </td>
 
                                                 </tr>
@@ -85,34 +85,34 @@
 
 <script type="text/javascript">
     
-    function AddPayment()
+    function AddMemberType()
     {
-        document.getElementById('payment_name').value = "";
-        document.getElementById('payment_id').value = "";
-        $('#PaymentModal').modal('show');
-        $('#PaymentModalLabel').html('Add Payment Method');
+        document.getElementById('member_type_name').value = "";
+        document.getElementById('member_type_id').value = "";
+        $('#MemberTypeModal').modal('show');
+        $('#MemberTypeModalLabel').html('Add Member Type');
 
-        document.getElementById('PaymentModal').style.backgroundColor="rgba(0,0,0,0.8)";
-        document.getElementById('PaymentModalDialog').style.paddingTop="0px";
-        document.getElementById('PaymentModalData').style.padding="20px 20px 0px 20px";
+        document.getElementById('MemberTypeModal').style.backgroundColor="rgba(0,0,0,0.8)";
+        document.getElementById('MemberTypeModalDialog').style.paddingTop="0px";
+        document.getElementById('MemberTypeModalData').style.padding="20px 20px 0px 20px";
 
     }
 
-    function EditPayment(id,name)
+    function EditEMemberType(id,name)
     {
-        document.getElementById('payment_name').value = name;
-        document.getElementById('payment_id').value = id;
+        document.getElementById('member_type_name').value = name;
+        document.getElementById('member_type_id').value = id;
 
 
-        $('#PaymentModal').modal('show');
-        $('#PaymentModalLabel').html('Edit Payment Method');
+        $('#MemberTypeModal').modal('show');
+        $('#MemberTypeModalLabel').html('Edit Member Type');
 
-        document.getElementById('PaymentModal').style.backgroundColor="rgba(0,0,0,0.8)";
-        document.getElementById('PaymentModalDialog').style.paddingTop="0px";
-        document.getElementById('PaymentModalData').style.padding="20px 20px 0px 20px";
+        document.getElementById('MemberTypeModal').style.backgroundColor="rgba(0,0,0,0.8)";
+        document.getElementById('MemberTypeModalDialog').style.paddingTop="0px";
+        document.getElementById('MemberTypeModalData').style.padding="20px 20px 0px 20px";
     }
 
-    function SearchPayment(value)
+    function SearchMemberType(value)
     {   
         var val = value.trim();
 
@@ -123,10 +123,10 @@
 
         $.ajax({
         type: "GET",
-        url: "{{ env('APP_URL')}}admin/get-payment-list-AJAX/"+val,
+        url: "{{ env('APP_URL')}}admin/get-member-type-list-AJAX/"+val,
         success: function(data) {
 
-            $('#paymentTBody').html(data);
+            $('#member_typeTBody').html(data);
         },
         error: function(jqXHR, textStatus, errorThrown) {
             alert('Exception:' + errorThrown);
@@ -134,7 +134,7 @@
     });
     }
 
-    function DeletePayment(id)
+    function DeleteMemberType(id)
     {
 
         var r = confirm("Are You Sure?");
@@ -145,7 +145,7 @@
 
         $.ajax({
             type: "GET",
-            url: "{{ env('APP_URL')}}admin/delete-payment-method/" + id,
+            url: "{{ env('APP_URL')}}admin/delete-member-type/" + id,
             success: function(data) {
                 
 
@@ -168,7 +168,7 @@
                                 }
                                 else
                                 {
-                                    document.getElementById("payment"+id).style.display="none";
+                                    document.getElementById("member_type"+id).style.display="none";
                                     document.getElementById('toast').style.visibility = "visible";
                                     document.getElementById('toast').className = "alert alert-success alert-rounded fadeIn animated";
                                     document.getElementById('toastMsg').innerHTML =  get_msg;
@@ -193,7 +193,7 @@
 
 
 
-    function PaymentStatus(id,status)
+    function MemberTypeStatus(id,status)
     {   
 
         status = document.getElementById("visibility_value"+id).value;
@@ -208,7 +208,7 @@
         }
         $.ajax({
         type: "GET",
-        url: "{{ env('APP_URL')}}admin/change-payment-availability/"+id +"/"+ status,
+        url: "{{ env('APP_URL')}}admin/change-member-type-availability/"+id +"/"+ status,
         beforeSend: function(){
                         },
         success: function(data) {

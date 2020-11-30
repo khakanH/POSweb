@@ -6,7 +6,26 @@
   <div class="section__content section__content--p30">
     <div class="container-fluid">
                         
-        <div class="user-data m-b-30">
+
+         <div class="table-data__tool">
+            <div class="table-data__tool-left">
+
+                <div class="form-group">
+                                        
+                    <input class="au-input au-input--full" type="text" name="search_text" id="member_search_text" required="" style="padding-right: 105px;" placeholder="Enter Member Name" onfocusout="SearchMember(this.value)">
+                    <button class="btn btn-primary" style="float: right;position: absolute; margin: 0px 0px 0px -43px; height: 44px;"><i class="fa fa-search"></i></button>
+                </div>
+                                    
+            </div>
+            
+            <div class="table-data__tool-right">
+                <a href="{{route('member-types')}}"><button class="au-btn au-btn-icon au-btn--green au-btn--small" type="button">Manage Member Types</button></a>
+                <a href="{{route('member-roles')}}"><button class="au-btn au-btn-icon au-btn--blue au-btn--small" type="button">Manage Member Roles</button></a>
+                                   
+            </div>
+        </div>
+
+        <div class="user-data">
                   
                                         <table class="table text-center">
                                             <thead>
@@ -24,7 +43,7 @@
                                                     <th width="20%" class="text-center">Action</th>
                                                 </tr>
                                             </thead>
-                                            <tbody style="font-size: 14px;">
+                                            <tbody style="font-size: 14px;" id="memberTBody">
                                                 @foreach($members as $key)
                                                 <tr id="row{{$key['id']}}">
                                                     <!-- <td>
@@ -72,7 +91,7 @@
                                         </table>
         </div>
 
-    
+    <br>
     </div>
   </div>
 </div>
@@ -166,6 +185,30 @@
 
 
     }
+
+    function SearchMember(value)
+    {   
+        var val = value.trim();
+
+        if (!val) 
+        {
+            val = "0";
+        }
+
+        $.ajax({
+        type: "GET",
+        url: "{{ env('APP_URL')}}admin/get-member-list-AJAX/"+val,
+        success: function(data) {
+
+            $('#memberTBody').html(data);
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            alert('Exception:' + errorThrown);
+        }
+    });
+    }
+
+
 </script>
 
 

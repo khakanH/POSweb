@@ -30,7 +30,7 @@ use App\Http\Controllers\Admin\ModuleController;
 Route::get('/api', function () {
 
 
-		$response = Http::withToken('1298b5eb-b252-3d97-8622-a4a69d5bf818')->post('https://gw.fbr.gov.pk/imsp/v1/api/Live/PostData',[
+		$response = Http::withToken('1298b5eb-b252-3d97-8622-a4a69d5bf818')->post('https://esp.fbr.gov.pk:8244/FBR/v1/api/Live/PostData',[
 		    
 		"InvoiceNumber"=>"",
 		"POSID"=>110014,
@@ -117,7 +117,7 @@ Route::post('save-new-password',[AccountController::class, 'SaveNewPassword'])->
 
 
 
-Route::get('verify-email/{phone}',[AccountController::class, 'VerifyEmail'])->name('verify-email');
+Route::get('verify-email/{email}',[AccountController::class, 'VerifyEmail'])->name('verify-email');
 
 
 
@@ -259,15 +259,37 @@ Route::prefix('admin')->group(function () {
 	Route::post('sign-in',[AdminController::class,'Login'])->name('sign-in');
 	Route::get('sign-out',[AdminController::class,'Logout'])->name('sign-out');
 
+
 	Route::middleware(['AdminLoginSession'])->group(function () 
 	{
         Route::get('admin_dashboard',[AdminController::class,'Dashboard'])->name('admin_dashboard');
+        
+        Route::get('admin_account',[AdminController::class,'Account'])->name('admin_account');
+		Route::post('save-profile-admin',[AdminController::class, 'SaveProfile'])->name('save-profile-admin');
+		Route::post('change-email-address-check-admin',[AdminController::class, 'ChangeEmailAddressCheck'])->name('change-email-address-check-admin');
+		Route::post('change-password-admin',[AdminController::class, 'ChangePassword'])->name('change-password-admin');
 
 
 
         Route::get('members-list',[MemberController::class,'MemberList'])->name('members-list');
         Route::get('get-member-details/{id}',[MemberController::class,'MemberDetails'])->name('get-member-details');
 		Route::get('block-unblock-member/{id}',[MemberController::class,'BlockUnblockMember'])->name('block-unblock-member');
+		Route::get('get-member-list-AJAX/{search_text}',[MemberController::class,'MemberListAJAX'])->name('get-member-list-AJAX');
+
+
+
+        Route::get('member-types',[MemberController::class,'MemberTypes'])->name('member-types');
+		Route::get('get-member-type-list-AJAX/{search_text}',[MemberController::class,'MemberTypeListAJAX'])->name('get-member-type-list-AJAX');
+		Route::post('add-update-member-type',[MemberController::class,'AddUpdateMemberType'])->name('add-update-member-type');
+		Route::get('delete-member-type/{id}',[MemberController::class,'DeleteMemberType'])->name('delete-member-type');
+		Route::get('change-member-type-availability/{id}/{status}',[MemberController::class,'ChangeMemberTypeAvailability'])->name('change-member-type-availability');
+
+        Route::get('member-roles',[MemberController::class,'MemberRoles'])->name('member-roles');
+        Route::post('save-roles',[MemberController::class,'SaveRoles'])->name('save-roles');
+
+
+        Route::get('get-member-roles-AJAX/{id}',[MemberController::class,'MemberRolesAJAX'])->name('get-member-roles-AJAX');
+
 	//_________________________________________________________________________________
 
 
@@ -292,6 +314,7 @@ Route::prefix('admin')->group(function () {
         Route::get('website-modules',[ModuleController::class,'WebsiteModule'])->name('website-modules');
 		Route::get('get-module-list-AJAX/{search_text}',[ModuleController::class,'ModuleListAJAX'])->name('get-module-list-AJAX');
 		Route::post('add-update-module',[ModuleController::class,'AddUpdateModule'])->name('add-update-module');
+		Route::get('delete-module/{id}',[ModuleController::class,'DeleteModule'])->name('delete-module');
 
 
 

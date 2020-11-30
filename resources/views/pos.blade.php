@@ -1178,6 +1178,16 @@
                 
                 change = parseFloat(val - total_bill);
 
+                if (change < 0) 
+                {
+                  document.getElementById("bill-payment-btn").disabled = true;
+                }
+                else
+                {
+                  document.getElementById("bill-payment-btn").disabled = false;
+
+                }
+
                 document.getElementById("bill_change").innerHTML = change.toFixed(2);
                 document.getElementById("bill_cash_change").value = change.toFixed(2);
               }

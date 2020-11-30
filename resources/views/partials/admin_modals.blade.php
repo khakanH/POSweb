@@ -73,7 +73,7 @@
                           </div>
                         </div>
                         <br>
-                        <div class="row">
+                        <div class="row" id="country_flag_div">
                           <div class="col-lg-12"> 
                             <label>Country Flag:</label><br>
                             <span style="font-size: 12px; width: 100%;  z-index: 1; display: flex; margin: 0px;"><select id="myDropdown" name="flag_list" class="form-control" required="">
@@ -177,7 +177,7 @@
 
 
 
-<!-- Payment Method Modal                                         -->
+<!-- Module Modal                                         -->
 <!-- ----------------------------------------------------------------------------------------------------- -->
 
 <div id="ModuleModal" class="modal fade show " tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-modal="true" aria-hidden="true" style="color: black;">
@@ -197,21 +197,22 @@
                       <div class="" id="ModuleModalData">
 
                         <input type="hidden" id="module_id" name="module_id">
+                        <input type="hidden" id="module_parent_id" name="module_parent_id">
 
 
                         
                         <div class="row">
-                          <div class="col-lg-6"> 
-                            <label>Mdoule Name:</label>
+                          <div class="col-lg-12"> 
+                            <label>Module Name:</label>
                             <input type="text" id="module_name" name="module_name" class="form-control" placeholder="Enter Module Name"></div>
-                            <div class="col-lg-6"> 
-                            <label>Mdoule Route:</label>
+                            <div class="col-lg-12"> 
+                            <label>Module Route:</label>
                             <input type="text" id="module_route" name="module_route" class="form-control" placeholder="Enter Module Route"></div>
                         </div>
                         <br>
                         <div class="row">
                           <div class="col-lg-6"> 
-                            <label>Mdoule Icon:</label>
+                            <label>Module Icon:</label>
                             <input type="hidden" name="icon" id="icon" value="">
                                         <button style="width: 100%;" data-selected="graduation-cap" type="button" class="btn btn-small btn-rounded btn-dark-solid icp demo dropdown-toggle iconpicker-component" data-toggle="dropdown">
                                             Select Icon &nbsp;&nbsp;&nbsp; <i id="selected_icon" class=""></i>
@@ -246,6 +247,60 @@
 <!-- ----------------------------------------------------------------------------------------------------- -->
 <!-- ----------------------------------------------------------------------------------------------------- -->
 
+
+
+
+<!-- Member Type Modal                                         -->
+<!-- ----------------------------------------------------------------------------------------------------- -->
+
+<div id="MemberTypeModal" class="modal fade show " tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-modal="true" aria-hidden="true" style="color: black;">
+    <div class="modal-dialog" id="MemberTypeModalDialog">
+        <div class="modal-content" id="MemberTypeModalContent">
+           
+            <form name="memberTypeForm" enctype="multipart/form-data" id="memberTypeForm">
+              @csrf
+               <span class='arrow'>
+              <label class='error'></label>
+              </span>
+                  <div class="modal-header">
+                      <h4 class="modal-title" id="MemberTypeModalLabel"></h4>
+                      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                  </div>
+                  <div class="modal-body">
+                      <div class="" id="MemberTypeModalData">
+
+                        <input type="hidden" id="member_type_id" name="member_type_id">
+
+
+                        
+                        <div class="row">
+                          <div class="col-lg-12"> 
+                            <label>Member Type Name:</label>
+                            <input type="text" id="member_type_name" name="member_type_name" class="form-control" placeholder="Enter Member Type Name"></div>
+                        </div>
+                        
+
+                      </div>
+              
+
+                      </div>
+                  <div class="modal-footer" id="MemberTypeModalFooter">
+                      <button type="button" class="btn btn-danger waves-effect" data-dismiss="modal">Close</button>
+                      <button type="submit" class="btn btn-info ">Save</button>
+
+                  </div>
+            </form>
+
+
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+<!-- ----------------------------------------------------------------------------------------------------- -->
+<!-- ----------------------------------------------------------------------------------------------------- -->
+<!-- ----------------------------------------------------------------------------------------------------- -->
 
 
 
@@ -628,6 +683,113 @@ $(function() {
     }
   });
   });
+
+
+
+// ----------------------------------------------------------------------------------------------------
+// ----------------------------------------------------------------------------------------------------
+// ----------------------------------------------------------------------------------------------------
+
+
+$(function() {
+        $("form[name='memberTypeForm']").validate({
+             errorPlacement: function(label, element) {
+        label.addClass('arrow');
+        label.css({"color": "red", "font-size": "12px" ,"width":"100%"});
+        label.insertAfter(element);
+    },
+    wrapper: 'span',
+
+    rules: {
+      member_type_name: {
+        required: true,
+      },
+     
+     
+     
+
+    },
+    messages: {
+      member_type_name: {
+        required: "Please Provide a Member Type Name",
+      },
+      
+    },
+    submitHandler: function(form) {
+
+        let myForm = document.getElementById('memberTypeForm');
+        let formData = new FormData(myForm);
+
+         $.ajax({
+        type: "POST",
+        url: "{{ env('APP_URL')}}admin/add-update-member-type",
+        enctype: 'multipart/form-data',
+        data: formData,
+        processData: false,
+        contentType: false,
+        beforeSend: function(){
+                            $('#MemberTypeModal').modal('hide');
+                            $('#LoadingModal').modal('show');
+                        },
+        success: function(data) {
+           
+                            $('#LoadingModal').modal('hide');
+
+            get_status = data['status'];
+            get_msg    = data['msg'];
+
+                            if (get_status == "0") 
+                            {
+
+                             document.getElementById('toast').style.visibility = "visible";
+                                document.getElementById('toast').className = "alert alert-danger alert-rounded fadeIn animated";
+                                document.getElementById('toastMsg').innerHTML = get_msg;
+
+
+                                 setTimeout(function() {
+                             document.getElementById('toast').style.visibility = "hidden";
+                                
+                            }, 5000);
+
+                            }
+                            else
+                            {
+                                document.getElementById('toast').style.visibility = "visible";
+                                document.getElementById('toast').className = "alert alert-success alert-rounded fadeIn animated";
+                                document.getElementById('toastMsg').innerHTML = get_msg;
+
+
+                                 setTimeout(function() {
+                             document.getElementById('toast').style.visibility = "hidden";
+                                
+
+                            }, 5000);
+
+
+                            }
+
+                            var search_text = (document.getElementById("member_type_search_text").value.trim() == "")?"0":document.getElementById("member_type_search_text").value.trim();
+        $.ajax({
+        type: "GET",
+        url: "{{ env('APP_URL')}}admin/get-member-type-list-AJAX/"+search_text,
+        success: function(data) {
+
+            $('#member_typeTBody').html(data);
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            alert('Exception:' + errorThrown);
+        }
+    });
+
+
+    }
+  });
+
+    }
+  });
+  });
+
+
 
 
 

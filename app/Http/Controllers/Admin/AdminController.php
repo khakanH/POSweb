@@ -11,9 +11,11 @@ use App\Models\Members;
 use App\Models\CompanyInfo;
 use DB;
 
+use App\Traits\CommonTrait;
+
 class AdminController extends Controller
 {
-
+    use CommonTrait;
     public function __construct(Request $request)
     {   
     }
@@ -125,6 +127,166 @@ class AdminController extends Controller
 
 
     }
+
+
+
+
+
+
+
+
+
+    public function Account(Request $request)
+    {
+        
+        try 
+        {   
+            $user_id = session("admin_login.user_id");
+
+            $user_info = $this->checkUserAvailbility($user_id,$request);
+            
+
+            return view('admin.account',compact("user_info"));
+
+
+        } 
+        catch (Exception $e) 
+        {
+            return response()->json($e,500);
+        }
+
+
+    }
+
+
+    public function SaveProfile(Request $request)
+    {
+        try 
+        {
+            $user_id = session("admin_login")['user_id'];
+
+            $user_info = $this->checkUserAvailbility($user_id,$request);
+
+            $input = $request->all();
+
+             
+
+            $result = Admin::where('id',$user_id)
+                                 ->update(array(
+                                    'name'              => $input['name'],
+                                 ));
+
+            if ($result) 
+            {
+
+                $request->session()->put("admin_login.user_name",$input['name']);                
+
+
+                return array("status"=>"1","msg"=>"Profile Information Saved Successfully.");
+            }
+            else
+            {
+                return array("status"=>"0","msg"=>"Failed.");
+
+            }
+        } 
+        catch (Exception $e) 
+        {
+            return response()->json($e,500);
+        }
+    }
+
+
+
+    public function ChangeEmailAddressCheck(Request $request)
+    {
+        try 
+        {
+
+            $user_id = session("admin_login")["user_id"];
+
+            $user_info = $this->checkUserAvailbility($user_id,$request);
+
+            $input = $request->all();
+            
+            $new_email_add = strtolower(trim($input['new_email']));
+
+            if (!Hash::check($input['password'],$user_info->password)) 
+            {
+                return array("status"=>"0","msg"=>"Sorry, Invalid Account Password Entered.");
+            }
+            else
+            {
+                if (Admin::where('email',$new_email_add)->count() != 0) 
+                {
+                    return array("status"=>"0","msg"=>"Sorry, This Email Address (".$new_email_add.") Already Exist.");
+                }
+                else
+                {   
+                   
+                    if(Admin::where('id',$user_id)->update(array('email'=>$new_email_add)))
+                    {   
+                        return array("status"=>"1","msg"=>"Email Address Updated Successfully");
+                    }
+                }
+            }
+
+
+
+        } 
+        catch (Exception $e) 
+        {
+            
+        }
+    
+    }
+
+
+    public function ChangePassword(Request $request)
+    {
+        try 
+        {
+
+            $user_id = session("admin_login")["user_id"];
+
+            $user_info = $this->checkUserAvailbility($user_id,$request);
+
+            $input = $request->all();
+            
+            if (!Hash::check($input['current_pass'],$user_info->password)) 
+            {
+                return array("status"=>"0","msg"=>"Sorry, Invalid Current Password Entered.");
+            }
+            else
+            {
+                if (Admin::where('id',$user_id)->update(array('password'=>Hash::make($input['new_pass'])))) 
+                {
+                    return array("status"=>"1","msg"=>"Password Updated Successfully.");
+                }
+                else
+                {
+                    return array("status"=>"0","msg"=>"Ops, Something Went Wrong, Try Again Later");
+                }
+            }
+
+
+
+        } 
+        catch (Exception $e) 
+        {
+            
+        }
+    
+    }
+
+
+
+
+
+
+
+
+
 
 
     public function Logout(Request $request)

@@ -30,9 +30,14 @@ class ModuleController extends Controller
 
             $user_info = $this->checkUserAvailbility($user_id,$request);
             
-            $modules= Modules::where('parent_id',0)->get();
+            $modules= Modules::where('parent_id',0)->orderBy('id','asc')->get();
 
-            return view('admin.website_module',compact("modules"));            
+            foreach ($modules as $key) 
+            {
+                $sub_modules[] = Modules::where('parent_id',$key['id'])->get();
+            }
+
+            return view('admin.website_module',compact("modules","sub_modules"));            
 
         } 
         catch (Exception $e) 
@@ -55,22 +60,48 @@ class ModuleController extends Controller
             
             if (empty($input['module_id'])) 
             {   
-                $data = array(
-                        "name"                  => $input['module_name'],
-                        "route"                 => $input['module_route'],
-                        "icon"                  => $input['icon'],
-                        "parent_id"             => 0,
-                        "created_at"            => date('Y-m-d H:i:s'),
-                        "updated_at"            => date('Y-m-d H:i:s'),
-                        );
-                if(Modules::insert($data))
-                {
-                    return array("status"=>"1","msg"=>"Module Added Successfully.");
+
+                if (empty($input['module_parent_id'])) 
+                {   
+                    //adding module
+                    $data = array(
+                            "name"                  => $input['module_name'],
+                            "route"                 => $input['module_route'],
+                            "icon"                  => isset($input['icon'])?$input['icon']:"fas fa-circle",
+                            "parent_id"             => 0,
+                            "created_at"            => date('Y-m-d H:i:s'),
+                            "updated_at"            => date('Y-m-d H:i:s'),
+                            );
+                    if(Modules::insert($data))
+                    {
+                        return array("status"=>"1","msg"=>"Module Added Successfully.");
+                    }
+                    else
+                    {
+                        return array("status"=>"0","msg"=>"Failed");
+
+                    }
                 }
                 else
                 {
-                    return array("status"=>"0","msg"=>"Failed");
+                    //adding sub-module
+                    $data = array(
+                            "name"                  => $input['module_name'],
+                            "route"                 => $input['module_route'],
+                            "icon"                  => isset($input['icon'])?$input['icon']:"fas fa-circle",
+                            "parent_id"             => $input['module_parent_id'],
+                            "created_at"            => date('Y-m-d H:i:s'),
+                            "updated_at"            => date('Y-m-d H:i:s'),
+                            );
+                    if(Modules::insert($data))
+                    {
+                        return array("status"=>"1","msg"=>"Sub-Module Added Successfully.");
+                    }
+                    else
+                    {
+                        return array("status"=>"0","msg"=>"Failed");
 
+                    }
                 }
             }
             else
@@ -131,15 +162,24 @@ class ModuleController extends Controller
             {
 
                 foreach ($get_module_list as $key) 
-                {
+                { 
+
+                $sub_modules = Modules::where('parent_id',$key['id'])->get();
+
                 ?>
 
-                    <tr id="country<?php echo $key['id']?>">
-                      <td><?php echo $key['name']?></td>
-                      <td><?php echo $key['route']?></td>
-                      <td><i class="<?php echo $key['icon']?> tx-24"></i></td>
+                    <tr id="module<?php echo $key['id']?>">
+                        <td><?php echo $key['name']?></td>
+                        <td><?php echo $key['route']?></td>
+                        <td><i class="<?php echo $key['icon']?> tx-24"></i></td>
+                        <td>
+                        <?php foreach($sub_modules as $key_): ?>
+                            <li id="sub_modules<?php echo $key_['id']?>"><a href="javascript:void(0)" onclick='EditSubModule("<?php echo $key_['id']?>","<?php echo $key_['name']?>","<?php echo $key_['route']?>","<?php echo $key_['icon']?>")'> <?php echo $key_['name']; ?></a><a onclick='DeleteSubModule("<?php echo $key_['id'] ?>")' data-toggle="tooltip" title="Delete Sub-Module" class="tx-danger" style="float: right;" href="javascript:void(0)"><i class="fa fa-times-circle"></i></a></li>
+                        <?php endforeach; ?>
+                        </td>
+
                        <td class="tx-center">
-                                                         <a class="btn btn-primary" href="javascript:void(0)" onclick='EditModule("<?php echo $key['id']?>","<?php echo $key['name']?>","<?php echo $key['route']?>","<?php echo $key['icon']?>")'><i class="fa fa-edit tx-15"></i></a>&nbsp;&nbsp;&nbsp;<a class="btn btn-danger" onclick='DeleteModule("<?php echo $key['id'] ?>")' href="javascript:void(0)"><i class="fa fa-trash tx-15"></i></a>
+                                                         <a data-toggle="tooltip" title="Add Sub-Module" class="btn btn-success" href="javascript:void(0)" onclick='AddSubModule("<?php echo $key['id']?>")'><i class="fa fa-plus tx-15"></i></a>&nbsp;&nbsp;&nbsp;<a class="btn btn-primary" href="javascript:void(0)" onclick='EditModule("<?php echo $key['id']?>","<?php echo $key['name']?>","<?php echo $key['route']?>","<?php echo $key['icon']?>")'><i class="fa fa-edit tx-15"></i></a>&nbsp;&nbsp;&nbsp;<a class="btn btn-danger" onclick='DeleteModule("<?php echo $key['id'] ?>")' href="javascript:void(0)"><i class="fa fa-trash tx-15"></i></a>
                                                     </td>
 
 
@@ -155,6 +195,33 @@ class ModuleController extends Controller
             
         }
     }
+
+
+
+    public function DeleteModule(Request $request,$id)
+    {
+        try 
+        {
+            $user_id = session("admin_login.user_id");
+
+            $user_info = $this->checkUserAvailbility($user_id,$request);
+
+
+            if(Modules::where('id',$id)->delete())
+            {
+                Modules::where('parent_id',$id)->delete();
+                return array("status"=>"1","msg"=>"Module Deleted Successfully.");
+            }
+            else
+            {
+                return array("status"=>"0","msg"=>"Failed to Delete Module.");
+            }
+        } catch (Exception $e) 
+        {
+            
+        }
+    }
+
 
 
 

@@ -126,6 +126,7 @@ class BillController extends Controller
         catch (Exception $e) 
         {
             
+            return response()->json($e,500);
         }
 
     }
@@ -233,6 +234,7 @@ class BillController extends Controller
         catch (Exception $e) 
         {
             
+            return response()->json($e,500);
         }
 
     } 
@@ -299,6 +301,7 @@ class BillController extends Controller
         } 
         catch (Exception $e) 
         {
+            return response()->json($e,500);
             
         }
     }
@@ -326,6 +329,7 @@ class BillController extends Controller
         } 
         catch (Exception $e) 
         {
+            return response()->json($e,500);
             
         }
     }
@@ -372,6 +376,7 @@ class BillController extends Controller
         } 
         catch (Exception $e) 
         {
+            return response()->json($e,500);
             
         }
     }
@@ -415,6 +420,7 @@ class BillController extends Controller
         } 
         catch (Exception $e) 
         {
+            return response()->json($e,500);
             
         }
     }
@@ -440,6 +446,7 @@ class BillController extends Controller
         } 
         catch (Exception $e) 
         {
+            return response()->json($e,500);
             
         }
     }
@@ -534,7 +541,7 @@ class BillController extends Controller
                         );
                     }
 
-                    $response = Http::post('http://localhost:8524/api/IMSFiscal/GetInvoiceNumberByModel',[
+                    $response = Http::withToken('1298b5eb-b252-3d97-8622-a4a69d5bf818')->post('https://gw.fbr.gov.pk/imsp/v1/api/Live/PostData',[
     
                                 "InvoiceNumber"      => "",
                                 "POSID"              => (int)"",
@@ -588,6 +595,7 @@ class BillController extends Controller
         catch (Exception $e) 
         {
             
+            return response()->json($e,500);
         }
     }
 
@@ -654,6 +662,7 @@ class BillController extends Controller
         catch (Exception $e) 
         {
             
+            return response()->json($e,500);
         }
     }
 
@@ -799,6 +808,7 @@ class BillController extends Controller
         } 
         catch (Exception $e) 
         {
+            return response()->json($e,500);
             
         }
     }

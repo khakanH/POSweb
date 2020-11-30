@@ -198,7 +198,7 @@ class UserController extends Controller
             
 
                  
-            $get_type = MemberType::where('id','!=',1)->orderBy('id','asc')->get();
+            $get_type = MemberType::where('id','!=',1)->where('is_show',1)->orderBy('id','asc')->get();
            
             
             if (count($get_type)==0) 

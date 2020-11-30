@@ -75,7 +75,7 @@
                                                         </label>
                                                     </td>
                                                     <td class="text-center">
-                                                         <a class="btn btn-primary" href="javascript:void(0)" onclick='EditCountry("<?php echo $key['id']?>","<?php echo $key['name']?>","<?php echo $key['country_code']?>","<?php echo $key['currency_short_name']?>","<?php echo $key['currency_standard_name']?>","<?php echo $key['flag_icon']?>")'><i class="fa fa-edit tx-15"></i></a>&nbsp;&nbsp;&nbsp;<a class="btn btn-danger" onclick='DeleteCountry("<?php echo $key['id'] ?>")' href="javascript:void(0)"><i class="fa fa-trash tx-15"></i></a>
+                                                         <a class="btn btn-primary" href="javascript:void(0)" onclick='EditCountry("<?php echo $key['id']?>","<?php echo $key['name']?>","<?php echo $key['country_code']?>","<?php echo $key['currency_short_name']?>","<?php echo $key['currency_standard_name']?>")'><i class="fa fa-edit tx-15"></i></a>&nbsp;&nbsp;&nbsp;<a class="btn btn-danger" onclick='DeleteCountry("<?php echo $key['id'] ?>")' href="javascript:void(0)"><i class="fa fa-trash tx-15"></i></a>
                                                     </td>
 
                                                 </tr>
@@ -103,6 +103,7 @@
         document.getElementById('currency_short_name').value = "";
         document.getElementById('currency_standard_name').value = "";
         document.getElementById('country_id').value = "";
+        document.getElementById('country_flag_div').style.display = "block";
         document.getElementById('myDropdown').value = "";
         $('#CountryModal').modal('show');
         $('#CountryModalLabel').html('Add Country');
@@ -126,15 +127,15 @@
 
     }
 
-    function EditCountry(id,name,code,currency_short,currency_standard,flag_icon)
+    function EditCountry(id,name,code,currency_short,currency_standard)
     {
         document.getElementById('country_name').value = name;
         document.getElementById('country_code').value = code;
         document.getElementById('currency_short_name').value = currency_short;
         document.getElementById('currency_standard_name').value = currency_standard;
         document.getElementById('country_id').value = id;
-        document.getElementById('myDropdown').value = flag_icon;
-
+        document.getElementById('country_flag_div').style.display = "none";
+        
 
         $('#CountryModal').modal('show');
         $('#CountryModalLabel').html('Edit Country');
