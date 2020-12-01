@@ -104,6 +104,11 @@ class AccountController extends Controller
                                          );
                     CompanyInfo::insert($company_info);
 
+                    $title       = "New User Registered. Username: ".$input['username'];
+                    $description = $input['username']." has created a new account with Email: ".strtolower(trim($input['email']))." on ".date("d-M-Y h:i a");
+                    $this->SaveNotification(1,$id,0,$title,$description,1);
+
+
                     $request->session()->put("success","Account Created Successfully!");
                     return view('verify_email',["email"=>strtolower(trim($input['email'])),'verification_type'=>1]);
             }

@@ -32,6 +32,14 @@
                             <a href="{{route('members-list')}}">
                             <i class="fas fa-users"></i>Members</a>
                         </li>
+                        <li>
+                            <a href="{{route('member-types')}}">
+                            <i class="fa fa-bars"></i>Member Types</a>
+                        </li>
+                        <li>
+                            <a href="{{route('member-roles')}}">
+                            <i class="fa fa-gears"></i>Member Roles</a>
+                        </li>
 
                         <li>
                             <a href="{{route('website-modules')}}">

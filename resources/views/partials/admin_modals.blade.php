@@ -313,6 +313,78 @@
 
 
 
+<!-- Notification Modal                                         -->
+<!-- ----------------------------------------------------------------------------------------------------- -->
+
+<div id="NotificationModal" class="modal fade show " tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-modal="true" aria-hidden="true" style="color: black;">
+    <div class="modal-dialog" id="NotificationModalDialog">
+        <div class="modal-content" id="NotificationModalContent">
+           
+            <form name="notificationForm" enctype="multipart/form-data" id="notificationForm">
+              @csrf
+               <span class='arrow'>
+              <label class='error'></label>
+              </span>
+                  <div class="modal-header">
+                      <h4 class="modal-title" id="NotificationModalLabel"></h4>
+                      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                  </div>
+                  <div class="modal-body">
+                      <div class="" id="NotificationModalData">
+
+                        <input type="hidden" id="receiver_id" name="receiver_id">
+
+
+                        
+                        <div class="row">
+                          <div class="col-lg-12"> 
+                            <label>Title:</label>
+                            <input type="text" id="notifi_title" name="notifi_title" class="form-control" placeholder="Enter Notification Title"></div>
+                            
+                        </div>
+                        <div class="row">
+                          <div class="col-lg-12"> 
+                            <label>Description:</label>
+                            <textarea class="form-control" rows="3" name="notifi_description" id="notifi_description" placeholder="Enter Notification Description"></textarea></div>
+                        </div>
+                        <div class="row">
+                          <div class="col-lg-12"> 
+                            <label>Type:</label>
+                            <select class="form-control" name="notifi_type" id="notifi_type">
+                              <option value="1">Info</option>
+                              <option value="2">Warning</option>
+                              <option value="3">Danger</option>
+                              <option value="4">Other</option>
+                            </select>  
+                          </div>
+                        </div>
+
+                      </div>
+              
+
+                      </div>
+                  <div class="modal-footer" id="NotificationModalFooter">
+                      <button type="button" class="btn btn-danger waves-effect" data-dismiss="modal">Close</button>
+                      <button type="submit" class="btn btn-info ">Save</button>
+
+                  </div>
+            </form>
+
+
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+<!-- ----------------------------------------------------------------------------------------------------- -->
+<!-- ----------------------------------------------------------------------------------------------------- -->
+<!-- ----------------------------------------------------------------------------------------------------- -->
+
+
+
+
+
 
 
 
@@ -801,10 +873,106 @@ $(function() {
 
 
 
+$(function() {
+        $("form[name='notificationForm']").validate({
+             errorPlacement: function(label, element) {
+        label.addClass('arrow');
+        label.css({"color": "red", "font-size": "12px" ,"width":"100%"});
+        label.insertAfter(element);
+    },
+    wrapper: 'span',
+
+    rules: {
+      notifi_title: {
+        required: true,
+      },
+      
+      notifi_type: {
+        required: true,
+      },
+     
+     
+     
+
+    },
+    messages: {
+      notifi_title: {
+        required: "Please Provide a Notification Title",
+      },
+      
+      notifi_type: {
+        required: "Please Select a Notification Type",
+      },
+     
+      
+    },
+    submitHandler: function(form) {
+
+        let myForm = document.getElementById('notificationForm');
+        let formData = new FormData(myForm);
+
+         $.ajax({
+        type: "POST",
+        url: "{{ env('APP_URL')}}admin/send-notification-to-users",
+        enctype: 'multipart/form-data',
+        data: formData,
+        processData: false,
+        contentType: false,
+        beforeSend: function(){
+                            $('#NotificationModal').modal('hide');
+                            $('#LoadingModal').modal('show');
+                        },
+        success: function(data) {
+           
+                            $('#LoadingModal').modal('hide');
+
+            get_status = data['status'];
+            get_msg    = data['msg'];
+
+                            if (get_status == "0") 
+                            {
+
+                             document.getElementById('toast').style.visibility = "visible";
+                                document.getElementById('toast').className = "alert alert-danger alert-rounded fadeIn animated";
+                                document.getElementById('toastMsg').innerHTML = "Failed, Try Again Later";
+
+
+                                 setTimeout(function() {
+                             document.getElementById('toast').style.visibility = "hidden";
+                                
+                            }, 5000);
+
+                            }
+                            else
+                            {
+                                document.getElementById('toast').style.visibility = "visible";
+                                document.getElementById('toast').className = "alert alert-success alert-rounded fadeIn animated";
+                                document.getElementById('toastMsg').innerHTML = get_msg;
+
+
+                                 setTimeout(function() {
+                             document.getElementById('toast').style.visibility = "hidden";
+                                
+
+                            }, 5000);
+
+
+                            }
+
+    }
+  });
+
+    }
+  });
+  });
 
 
 
 
+
+// ----------------------------------------------------------------------------------------------------
+// ----------------------------------------------------------------------------------------------------
+// ----------------------------------------------------------------------------------------------------
 
 
 

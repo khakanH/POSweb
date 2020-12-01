@@ -9,7 +9,7 @@
     <link href="{{ asset('vendor/mdi-font/css/material-design-iconic-font.min.css') }}" rel="stylesheet" media="all">
 
     <!-- Bootstrap CSS-->
-    <link href="{{ asset('vendor/bootstrap-4.1/bootstrap.min.css') }}" rel="stylesheet" media="all">
+    <link href="{{ asset('vendor/bootstrap-4.1/bootstrap.min.css?'.time().'') }}" rel="stylesheet" media="all">
 
     <!-- Vendor CSS-->
     <link href="{{ asset('vendor/animsition/animsition.min.css') }}" rel="stylesheet" media="all">

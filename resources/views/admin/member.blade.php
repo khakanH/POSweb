@@ -55,7 +55,7 @@
                                                     <td>
                                                         {{$key['username']}}
                                                     </td>
-                                                    <td>
+                                                    <td style="word-break: break-all;">
                                                         {{$key['email']}}
                                                         
                                                     </td>
@@ -84,6 +84,7 @@
                                                     "></i></a>
 
                                                     <a data-toggle="tooltip" title="View Member Details" class="btn btn-primary" href="javascript:void(0)" onclick='ViewMember("<?php echo $key['id']?>")'><i class="fa fa-eye tx-15"></i></a>
+                                                    <a data-toggle="tooltip" title="Send Notification" class="btn btn-info" href="javascript:void(0)" onclick='SendMemberNotification("<?php echo $key['id']?>")'><i class="fa fa-comments tx-15"></i></a>
                                                     </td>
                                                 </tr>
                                                 @endforeach
@@ -208,6 +209,22 @@
     });
     }
 
+
+    function SendMemberNotification(id)
+    {
+        document.getElementById('notifi_title').value = "";
+        document.getElementById('notifi_description').value = "";
+        document.getElementById('receiver_id').value = id;
+        document.getElementById('notifi_type').value = "1";
+
+
+        $('#NotificationModal').modal('show');
+        $('#NotificationModalLabel').html('Send Notification To Member');
+
+        document.getElementById('NotificationModal').style.backgroundColor="rgba(0,0,0,0.8)";
+        document.getElementById('NotificationModalDialog').style.paddingTop="0px";
+        document.getElementById('NotificationModalData').style.padding="20px 20px 0px 20px";
+    }
 
 </script>
 

@@ -47,7 +47,20 @@
                     <div class="header__tool">
                         
                         <div class="account-wrap">
+                        <div id="bell_icon" class="header-button-item js-item-menu">
+                            <i class="zmdi zmdi-notifications"></i>
+                            <div class="notifi-dropdown notifi-dropdown--no-bor js-dropdown" >
+                                
+                                <div id="notifications-div" style="max-height: 400px; overflow: auto;">
+                                    
+                                <!-- <div class="notifi__footer">
+                                    <a href="#">All notifications</a>
+                                </div> -->
+                                </div>
+                            </div>
+                        </div>
                             <div class="account-item account-item--style2 clearfix js-item-menu">
+                       
                                 <div class="image">
                                     <img style="min-width: 50px; min-height: 50px; " src="{{env('IMG_URL')}}{{session('login')['user_image']}}" alt="John Doe" />
                                 </div>
@@ -154,6 +167,18 @@
             <div class="header__tool">
                 
                 <div class="account-wrap">
+                     <div id="bell_icon_mob-dev" class="header-button-item js-item-menu">
+                            <i class="zmdi zmdi-notifications"></i>
+                            <div class="notifi-dropdown notifi-dropdown--no-bor js-dropdown" >
+                                
+                                <div id="notifications-div_mob-dev" style="max-height: 400px; overflow: auto;">
+                                    
+                                <!-- <div class="notifi__footer">
+                                    <a href="#">All notifications</a>
+                                </div> -->
+                                </div>
+                            </div>
+                        </div>
                     <div class="account-item account-item--style2 clearfix js-item-menu">
                       
                         <div class="content">
@@ -188,3 +213,74 @@
                 </div>
             </div>
         </div>
+
+
+
+
+
+<script type="text/javascript">
+    function NewNotification()
+    {
+      $.ajax({
+            type: "GET",
+            url: "{{ env('APP_URL')}}new-notifications-users",
+            success: function(data) {
+            
+              $('#notifications-div_mob-dev').html(data);
+              $('#notifications-div').html(data);
+
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                alert('Exception:' + errorThrown);
+            }
+          });
+    }
+
+
+    function NotificationAlert()
+    {
+      $.ajax({
+            type: "GET",
+            url: "{{ env('APP_URL')}}notification-alert",
+            success: function(data) {
+
+              get_status = data['status'];
+
+              if (get_status == "0") 
+              {
+                document.getElementById("bell_icon").classList.remove("has-noti");
+                document.getElementById("bell_icon_mob-dev").classList.remove("has-noti");
+              }
+              else
+              {
+                document.getElementById("bell_icon").classList.add("has-noti");
+                document.getElementById("bell_icon_mob-dev").classList.add("has-noti");
+              }
+
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                alert('Exception:' + errorThrown);
+            }
+          });
+    }
+
+    document.addEventListener("DOMContentLoaded", function(event) { 
+     setInterval(NewNotification,3000);  
+     setInterval(NotificationAlert,3000);  
+    });
+
+    function MarkNotificationRead(id)
+    {
+      $.ajax({
+        type: "GET",
+        url: "{{ env('APP_URL')}}mark-notification-read-user/"+id,
+        success: function(data) {
+            document.getElementById("newNotifiDot"+id).style.display = "none";
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            alert('Exception:' + errorThrown);
+        }
+    });
+    }
+
+</script>

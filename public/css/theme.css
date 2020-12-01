@@ -261,7 +261,7 @@ section {
 }
 
 .section__content--p35 {
-    padding: 0 20px;
+    padding: 0 10px;
 }
 
 /* ----- Page Wrapper----- */
@@ -1395,6 +1395,7 @@ section {
 
 .account-wrap {
     position: relative;
+    display: flex;
 }
 
 .account-item {
@@ -2424,7 +2425,7 @@ section {
 }
 
 .header-button-item {
-    font-size: 30px;
+    font-size: 23px;
     color: #fff;
     margin-right: 34px;
     position: relative;
@@ -2634,7 +2635,7 @@ section {
 .header3-wrap .header__navbar {
     width: 100%;
     position: absolute;
-    left: 50%;
+    left: 48%;
     -webkit-transform: translateX(-50%);
     -moz-transform: translateX(-50%);
     -ms-transform: translateX(-50%);
@@ -2816,16 +2817,18 @@ section {
 }
 
 .header__tool .notifi-dropdown {
-    left: -68px;
+    left: -222px;
     top: 53px;
+    
+
 }
 
 .header__tool .notifi-dropdown::before {
-    left: 70px;
+    left: 219px;
 }
 
 .header__tool .header-button-item {
-    margin-right: 40px;
+    margin-right: -30px;
 }
 
 @media (max-width: 1570px) and (min-width: 992px) {
@@ -4445,14 +4448,17 @@ section {
 
 .role.admin {
     background: #fa4251;
+    font-size: 12px;
 }
 
 .role.user {
     background: #00b5e9;
+    font-size: 12px;
 }
 
 .role.member {
     background: #57b846;
+    font-size: 12px;
 }
 
 .table-top-campaign.table td {
@@ -14717,3 +14723,31 @@ section {
         .tx-center{
             text-align: center;
         }
+
+
+        .bg-info{
+            background: #00b5e9;
+        }
+        .bg-warning{
+            background: #ffc107;
+        }
+        .bg-danger{
+            background: #fa4251;
+        }
+        .bg-other{
+            background: #212529;
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -124,12 +124,18 @@ Route::get('verify-email/{email}',[AccountController::class, 'VerifyEmail'])->na
 Route::get('settings',[AccountController::class, 'Settings'])->name('settings')->middleware('CheckMemberRoles');
 Route::post('add-company-info',[AccountController::class, 'AddCompanyInfo'])->name('add-company-info')->middleware('CheckMemberRoles');
 
+Route::get('notification-alert',[DashboardController::class,'NotificationAlert'])->name('notification-alert');
+Route::get('new-notifications-users',[DashboardController::class,'NewNotification'])->name('new-notifications-users');
+Route::get('mark-notification-read-user/{id}',[DashboardController::class,'MarkNotificationRead'])->name('mark-notification-read-user');
+
+
 
 
 Route::middleware(['LoginSession','CheckMemberRoles'])->group(function () 
 {
 	Route::get('dashboard',[DashboardController::class, 'Index'])->name('dashboard');
 	
+
 
 	Route::get('edit-profile',[AccountController::class, 'EditProfile'])->name('edit-profile');
 	Route::post('save-profile',[AccountController::class, 'SaveProfile'])->name('save-profile');
@@ -316,6 +322,12 @@ Route::prefix('admin')->group(function () {
 		Route::post('add-update-module',[ModuleController::class,'AddUpdateModule'])->name('add-update-module');
 		Route::get('delete-module/{id}',[ModuleController::class,'DeleteModule'])->name('delete-module');
 
+
+	//_________________________________________________________________________________
+
+		Route::get('mark-notification-read-admin/{id}',[AdminController::class,'MarkNotificationRead'])->name('mark-notification-read-admin');
+		Route::get('new-notifications-admin',[AdminController::class,'NewNotification'])->name('new-notifications-admin');
+		Route::post('send-notification-to-users',[AdminController::class,'SendNotificationToUsers'])->name('send-notification-to-users');
 
 
 	});

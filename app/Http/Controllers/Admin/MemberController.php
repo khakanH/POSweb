@@ -178,7 +178,7 @@ class MemberController extends Controller
                             </tr>
                             <tr>
                                 <th>Email:</th>
-                                <td><?php echo $member->email; ?></td>
+                                <td style="word-break: break-all;"><?php echo $member->email; ?></td>
                             </tr>
                             <tr>
                                 <th>Account Type:</th>

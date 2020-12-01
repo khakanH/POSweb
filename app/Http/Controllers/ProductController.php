@@ -530,9 +530,9 @@ class ProductController extends Controller
                       <td><?php echo $key['product_code']?></td>
                       <td><?php echo $key['name']?></td>
                       <td><?php echo isset($key->category_name->name)?$key->category_name->name:"-"?></td>
-                      <td><?php Str::limit($key['description'],35)?></td>
+                      <td><?php echo Str::limit($key['description'],35)?></td>
                       <td><?php echo $key['cost']?></td>
-                      <td><?php echo $key['tax']?></td>
+                      <td><?php echo $key['tax']?>%</td>
                       <td><?php echo $key['price']?></td>
                       <td><a class="btn btn-primary" href="javascript:void(0)" onclick='EditProduct("<?php echo $key['id']?>","<?php echo $key['product_code']?>","<?php echo $key['name']?>","<?php echo $key['category_id']?>","<?php echo $key['cost']?>","<?php echo $key['tax']?>","<?php echo $key['price']?>","<?php echo $key['description']?>","<?php echo $key['image']?>")'><i class="fa fa-edit tx-15"></i></a>&nbsp;&nbsp;&nbsp;<a class="btn btn-danger" onclick='DeleteProduct("<?php echo $key['id'] ?>")' href="javascript:void(0)"><i class="fa fa-trash tx-15"></i></a>&nbsp;&nbsp;&nbsp;<a href="<?php echo env('IMG_URL').$key['image'] ?>" class="btn btn-success"><i class="fa fa-picture-o"></i></a></td>
                     </tr>
