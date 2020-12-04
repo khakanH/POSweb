@@ -18,6 +18,12 @@
                         {{ session()->forget('failed') }}
             @endif
             </center>
+
+
+              <center><h2>{{session('login.company_name')}}</h2></center>
+              <br>
+
+
                     <div class="row">
                         <div class="col-md-6 col-lg-3">
                             <div class="statistic__item statistic__item--green">

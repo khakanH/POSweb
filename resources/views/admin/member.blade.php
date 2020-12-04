@@ -19,8 +19,7 @@
             </div>
             
             <div class="table-data__tool-right">
-                <a href="{{route('member-types')}}"><button class="au-btn au-btn-icon au-btn--green au-btn--small" type="button">Manage Member Types</button></a>
-                <a href="{{route('member-roles')}}"><button class="au-btn au-btn-icon au-btn--blue au-btn--small" type="button">Manage Member Roles</button></a>
+               
                                    
             </div>
         </div>

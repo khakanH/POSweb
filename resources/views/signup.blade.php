@@ -90,7 +90,7 @@
                                     </label>
 
                                 </div>
-                                <button class="au-btn au-btn--block au-btn--green m-b-20" type="submit">register</button>
+                                <button id="register-btn" class="au-btn au-btn--block au-btn--green m-b-20" type="submit">register</button>
                                
                             </form>
                             <div class="form-group">
@@ -202,6 +202,7 @@
     },
     submitHandler: function(form) {
 
+      document.getElementById("register-btn").disabled = true;  
       form.submit();
     }
   });

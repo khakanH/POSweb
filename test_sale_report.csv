@@ -1,0 +1,2 @@
+S_No,Bill_Code,Customers,Tax,Discount,Subtotal,Total_Item,Total_Bill,Payment_Type,Cash_Paid,Cash_Change,Credit_Card_Holder,Credit_Card_Number,Cheque_Number,Created_At
+1,00001,213,0.0%,0.8%,"51,012.00",1.00,50612,Cash,50612,,,,,"2020-12-02 11:56:55"

@@ -34,7 +34,7 @@ class MemberController extends Controller
 
             $user_info = $this->checkUserAvailbility($user_id,$request);
 
-            $members= Members::where('member_type',1)->get();
+            $members= Members::where('member_type',0)->get();
             return view('admin.member',compact('members'));
         } 
         catch (Exception $e) 
@@ -56,11 +56,11 @@ class MemberController extends Controller
 
             if (empty($search_text)) 
             {       
-                    $get_member_list = Members::where('member_type',1)->get();
+                    $get_member_list = Members::where('member_type',0)->get();
             }
             else
             {   
-                    $get_member_list = Members::where('member_type',1)->where('username','like','%'.$search_text.'%')
+                    $get_member_list = Members::where('member_type',0)->where('username','like','%'.$search_text.'%')
                                             ->get();
 
             }
@@ -182,7 +182,7 @@ class MemberController extends Controller
                             </tr>
                             <tr>
                                 <th>Account Type:</th>
-                                <td><?php echo $member->member_type_name->name; ?></td>
+                                <td><?php echo isset($member->member_type_name->name)?$member->member_type_name->name:"Admin"; ?></td>
                             </tr>
                         </tbody>
                     </table>

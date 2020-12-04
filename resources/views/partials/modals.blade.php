@@ -188,7 +188,7 @@
 <!-- ----------------------------------------------------------------------------------------------------- -->
 
 <div id="CustomerModal" class="modal fade show " tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-modal="true" aria-hidden="true" style="color: black;">
-    <div class="modal-dialog" id="CustomerModalDialog">
+    <div class="modal-dialog modal-lg" id="CustomerModalDialog">
         <div class="modal-content" id="CustomerModalContent">
            
             <form name="customerForm" enctype="multipart/form-data" id="custForm">
@@ -208,24 +208,57 @@
                       <input type="hidden" id="create_type" name="create_type">
 
 
-                        
-                        <div class="form-group">
-                          <label for="cust_name" class=" form-control-label">Name:</label>
-                          <input type="text" id="cust_name" name="cust_name" required="" class="form-control" placeholder="Enter Customer Name">
+                        <div class="row">
+
+                          <div class="form-group col-lg-6">
+                            <label for="cust_name" class=" form-control-label">Code:</label>
+                            <input type="text" readonly="" id="cust_code" name="cust_code" class="form-control btn btn-secondary" required="" placeholder="Click To Generate Code" style="cursor: pointer; color: #000;" onclick="GenerateCodeCustomer()">
+
+                          </div>
+                          <div class="form-group col-lg-6">
+                            <label for="cust_name" class=" form-control-label">Name:</label>
+                            <input type="text" id="cust_name" name="cust_name" required="" class="form-control" placeholder="Enter Customer Name">
+                          </div>
+                          
                         </div>
-                        <div class="form-group">
-                          <label for="cust_email" class=" form-control-label">Email:</label>
-                          <input type="email" id="cust_email" required="" name="cust_email" class="form-control" placeholder="Enter Customer Email Address">
+
+
+                        <div class="row">
+                          <div class="form-group col-lg-6">
+                            <label for="cust_email" class=" form-control-label">Email:</label>
+                            <input type="email" id="cust_email" required="" name="cust_email" class="form-control" placeholder="Enter Customer Email Address">
+                          </div>
+                          <div class="form-group col-lg-6">
+                            <label for="cust_phone" class=" form-control-label">Phone Number:</label>
+                            <input type="text" id="cust_phone" required="" name="cust_phone" class="form-control" placeholder="Enter Customer Phone Number">
+                          </div>
                         </div>
-                        <div class="form-group">
-                          <label for="cust_phone" class=" form-control-label">Phone Number:</label>
-                          <input type="text" id="cust_phone" required="" name="cust_phone" class="form-control" placeholder="Enter Customer Phone Number">
-                        </div>
-                        <div class="form-group">
-                          <label for="cust_discount" class=" form-control-label">Discount:</label>
-                          <input type=number id="cust_discount" name="cust_discount" class="form-control" min="0" max="100" placeholder="Enter Customer Discount">
-                        </div>
-                                
+                        <div class="row">
+                           <div class="form-group col-lg-6">
+                            <label for="cust_discount" class=" form-control-label">Discount:</label>
+                            <input type=number id="cust_discount" name="cust_discount" class="form-control" min="0" max="100" placeholder="Enter Customer Discount">
+                          </div>
+                          <div class="form-group col-lg-6">
+                            <label for="cust_discount" class=" form-control-label">Payment Method:</label>
+                            <select required="" onchange="CustomerPaymentMethod(this.value)" name="cust_payment_method" id="cust_payment_method" class="form-control">
+                            <option value="">Select Payment Method</option>
+                          </select>
+                          </div>
+                        </div>       
+
+                        <div  class="row" id="cust_cc" style="display: none;">
+                           <div class="form-group col-lg-6">
+                            <label>Credit Card Holder:</label>
+                            <input type="text" required="" name="cust_cc_holder" id="cust_cc_holder" class="form-control">
+                          </div>
+                          <div class="form-group col-lg-6">
+                            <label>Credit Card Number:</label>
+                            <input required="" name="cust_cc_number" id="cust_cc_number" class="form-control" type="tel" inputmode="numeric" pattern="[0-9\s]{13,19}" autocomplete="cc-number" maxlength="19" placeholder="xxxx xxxx xxxx xxxx">
+                          </div>
+                        </div> 
+
+
+
                       </div>
               
 
@@ -268,42 +301,6 @@
                   <div class="modal-body">
                       <div class="" id="BillModalData">
 
-                        <input type="hidden" id="bill_id" name="bill_id">
-                        <input type="hidden" id="total_bill_amount" name="total_bill_amount">
-                        <input type="hidden" id="bill_cash_change" name="bill_cash_change">
-
-                        <h4>Customer: <span id="bill_cust_name"></span></h4>
-                        <hr>
-                        <p id="bill_total_item"></p>
-                        <p id="bill_total_amount"></p>
-                        <hr>
-                         <div class="form-group">
-                          <label for="payment_method" class=" form-control-label">Payment Method:</label>
-                          <select required="" onchange="CheckPaymentMethod(this.value)" name="payment_method" id="payment_method" class="form-control">
-                            <option value="">Select Payment Method</option>
-                          </select>
-                        </div>
-
-                         <div class="form-group" id="for_cash">
-                          <label for="payment_amount"  class=" form-control-label">Payment Amount:</label>
-                          <input type="number" required="" name="payment_amount" onkeyup="CalculateBillChange(this.value)" id="payment_amount" class="form-control">
-                          <br>
-                          <label for="payment_amount" class=" form-control-label">Change: <span id="bill_change">0</span></label>
-                        </div>
-
-                         <div class="form-group" style="display: none;" id="for_credit_card">
-                          <label for="payment_amount" class=" form-control-label">Credit Card Number:</label>
-                          <input required="" name="credit_card_number" id="credit_card_number" class="form-control" type="tel" inputmode="numeric" pattern="[0-9\s]{13,19}" autocomplete="cc-number" maxlength="19" placeholder="xxxx xxxx xxxx xxxx">
-                          <br>
-                          <label for="payment_amount" class=" form-control-label">Credit Card Holder:</label>
-                          <input type="text" required="" name="credit_card_holder" id="credit_card_holder" class="form-control">
-                        </div>
-
-                        <div class="form-group" style="display: none;" id="for_cheque">
-                          <label for="payment_amount" class=" form-control-label">Cheque Number:</label>
-                          <input type="text" required="" name="cheque_number" id="cheque_number" class="form-control">
-                         
-                        </div>
 
                                                 
                                 
@@ -462,12 +459,189 @@
 
 
 
+<!-- Company Modal                                         -->
+<!-- ----------------------------------------------------------------------------------------------------- -->
+
+<div id="CompanyModal" class="modal fade show " tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-modal="true" aria-hidden="true" style="color: black;">
+    <div class="modal-dialog modal-lg" id="CompanyModalDialog">
+        <div class="modal-content" id="CompanyModalContent">
+           
+            <form name="companyForm" enctype="multipart/form-data" method="post" action="{{route('add-company-info')}}" id="companyForm">
+              @csrf
+               <span class='arrow'>
+              <label class='error'></label>
+              </span>
+                  <div class="modal-header">
+                      <h4 class="modal-title" id="CompanyModalLabel"></h4>
+                      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                  </div>
+                  <div class="modal-body">
+                      <div class="" id="CompanyModalData">
+
+                        <input type="hidden" id="company_id" name="company_id">
+
+
+                        
+                        <div class="row">
+                          <div class="col-lg-6"> 
+                            <label>Compnay Name:</label>
+                            <input type="text" id="company_name" name="company_name" class="form-control" placeholder="Enter Company Name"></div>
+                            <!-- <div class="col-lg-3"> 
+                            <label>PCT Code: <i style="font-size: 12px">(optional)</i></label>
+                            <input type="text" id="pct_code" name="pct_code" class="form-control" placeholder="Enter PCT Code"  data-toggle="tooltip" title="Only Required For FBR Integration"></div> -->
+                          <div class="col-lg-6"> 
+                            <label>Company Phone:</label>
+                            <input type="text" id="company_phone" name="company_phone" class="form-control" placeholder="Enter Compnay Phone"></div>
+                        </div>
+                        <br>
+                        <div class="row">
+                          
+                          <div class="col-lg-6"> 
+                            <label>Compnay Email Address: <i style="font-size: 12px">(without tax)</i> </label>
+                            <input type="email" id="company_email" name="company_email" class="form-control" placeholder="Enter Compnay Email Address"></div>
+                          <div class="col-lg-6"> 
+                            <label>Compnay Country:</label>
+                            <select class="form-control" name="company_country" id="company_country">
+                              <option value="" disabled="" selected="">Select Country</option>
+                            </select>
+                          </div>
+                        </div>
+
+                        <br>
+                        <div class="row">
+                          <div class="col-lg-6"> 
+                            <label>Company Default Discount %</label>
+                            <input type="number" min="0" max="100" id="company_default_discount" name="company_default_discount" class="form-control" placeholder="Enter Default Discount"></div>
+                          <div class="col-lg-6"> 
+                            <label>Company Default Tax %</label>
+                            <input type="number" id="company_default_tax" name="company_default_tax" class="form-control" placeholder="Enter Default Tax"></div>
+                        </div>
+                        <br>
+                              <div class="row form-group" style="background: #333; border: solid gray 2px; border-radius: 3px; color: white; padding: 25px;">
+                                          <div class="col-lg-6">
+                                            <label class="form-control-label">FBR Invoice Data:</label>
+                                            &nbsp;&nbsp;&nbsp;
+                                            <label class="switch switch-3d switch-primary switch-lg mr-3">
+                                              <input onclick="FBRToggle(this.value)" type="checkbox" class="switch-input" id="company_fbr" name="company_fbr">
+                                              <span class="switch-label"></span>
+                                              <span class="switch-handle"></span>
+                                            </label>
+                                          </div>
+                                          <div class="col-lg-6" id="company_pos_id_div">
+                                            
+                                            <label class="form-control-label" style="">POS ID:</label>&nbsp;&nbsp;&nbsp;
+                                            <input type="text" class="form-control" name="company_pos_id" id="company_pos_id">
+
+                                          </div>
+                                        </div>
+
+
+
+                                          <div class="row form-group">
+                                          <div class="col-lg-12">
+                                            <label for="company_logo_output" class="form-control-label">Company Logo:</label><br>
+                                            <img id="company_logo_output" width="130" height="130" style="border-radius: 2%; border: solid gray 1px; object-position: top; object-fit: cover;">&nbsp;&nbsp;&nbsp;<input type="file" onchange="logo_loadFile(event)" onclick="clearImage()"   name="company_logo" id="company_logo" required="" accept="image/*" >
+                                          </div>
+                                        </div>
+
+
+                                        <div class="row form-group">
+                                          <div class="col-lg-12">
+                                            <label for="receipt_header" class="form-control-label">Text in the Receipt Header:</label>
+                                            
+                                            <textarea placeholder="Enter receipt header text" name="company_receipt_header" id="company_receipt_header" class="form-control" rows="4"></textarea>
+                                          </div>
+                                        </div>
+
+                                        <div class="row form-group">
+                                          <div class="col-lg-12">
+                                            <label for="receipt_footer" class="form-control-label">Text in the Receipt Footer:</label>
+                                            <input type="text" id="company_receipt_footer" name="company_receipt_footer" placeholder="Enter receipt footer text" value="" class="form-control">
+                                            
+                                          </div>
+                                        </div>
+                    
+
+
+                      </div>
+              
+
+                      </div>
+                  <div class="modal-footer" id="CompanyModalFooter">
+                      <button type="button" class="btn btn-danger waves-effect" data-dismiss="modal">Close</button>
+                      <button type="submit" class="btn btn-info ">Save</button>
+
+                  </div>
+            </form>
+
+
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+<!-- ----------------------------------------------------------------------------------------------------- -->
+<!-- ----------------------------------------------------------------------------------------------------- -->
+<!-- ----------------------------------------------------------------------------------------------------- -->
 
 
 
 
 
 
+
+<!-- Member Type Modal                                         -->
+<!-- ----------------------------------------------------------------------------------------------------- -->
+
+<div id="MemberTypeModal" class="modal fade show " tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-modal="true" aria-hidden="true" style="color: black;">
+    <div class="modal-dialog" id="MemberTypeModalDialog">
+        <div class="modal-content" id="MemberTypeModalContent">
+           
+            <form name="memberTypeForm" enctype="multipart/form-data" id="memberTypeForm">
+              @csrf
+               <span class='arrow'>
+              <label class='error'></label>
+              </span>
+                  <div class="modal-header">
+                      <h4 class="modal-title" id="MemberTypeModalLabel"></h4>
+                      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                  </div>
+                  <div class="modal-body">
+                      <div class="" id="MemberTypeModalData">
+
+                        <input type="hidden" id="member_type_id" name="member_type_id">
+
+
+                        
+                        <div class="row">
+                          <div class="col-lg-12"> 
+                            <label>Member Type Name:</label>
+                            <input type="text" id="member_type_name" name="member_type_name" class="form-control" placeholder="Enter Member Type Name"></div>
+                        </div>
+                        
+
+                      </div>
+              
+
+                      </div>
+                  <div class="modal-footer" id="MemberTypeModalFooter">
+                      <button type="button" class="btn btn-danger waves-effect" data-dismiss="modal">Close</button>
+                      <button type="submit" class="btn btn-info ">Save</button>
+
+                  </div>
+            </form>
+
+
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+<!-- ----------------------------------------------------------------------------------------------------- -->
+<!-- ----------------------------------------------------------------------------------------------------- -->
+<!-- ----------------------------------------------------------------------------------------------------- -->
 
 
 
@@ -515,6 +689,7 @@
 
 
       $("#credit_card_number").mask("9999-9999-9999-9999");
+      $("#cust_cc_number").mask("9999-9999-9999-9999");
 
 
     $(function() {
@@ -756,6 +931,10 @@
 //-------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------
 
+  $.validator.addMethod('CCNoFormat', function(value, element) {
+        return this.optional(element) || (value.match(/^([0-9]{4})-([0-9]{4})-([0-9]{4})-([0-9]{4})$/));
+    },
+    'Please enter a valid credit card number.');
 
 
        $(function() {
@@ -768,7 +947,9 @@
     wrapper: 'span',
 
     rules: {
-      
+      cust_cc_number: {
+        CCNoFormat:true,
+      },
     },
     messages: {
       
@@ -894,7 +1075,9 @@
     wrapper: 'span',
 
     rules: {
-      
+      credit_card_number: {
+        CCNoFormat:true,
+      },
     },
     messages: {
       
@@ -998,6 +1181,7 @@
     },
     'Please enter a valid email address.');
 
+     
     $(function() {
         $("form[name='userForm']").validate({
              errorPlacement: function(label, element) {
@@ -1113,12 +1297,231 @@
   });
   });
 
+
 //-------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------
 
 
 
+
+
+
+     $(function() {
+        $("form[name='companyForm']").validate({
+             errorPlacement: function(label, element) {
+        label.addClass('arrow');
+        label.css({"color": "red", "font-size": "12px" ,"width":"100%"});
+        label.insertAfter(element);
+    },
+    wrapper: 'span',
+
+    rules: {
+      
+      company_name: {
+        required: true,
+      },
+      company_email: {
+        required: true,
+        emailFormat: true,
+      },
+      company_phone: {
+        required: true,
+      },
+      company_country: {
+        required: true,
+      },
+     
+      company_pos_id: {
+        required: true,
+        minlength: 6,
+        maxlength: 6,
+        digits: true,
+      },
+     
+
+    },
+    messages: {
+     company_name: {
+        required: "Please Provide a Company Name",
+      },
+      company_email: {
+        required: "Please Provide a Company Email",
+      },
+      company_phone: {
+        required: "Please Provide a Company Phone",
+      },
+      company_country: {
+        required: "Please Select a Company Country",
+      },
+      
+      company_pos_id: {
+        required: "Please Provide a POS ID",
+        minlength: "POS ID Must be of 6 Digits",
+        maxlength: "POS ID Must be of 6 Digits",
+      },
+
+      
+    },
+    submitHandler: function(form) {
+
+      form.submit();
+
+    }
+  });
+  });
+
+
+
+
+//-------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------
+
+
+$(function() {
+        $("form[name='memberTypeForm']").validate({
+             errorPlacement: function(label, element) {
+        label.addClass('arrow');
+        label.css({"color": "red", "font-size": "12px" ,"width":"100%"});
+        label.insertAfter(element);
+    },
+    wrapper: 'span',
+
+    rules: {
+      member_type_name: {
+        required: true,
+      },
+     
+     
+     
+
+    },
+    messages: {
+      member_type_name: {
+        required: "Please Provide a Member Type Name",
+      },
+      
+    },
+    submitHandler: function(form) {
+
+        let myForm = document.getElementById('memberTypeForm');
+        let formData = new FormData(myForm);
+
+         $.ajax({
+        type: "POST",
+        url: "{{ env('APP_URL')}}add-update-member-type",
+        enctype: 'multipart/form-data',
+        data: formData,
+        processData: false,
+        contentType: false,
+        beforeSend: function(){
+                            $('#MemberTypeModal').modal('hide');
+                            $('#LoadingModal').modal('show');
+                        },
+        success: function(data) {
+           
+                            $('#LoadingModal').modal('hide');
+
+            get_status = data['status'];
+            get_msg    = data['msg'];
+
+                            if (get_status == "0") 
+                            {
+
+                             document.getElementById('toast').style.visibility = "visible";
+                                document.getElementById('toast').className = "alert alert-danger alert-rounded fadeIn animated";
+                                document.getElementById('toastMsg').innerHTML = get_msg;
+
+
+                                 setTimeout(function() {
+                             document.getElementById('toast').style.visibility = "hidden";
+                                
+                            }, 5000);
+
+                            }
+                            else
+                            {
+                                document.getElementById('toast').style.visibility = "visible";
+                                document.getElementById('toast').className = "alert alert-success alert-rounded fadeIn animated";
+                                document.getElementById('toastMsg').innerHTML = get_msg;
+
+
+                                 setTimeout(function() {
+                             document.getElementById('toast').style.visibility = "hidden";
+                                
+
+                            }, 5000);
+
+
+                            }
+
+                            var search_text = (document.getElementById("member_type_search_text").value.trim() == "")?"0":document.getElementById("member_type_search_text").value.trim();
+        $.ajax({
+        type: "GET",
+        url: "{{ env('APP_URL')}}get-member-type-list-AJAX/"+search_text,
+        success: function(data) {
+
+            $('#member_typeTBody').html(data);
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            alert('Exception:' + errorThrown);
+        }
+    });
+
+
+    }
+  });
+
+    }
+  });
+  });
+
+
+
+
+
+
+
+// ----------------------------------------------------------------------------------------------------
+// ----------------------------------------------------------------------------------------------------
+// ----------------------------------------------------------------------------------------------------
+
+          function CustomerPaymentMethod(val)
+          {
+            if (val == "") 
+            {
+              alert('Kindly Select a Payment Method');
+            }
+            else
+            {
+              if (val == 1) 
+              {
+                document.getElementById("cust_cc").style.display = "none";
+              }
+              else if(val ==2)
+              {
+                document.getElementById("cust_cc").style.display = "flex";
+                document.getElementById('cust_cc_holder').value = "";
+                document.getElementById('cust_cc_number').value = "";
+
+              }
+              else
+              {
+                document.getElementById("cust_cc").style.display = "none";
+              }
+
+            }
+
+          } 
+          function GenerateCodeCustomer()
+          {
+            document.getElementById('cust_code').value = "<?php echo strtoupper(substr(session("login.company_name"), 0,2) ); ?>"+"_"+(Math.random().toString(36).substring(2, 8) + Math.random().toString(36).substring(2,8)).toUpperCase();
+          }
+
+// ----------------------------------------------------------------------------------------------------
+// ----------------------------------------------------------------------------------------------------
+// ----------------------------------------------------------------------------------------------------
 
 
 

@@ -81,16 +81,11 @@
                           </div>
 
                            <div class=" row form-group">
-                           <div class="col-7"><select class="form-control" name="customer_list" id="customer_list" onchange='ChangeBillCustomer(this.value,"{{$pending_bill[0]['id']}}")'>
-                             <option value="0">Walk in Customer</option>
-                             @foreach($customers as $cust)
-                             <option 
-                              <?php if ($pending_bill[0]['customer_id']==$cust['id']): ?>
-                                  selected
-                              <?php endif ?>
-                              value="{{$cust['id']}}">{{$cust['customer_name']}}</option>
-                             @endforeach
-                           </select></div>
+                           <div class="col-7">
+                            <input type="hidden" name="customer_list" id="customer_list" value="{{$pending_bill[0]['customer_id']}}">
+                            <input type="text" id="cust_live_search_field" value="{{isset($pending_bill[0]->customer_name->customer_name)?$pending_bill[0]->customer_name->customer_name:"Walk In Customer"}}" autocomplete="off" class="form-control" onkeyup='LiveSearchCustomer(this.value)' onfocusout="CheckSelectedCustomer(this.value)" >
+                            <div id="customer-search-list" style="position: absolute;border: solid lightgray 1px;width: 95%; height: auto; background: #fff;display: none;"></div>
+                           </div>
                            <div class="col-5"> <input type="text" autofocus="on" name="bar_code" id="bar_code" class="form-control" onkeypress="AddProductToBillBarCode(this.value)" placeholder="Enter Barcode"></div>
 
                            
@@ -241,7 +236,7 @@
                                 <div class="card" style="cursor: pointer;" onclick='AddProductToBill("{{$prod['id']}}","{{$prod['name']}}","{{$prod['price']}}")'>
                                     <div class="card-body">
                                         <div class="mx-auto d-block">
-                                            <img class="rounded-circle mx-auto d-block" src="{{env('IMG_URL')}}{{$prod['image']}}" width="100" height="100" alt="{{$prod['name']}}">
+                                            <img style="height: 100px;" class="rounded-circle mx-auto d-block" src="{{env('IMG_URL')}}{{$prod['image']}}" width="100" height="100" alt="{{$prod['name']}}">
                                             <hr>
                                             <h5 class="text-sm-center mt-2 mb-1">{{$prod['name']}}</h5>
                                             <div class="location text-sm-center">
@@ -1024,6 +1019,7 @@
 
          }
 
+
           function CreateNewCustomer()
           {
             document.getElementById('cust_name').value = "";
@@ -1031,6 +1027,10 @@
             document.getElementById('cust_phone').value = "";
             document.getElementById('cust_discount').value = "";
             document.getElementById('cust_id').value = "";
+
+            document.getElementById('cust_code').value = "";
+
+            document.getElementById("cust_cc").style.display = "none";
             
             document.getElementById('create_type').value = "1";
 
@@ -1040,7 +1040,21 @@
             document.getElementById('CustomerModal').style.backgroundColor="rgba(0,0,0,0.8)";
             document.getElementById('CustomerModalDialog').style.paddingTop="0px";
             document.getElementById('CustomerModalData').style.padding="5px 5px 0px 5px";
+             $.ajax({
+                            type: "GET",
+
+                            url: "{{ env('APP_URL')}}get-payment-method/"+"0",
+                            success: function(data) {
+                                    $('#cust_payment_method').html(data);
+                            },
+                            error: function(jqXHR, textStatus, errorThrown) {
+                                alert('Exception:' + errorThrown);
+                            }
+                          });
+
           }
+
+
 
           function ChangeBillCustomer(val,bill_id)
           {
@@ -1076,33 +1090,7 @@
                     url: "{{ env('APP_URL')}}get-bill-details/"+bill_id,
                     success: function(data) {
 
-                        get_status = data['status'];
-                        get_msg    = data['msg'];
-
-                                if (get_status == "0") 
-                                {
-                                   document.getElementById('toast').style.visibility = "visible";
-                                    document.getElementById('toast').className = "alert alert-danger alert-rounded fadeIn animated";
-                                    document.getElementById('toastMsg').innerHTML = get_msg;
-
-
-                                     setTimeout(function() {
-                                 document.getElementById('toast').style.visibility = "hidden";
-                                   
-
-                                }, 5000);
-
-                                }
-                                else
-                                {
-                                   document.getElementById("bill_cust_name").innerHTML = data['result']['customer_name'];
-                                   document.getElementById("bill_total_item").innerHTML = data['result']['total_item'];
-                                   document.getElementById("bill_total_amount").innerHTML = "<strong>Total:</strong> "+parseFloat(data['result']['total_bill']).toFixed(2);
-                                   
-                                   document.getElementById('total_bill_amount').value = data['result']['total_bill'];
-                                   document.getElementById('payment_amount').value = data['result']['total_bill'];
-                                }
-
+                            $('#BillModalData').html(data);
 
                     },
                     error: function(jqXHR, textStatus, errorThrown) {
@@ -1111,25 +1099,6 @@
             });     
 
 
-            $.ajax({
-                            type: "GET",
-
-                            url: "{{ env('APP_URL')}}get-payment-method",
-                            success: function(data) {
-                                    $('#payment_method').html(data);
-                            },
-                            error: function(jqXHR, textStatus, errorThrown) {
-                                alert('Exception:' + errorThrown);
-                            }
-                          });
-
-
-            document.getElementById('bill_id').value = bill_id;
-            document.getElementById('for_cash').style.display = "block";
-            document.getElementById('for_credit_card').style.display = "none";
-            document.getElementById('for_cheque').style.display = "none";
-
-            document.getElementById('bill_change').innerHTML = 0;
             $('#BillModal').modal('show');
             $('#BillModalLabel').html('Add Sale');
 
@@ -1236,6 +1205,71 @@
                   newWin.print();
                   newWin.close();
               }
+
+
+              function LiveSearchCustomer(val)
+              {
+                
+                var bill_id = document.getElementById("current_bill_id").value;
+                val = val.trim();
+                if (val) 
+                {
+                  document.getElementById("customer-search-list").style.display="block";
+
+                  $.ajax({
+                                    type: "GET",
+
+                                    url: "{{ env('APP_URL')}}get-customer-live-search-list/"+val+"/"+bill_id,
+                                    success: function(data) {
+                                           
+                                      get_status = data['status'];
+                                      if (get_status == 0) 
+                                      {
+                                        document.getElementById("customer-search-list").style.display="none";
+                                        document.getElementById("customer-search-list").innerHTML="";
+
+
+                                      }
+                                      else
+                                      {
+                                        $('#customer-search-list').html(data);
+                                      }
+
+                                    },
+                                    error: function(jqXHR, textStatus, errorThrown) {
+                                        alert('Exception:' + errorThrown);
+                                    }
+                                  });
+
+                }
+                else
+                {
+                  document.getElementById("customer-search-list").style.display="none";
+                  document.getElementById("customer-search-list").innerHTML="";
+
+
+                }
+              }
+
+              function SelectCustomer(name,id)
+              {
+                document.getElementById("cust_live_search_field").value =name;
+                document.getElementById("customer_list").value =id;
+                document.getElementById("customer-search-list").style.display="none";
+              }
+
+              function CheckSelectedCustomer(val)
+              {
+                var bill_id = document.getElementById("current_bill_id").value;
+                if (!val.trim()) 
+                {
+                  ChangeBillCustomer("0",bill_id);
+                  document.getElementById("cust_live_search_field").value ="Walk In Customer";
+                  document.getElementById("customer_list").value ="0"; 
+                }
+              }
+
+
         </script>
                       
 

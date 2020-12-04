@@ -35,6 +35,8 @@
                                     
                                 </div>
                                 <div class="table-data__tool-right">
+                                    <a href="{{route('member-role-list')}}"><button class="au-btn au-btn-icon au-btn--blue au-btn--small"><i class="fa fa-gears"></i>Manage User Roles</button></a>
+                                    <a href="{{route('member-type-list')}}"><button class="au-btn au-btn-icon au-btn--blue au-btn--small"><i class="fa fa-bars"></i>Manage User Type</button></a>
                                     <button class="au-btn au-btn-icon au-btn--green au-btn--small" onclick="AddUser()">
                                         <i class="zmdi zmdi-plus"></i>Add User</button>
                                    
@@ -62,7 +64,7 @@
                                                 <td scope="row"><b>{{$loop->iteration}}</b></td>
                                                 <td>{{$key['username']}}</td>
                                                 <td>{{$key['email']}}</td>
-                                                <td>{{$key->member_type_name['name']}}</td>
+                                                <td>{{isset($key->member_type_name['name'])?$key->member_type_name['name']:"Super Admin"}}</td>
                                                 <td>
                                                   @if($key['is_verified'] == 0)
                                                   <span class="badge badge-danger">Not Verified!</span>

@@ -216,15 +216,11 @@ class POSController extends Controller
                            <div class="col-5"><i  style="float: right; padding-right: 5px; cursor: pointer;" onclick="CreateNewCustomer()" data-toggle="tooltip" title="Create Customer" class="fa fa-user"></i> <i  style="float: right; padding-right: 10px; cursor: pointer;" data-toggle="tooltip" title="Show Last Bill" onclick="ShowLastBill()" class="fa fa-list-alt"></i></div>
                           </div>
                            <div class=" row form-group">
-                           <div class="col-7"><select class="form-control" name="customer_list" id="customer_list" onchange='ChangeBillCustomer(this.value,"<?php echo $id; ?>")'>
-                             <option value="0">Walk in Customer</option>
-                             <?php foreach($customers as $cust): ?>
-                             <option <?php if ($pending_bill->customer_id == $cust['id']): ?>
-                                 selected
-                             <?php endif ?>
-                              value="<?php echo $cust['id'] ?>"><?php echo $cust['customer_name'] ?></option>
-                             <?php endforeach; ?>
-                           </select></div>
+                           <div class="col-7">
+                            <input type="hidden" name="customer_list" id="customer_list" value="<?php echo $pending_bill->customer_id ?>">
+                            <input type="text" id="cust_live_search_field" value='<?php echo isset($pending_bill->customer_name->customer_name)?$pending_bill->customer_name->customer_name:"Walk In Customer" ?>' autocomplete="off" class="form-control" onkeyup='LiveSearchCustomer(this.value)'  onfocusout="CheckSelectedCustomer(this.value)">
+                            <div id="customer-search-list" style="position: absolute;border: solid lightgray 1px;width: 95%; height: auto; background: #fff;display: none;"></div>
+                         </div>
                            <div class="col-5"> <input type="text" autofocus="on" name="bar_code" id="bar_code" onkeypress="AddProductToBillBarCode(this.value)" class="form-control" placeholder="Enter Barcode"></div>
 
 
@@ -337,13 +333,11 @@ class POSController extends Controller
                            <div class="col-5"><i  style="float: right; padding-right: 5px; cursor: pointer;" onclick="CreateNewCustomer()" data-toggle="tooltip" title="Create Customer" class="fa fa-user"></i> <i  style="float: right; padding-right: 10px; cursor: pointer;" data-toggle="tooltip" title="Show Last Bill" onclick="ShowLastBill()" class="fa fa-list-alt"></i></div>
                           </div>
                            <div class=" row form-group">
-                           <div class="col-7"><select class="form-control" name="customer_list" id="customer_list" onchange='ChangeBillCustomer(this.value,"<?php echo $new_bill; ?>")'>
-                             <option value="0">Walk in Customer</option>
-                             <?php foreach($customers as $cust): ?>
-                             <option 
-                              value="<?php echo $cust['id'] ?>"><?php echo $cust['customer_name'] ?></option>
-                             <?php endforeach; ?>
-                           </select></div>
+                           <div class="col-7">
+                             <input type="hidden" name="customer_list" id="customer_list" value="0">
+                            <input type="text" id="cust_live_search_field" value='Walk In Customer' class="form-control" autocomplete="off" onkeyup='LiveSearchCustomer(this.value)' onfocusout="CheckSelectedCustomer(this.value)">
+                            <div id="customer-search-list" style="position: absolute;border: solid lightgray 1px;width: 95%; height: auto; background: #fff;display: none;"></div>
+                           </div>
                            <div class="col-5"> <input type="text" autofocus="on" name="bar_code" id="bar_code" onkeypress="AddProductToBillBarCode(this.value)" class="form-control" placeholder="Enter Barcode"></div>
                            
 
@@ -434,15 +428,11 @@ class POSController extends Controller
                            <div class="col-5"><i  style="float: right; padding-right: 5px; cursor: pointer;" onclick="CreateNewCustomer()" data-toggle="tooltip" title="Create Customer" class="fa fa-user"></i> <i  style="float: right; padding-right: 10px; cursor: pointer;" data-toggle="tooltip" title="Show Last Bill" onclick="ShowLastBill()" class="fa fa-list-alt"></i></div>
                           </div>
                            <div class=" row form-group">
-                           <div class="col-7"><select class="form-control" name="customer_list" id="customer_list" onchange='ChangeBillCustomer(this.value,"<?php echo $pending_bill->id; ?>")'>
-                             <option value="0">Walk in Customer</option>
-                             <?php foreach($customers as $cust): ?>
-                             <option <?php if ($pending_bill->customer_id == $cust['id']): ?>
-                                 selected
-                             <?php endif ?>
-                              value="<?php echo $cust['id'] ?>"><?php echo $cust['customer_name'] ?></option>
-                             <?php endforeach; ?>
-                           </select></div>
+                           <div class="col-7">
+                             <input type="hidden" name="customer_list" id="customer_list" value="<?php echo $pending_bill->customer_id ?>">
+                            <input type="text" id="cust_live_search_field" value='<?php echo isset($pending_bill->customer_name->customer_name)?$pending_bill->customer_name->customer_name:"Walk In Customer" ?>' class="form-control" autocomplete="off" onkeyup='LiveSearchCustomer(this.value)' onfocusout="CheckSelectedCustomer(this.value)">
+                            <div id="customer-search-list" style="position: absolute;border: solid lightgray 1px;width: 95%; height: auto; background: #fff;display: none;"></div>
+                           </div>
                            <div class="col-5"> <input type="text" autofocus="on" name="bar_code" id="bar_code" onkeypress="AddProductToBillBarCode(this.value)" class="form-control" placeholder="Enter Barcode"></div>
 
                            <!-- ______________________________________________ -->
@@ -900,7 +890,8 @@ class POSController extends Controller
     public function ApplyBillTax(Request $request)
     {
       $user_id = session("login")["user_id"];
-            $company_id = session("login")["company_id"];
+      
+      $company_id = session("login")["company_id"];
 
       $user_info = $this->checkUserAvailbility($user_id,$request);
 
@@ -927,7 +918,8 @@ class POSController extends Controller
     {
       $user_id = session("login")["user_id"];
 
-            $company_id = session("login")["company_id"];
+      $company_id = session("login")["company_id"];
+
       $user_info = $this->checkUserAvailbility($user_id,$request);
 
       $input = $request->all();
@@ -969,7 +961,8 @@ class POSController extends Controller
     public function CalculateTotalBill(Request $request, $id)
     {
         $user_id = session("login")["user_id"];
-            $company_id = session("login")["company_id"];
+        
+        $company_id = session("login")["company_id"];
 
         $user_info = $this->checkUserAvailbility($user_id,$request);
 
@@ -1073,6 +1066,47 @@ class POSController extends Controller
     }
 
 
+    public function CustomerLiveSearchList(Request $request,$code,$bill_id)
+    {
+      try 
+      {
+        $user_id = session("login")["user_id"];
+        
+        $company_id = session("login")["company_id"];
+
+        $user_info = $this->checkUserAvailbility($user_id,$request);
+
+        $customer = Customers::where('company_id',$company_id)
+                              ->where(function($query) use ($code)
+                                            {
+                                                $query->where('customer_name','like','%'.$code.'%')
+                                                ->orWhere('code','like','%'.$code.'%');
+                                            })
+                              ->get();
+
+        if (count($customer) == 0) 
+        {
+          return array("status"=>"0");
+        }
+        else
+        {
+
+          foreach ($customer as $key) 
+          {
+            ?>
+              <button type="button" onclick='ChangeBillCustomer("<?php echo $key['id'] ?>","<?php echo $bill_id; ?>"),SelectCustomer("<?php echo $key['customer_name'] ?>","<?php echo $key['id'] ?>")' style="width: 100%;" class="btn btn-light"><?php echo $key['customer_name'] ?></button>
+            <?php
+          }
+        }
+
+        
+      } 
+      catch (Exception $e) 
+      {
+        
+      }
+
+    }
 
 
 

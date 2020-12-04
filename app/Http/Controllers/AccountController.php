@@ -6,7 +6,8 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\Members;
-use App\Models\MemberType;
+use App\Models\MembersCompany;
+use App\Models\CompanyMemberType;
 use App\Models\CompanyInfo;
 use App\Models\Countries;
 
@@ -75,7 +76,7 @@ class AccountController extends Controller
                             'is_set_profile'    => 0,
                             'is_blocked'        => 0,
                             'temp_password'     => $input['password'],
-                            'member_type'       => 1,
+                            'member_type'       => 0,
                             'parent_id'         => 0,
                             'created_at'        => date("Y-m-d H:i:s"),
                             'updated_at'        => date("Y-m-d H:i:s"),
@@ -86,7 +87,7 @@ class AccountController extends Controller
 
             if($id)
             {   
-                    $company_info = array(
+                 $company_info = array(
                                             'name'              => "",
                                             'email'             => "",
                                             'phone'             => "",
@@ -102,7 +103,12 @@ class AccountController extends Controller
                                             'updated_at'        => date("Y-m-d H:i:s"),
 
                                          );
-                    CompanyInfo::insert($company_info);
+                    $company_id = CompanyInfo::insertGetId($company_info);
+
+                        MembersCompany::insert(array(
+                            'member_id'     => $id,
+                            'company_id'    => $company_id,
+                        )); 
 
                     $title       = "New User Registered. Username: ".$input['username'];
                     $description = $input['username']." has created a new account with Email: ".strtolower(trim($input['email']))." on ".date("d-M-Y h:i a");
@@ -302,7 +308,7 @@ class AccountController extends Controller
            
                 if ($check_account->is_blocked == 1) 
                 {
-                    return redirect()->back()->withInput()->with('failed','Sorry, This Account is Blocked By Admin');
+                    return redirect()->back()->withInput()->with('failed','Sorry, Your Account Has Been Blocked');
 
                 }
 
@@ -330,16 +336,10 @@ class AccountController extends Controller
                 }
 
 
-            if ($check_account->member_type == 1) 
-            {
-                $company_id  = CompanyInfo::where('member_id',$check_account->id)->first()->id;
-            }
-            else
-            {   
-                $get_admin_id = Members::where('id',$check_account->parent_id)->first()->id;
-                $company_id  = CompanyInfo::where('member_id',$get_admin_id)->first()->id;
-
-            }
+           
+            
+            $company_id  = MembersCompany::where('member_id',$check_account->id)->first();
+           
 
             $result = array(    
                                 "user_id"           => $check_account->id,
@@ -347,7 +347,8 @@ class AccountController extends Controller
                                 "user_email"        => $check_account->email,
                                 "user_image"        => $check_account->user_image,
                                 "user_type"         => $check_account->member_type,
-                                "company_id"        => $company_id,
+                                "company_id"        => $company_id->company_id,
+                                "company_name"      => $company_id->company_name->name,
                                 "is_set_profile"    => $check_account->is_set_profile,
                            );
 
@@ -362,7 +363,31 @@ class AccountController extends Controller
     }
 
 
+    public function CountryNameList(Request $request)
+    {
+        try 
+        {
+            $user_id = isset(session("login")['user_id'])?session("login")['user_id']:0;
 
+            $user_info = $this->checkUserAvailbility($user_id,$request);
+
+            $country  =Countries::where('is_show',1)->get();
+
+            foreach ($country as $key) 
+            {
+                ?>
+
+                    <option value="<?php echo $key['id'] ?>"><?php echo $key['name'] ?></option>
+
+                <?php
+            }
+
+        } 
+        catch (Exception $e) 
+        {
+            return response()->json($e,500);
+        }
+    }    
 
     public function Settings(Request $request)
     {
@@ -372,10 +397,10 @@ class AccountController extends Controller
 
             $user_info = $this->checkUserAvailbility($user_id,$request);
 
-            $country  =Countries::where('is_show',1)->get();
-            $company  = CompanyInfo::where('id',session('login.company_id'))->first();
+            // $country  =Countries::where('is_show',1)->get();
+            $company  = CompanyInfo::where('member_id',$user_id)->get();
 
-            return view('settings',compact('company','country'));
+            return view('settings',compact('company'));
 
         } 
         catch (Exception $e) 
@@ -394,75 +419,155 @@ class AccountController extends Controller
 
             $input = $request->all();
 
-            $old_logo = CompanyInfo::where('id',session('login.company_id'))->first();
 
-            $image= $request->file('company_logo');
-            if (empty($image)) 
+            if (empty($input['company_id'])) 
             {
 
-                $path = $old_logo->logo;
-                
-            }
-            else
-            {
-
-                if ($old_logo->logo != "choose_img.png") 
+                $image= $request->file('company_logo');
+            
+                if (empty($image)) 
                 {
-                    $image_path = public_path('images/'.$old_logo->logo);  // Value is not URL but directory file path
 
-                    if(File::exists($image_path)) {
-                        File::delete($image_path);
-                    }
-                }
-
-                $input['imagename'] =  uniqid().'.webp';
-               
-                $destinationPath = public_path('/images/companylogo');
-
-                if($image->move($destinationPath, $input['imagename']))
-                {
-                        $path =  'companylogo/'.$input['imagename'];
+                    $path = "choose_img.png";
+                    
                 }
                 else
                 {
-                        return redirect()->back()->withInput()->with("failed","Something Went Wrong for Image Uploading");
+
+                    $input['imagename'] =  uniqid().'.webp';
+                   
+                    $destinationPath = public_path('/images/companylogo');
+
+                    if($image->move($destinationPath, $input['imagename']))
+                    {
+                            $path =  'companylogo/'.$input['imagename'];
+                    }
+                    else
+                    {
+                            return redirect()->back()->withInput()->with("failed","Something Went Wrong for Image Uploading");
+                    }
+
+                }
+                
+
+                $result = CompanyInfo::insert(array(
+                                        'name'              => $input['company_name'],
+                                        'email'             => strtolower(trim($input['company_email'])),
+                                        'phone'             => $input['company_phone'],
+                                        'logo'              => $path,
+                                        'country_id'        => $input['company_country'],
+                                        'default_discount'  => $input['company_default_discount'],
+                                        'default_tax'       => $input['company_default_tax'],
+                                        'receipt_header'    => $input['company_receipt_header'],
+                                        'receipt_footer'    => $input['company_receipt_footer'],
+                                        'fbr_invoice'       => isset($input['company_fbr'])?$input['company_fbr']:0,
+                                        'pos_id'            => isset($input['company_pos_id'])?$input['company_pos_id']:"",
+                                        'member_id'         => $user_id,
+                                        'created_at'        => date("Y-m-d H:i:s"),
+                                        'updated_at'        => date("Y-m-d H:i:s"),
+                                     ));
+
+                if ($result) 
+                {
+                    
+                    Members::where('id',$user_id)->update(array('is_set_profile'=>1));
+
+                    $request->session()->put("login.is_set_profile",1);  
+
+
+                    return redirect()->route('settings')->with("success","Company Information Saved Successfully");
+                }
+                else
+                {
+                    return redirect()->route('settings')->with("failed","Filed To Save Company Information");
+
                 }
 
-            }
-             
-
-            $result = CompanyInfo::where('id',session('login.company_id'))
-                                 ->update(array(
-                                    'name'              => $input['name'],
-                                    'email'             => strtolower(trim($input['email'])),
-                                    'phone'             => $input['phone'],
-                                    'logo'              => $path,
-                                    'country_id'        => $input['country'],
-                                    'default_discount'  => $input['discount'],
-                                    'default_tax'       => $input['tax'],
-                                    'receipt_header'    => $input['receipt_header'],
-                                    'receipt_footer'    => $input['receipt_footer'],
-                                    'fbr_invoice'       => isset($input['fbr_input'])?$input['fbr_input']:0,
-                                    'pos_id'            => isset($input['pos_id'])?$input['pos_id']:"",
-                                 ));
-
-            if ($result) 
-            {
-                
-                Members::where('id',$user_id)->update(array('is_set_profile'=>1));
-                
 
 
-                $request->session()->put("login.is_set_profile",1);                
-
-
-                return array("status"=>"1","msg"=>"Company Information Saved Successfully.");
             }
             else
             {
-                return array("status"=>"0","msg"=>"Failed.");
+                $old_logo = CompanyInfo::where('id',$input['company_id'])->first();
 
+                $image= $request->file('company_logo');
+                if (empty($image)) 
+                {
+
+                    $path = $old_logo->logo;
+                    
+                }
+                else
+                {
+
+                    if ($old_logo->logo != "choose_img.png") 
+                    {
+                        $image_path = public_path('images/'.$old_logo->logo);  // Value is not URL but directory file path
+
+                        if(File::exists($image_path)) {
+                            File::delete($image_path);
+                        }
+                    }
+
+                    $input['imagename'] =  uniqid().'.webp';
+                   
+                    $destinationPath = public_path('/images/companylogo');
+
+                    if($image->move($destinationPath, $input['imagename']))
+                    {
+                            $path =  'companylogo/'.$input['imagename'];
+                    }
+                    else
+                    {
+                            return redirect()->back()->withInput()->with("failed","Something Went Wrong for Image Uploading");
+                    }
+
+                }
+
+                $result = CompanyInfo::where('id',$input['company_id'])
+                                     ->update(array(
+                                        'name'              => $input['company_name'],
+                                        'email'             => strtolower(trim($input['company_email'])),
+                                        'phone'             => $input['company_phone'],
+                                        'logo'              => $path,
+                                        'country_id'        => $input['company_country'],
+                                        'default_discount'  => $input['company_default_discount'],
+                                        'default_tax'       => $input['company_default_tax'],
+                                        'receipt_header'    => $input['company_receipt_header'],
+                                        'receipt_footer'    => $input['company_receipt_footer'],
+                                        'fbr_invoice'       => isset($input['company_fbr'])?$input['company_fbr']:0,
+                                        'pos_id'            => isset($input['company_pos_id'])?$input['company_pos_id']:"",
+                                     ));
+
+                if ($result) 
+                {
+                    
+                    Members::where('id',$user_id)->update(array('is_set_profile'=>1));
+                    
+
+
+                    $request->session()->put("login.is_set_profile",1);                
+
+                    if ($input['company_id'] == session('login.company_id')) 
+                    {
+                        $request->session()->put("login.company_name",$input['company_name']);              
+                    }
+
+                    return redirect()->route('settings')->with("success","Company Information Saved Successfully");
+                }
+                else
+                {
+                    return redirect()->route('settings')->with("failed","Filed To Save Company Information");
+
+                }
             }
+
+
+
+
+
+             
+
         } 
         catch (Exception $e) 
         {
@@ -608,6 +713,7 @@ class AccountController extends Controller
         } 
         catch (Exception $e) 
         {
+            return response()->json($e,500);
             
         }
     
@@ -624,6 +730,7 @@ class AccountController extends Controller
         } 
         catch (Exception $e) 
         {
+            return response()->json($e,500);
             
         }
     }
@@ -662,10 +769,200 @@ class AccountController extends Controller
         } 
         catch (Exception $e) 
         {
+            return response()->json($e,500);
             
         }
     
     }
+
+
+    public function GetCompanyList(Request $request,$id)
+    {
+        try 
+        {
+
+            $user_id = session("login")["user_id"];
+
+            $user_info = $this->checkUserAvailbility($user_id,$request);
+
+            $company = CompanyInfo::where('member_id',$id)->get();
+
+            foreach ($company as $key) 
+            {
+                ?>
+                <option <?php if (session('login.company_id') == $key['id']): ?>
+                    selected
+                <?php endif ?> value="<?php echo $key['id'] ?>"><?php echo $key['name'] ?></option>
+                <?php 
+            }
+
+        } 
+        catch (Exception $e) 
+        {
+            return response()->json($e,500);
+            
+        }
+    
+    }
+
+
+    public function GetCompanyInfo(Request $request,$id)
+    {
+        try 
+        {
+
+            $user_id = session("login")["user_id"];
+
+            $user_info = $this->checkUserAvailbility($user_id,$request);
+
+            $country  =Countries::where('is_show',1)->get();
+            $company = CompanyInfo::where('id',$id)->first();
+
+            ?>
+                        <input type="hidden" id="company_id" name="company_id" value="<?php echo $id; ?>">
+
+                                        <div class="row form-group">
+                                          <div class="col-lg-6">
+                                            <label for="name" class=" form-control-label">Company Name:</label>
+                                            <input type="text" id="company_name" name="company_name" placeholder="Enter your company name" value="<?php echo $company->name; ?>" class="form-control">
+                                          </div>
+                                          <div class="col-lg-6">
+                                            <label for="phone" class=" form-control-label">Company Phone:</label>
+                                            <input type="text" id="company_phone" name="company_phone" placeholder="Enter your company phone" value="<?php echo $company->phone; ?>" class="form-control">
+                                          </div>
+                                        </div>
+
+                                        <div class="row form-group">
+                                          <div class="col-lg-6">
+                                            <label for="email" class=" form-control-label">Company Email:</label>
+                                            <input type="email" id="company_email" name="company_email" placeholder="Enter your company email address" value="<?php echo $company->email; ?>" class="form-control">
+                                          </div>
+                                          <div class="col-lg-6">
+                                            <label for="country" class=" form-control-label">Company Country:</label>
+                                            <select class="form-control" name="company_country" id="company_country">
+                                              <option value="" disabled="" selected="">Select Country:</option>
+                                              <?php foreach($country as $key): ?>
+                                                <option <?php if ($company->country_id == $key['id']): ?>
+                                                    selected
+                                                <?php endif ?> value="<?php echo $key['id']; ?>"><?php echo $key['name']; ?></option>
+                                              <?php endforeach; ?>
+                                            </select>
+                                          </div>
+                                        </div>
+
+                                        <div class="row form-group">
+                                          <div class="col-lg-6">
+                                            <label for="discount" class=" form-control-label">Default Discount %</label>
+                                            <input type="number" id="company_default_discount" name="company_default_discount" placeholder="Enter your company default discount" value="<?php echo $company->default_discount; ?>" min="0" max="100" class="form-control">
+                                          </div>
+                                          <div class="col-lg-6">
+                                            <label for="tax" class=" form-control-label">Default Tax %</label>
+                                            <input type="number" id="company_default_tax" name="company_default_tax" placeholder="Enter your company default tax" value="<?php echo $company->default_tax; ?>" min="0" max="100" class="form-control">
+                                          </div>
+                                        </div>
+
+                                        <div class="row form-group" style="background: #333; border: solid gray 2px; border-radius: 3px; color: white; padding: 25px;">
+                                          <div class="col-lg-6">
+                                            <label class="form-control-label">FBR Invoice Data:</label>
+                                            &nbsp;&nbsp;&nbsp;
+                                            <label class="switch switch-3d switch-primary switch-lg mr-3">
+                                              <input onclick="FBRToggle(this.value)" type="checkbox" class="switch-input" id="company_fbr" name="company_fbr" <?php if ($company->fbr_invoice ==1): ?>
+                                                  checked
+                                              <?php endif ?> value="<?php echo $company->fbr_invoice; ?>">
+                                              <span class="switch-label"></span>
+                                              <span class="switch-handle"></span>
+                                            </label>
+                                          </div>
+                                          <div class="col-lg-6" id="company_pos_id_div" <?php if ($company->fbr_invoice ==1): ?>
+                                            style="display: block;"
+                                          <?php else: ?>
+                                            style="display: none;"
+                                          
+                                          <?php endif ?> >
+
+                                            
+                                            <label class="form-control-label" style="">POS ID:</label>&nbsp;&nbsp;&nbsp;
+                                            <input  type="text" class="form-control" name="company_pos_id" id="company_pos_id" value="<?php echo $company->pos_id; ?>">
+
+
+                                          </div>
+                                        </div>
+
+                                        <div class="row form-group">
+                                          <div class="col-lg-12">
+                                            <label for="company_logo_output" class="form-control-label">Company Logo:</label><br>
+                                            <img id="company_logo_output" src="<?php echo  env('IMG_URL'); ?><?php echo $company->logo; ?>" width="130" height="130" style="border-radius: 2%; border: solid gray 1px; object-position: top; object-fit: cover;">&nbsp;&nbsp;&nbsp;<input type="file" onchange="logo_loadFile(event)" onclick="clearImage()"   name="company_logo" id="company_logo" accept="image/*" >
+                                          </div>
+                                        </div>
+
+                                        <div class="row form-group">
+                                          <div class="col-lg-12">
+                                            <label for="receipt_header" class="form-control-label">Text in the Receipt Header:</label>
+                                            <!-- <div id="editor">
+                                            <div id='edit' style="margin-top: 10px;"><p id="receipt_header">{!! $company->receipt_header !!}</p>
+                                            </div>
+                                            </div> -->
+                                            <textarea id="company_receipt_header" placeholder="Enter receipt header text" name="company_receipt_header" class="form-control" rows="4"><?php echo $company->receipt_header; ?></textarea>
+                                          </div>
+                                        </div>
+
+                                        <div class="row form-group">
+                                          <div class="col-lg-12">
+                                            <label for="receipt_footer" class="form-control-label">Text in the Receipt Footer:</label>
+                                            <input type="text" id="company_receipt_footer" name="company_receipt_footer" placeholder="Enter receipt footer text" value="<?php echo $company->receipt_footer; ?>" class="form-control">
+                                            
+                                          </div>
+                                        </div>
+
+            <?php
+
+        } 
+        catch (Exception $e) 
+        {
+            
+            return response()->json($e,500);
+        }
+    
+    }
+
+
+     public function ChangeCompany(Request $request,$id)
+    {
+        try 
+        {
+
+            $user_id = session("login")["user_id"];
+
+            $user_info = $this->checkUserAvailbility($user_id,$request);
+
+            $company = CompanyInfo::where('id',$id)->first();
+
+            if ($company == "0") 
+            {
+                return array("status"=>"0","msg"=>"Ops, Something Went Wrong, Try Again Later");
+            }
+            else
+            {
+                    $request->session()->put("login.company_id",$id);                
+                    $request->session()->put("login.company_name",$company->name);
+
+                return array("status"=>"1","msg"=>"success");
+
+            }
+
+
+
+        } 
+        catch (Exception $e) 
+        {
+            return response()->json($e,500);
+            
+        }
+    
+    }
+
+
+
 
 
 

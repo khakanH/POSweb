@@ -259,12 +259,16 @@ class BillController extends Controller
             if (empty($input['cust_id'])) 
             {   
                 $data = array(
+                        "code"                  => $input['cust_code'],
                         "customer_name"         => $input['cust_name'],
                         "customer_email"        => $input['cust_email'],
                         "customer_phone"        => $input['cust_phone'],
                         "customer_discount"     => (float)$input['cust_discount'],
                         "member_id"             => $user_id,
                         "company_id"            => $company_id,
+                        "payment_type"          => $input['cust_payment_method'],
+                        "credit_card_holder"    => $input['cust_cc_holder'],
+                        "credit_card_number"    => $input['cust_cc_number'],
                         "is_deleted"            => 0,
                         "created_at"            => date('Y-m-d H:i:s'),
                         "updated_at"            => date('Y-m-d H:i:s'),
@@ -286,6 +290,10 @@ class BillController extends Controller
                         "customer_email"        => $input['cust_email'],
                         "customer_phone"        => $input['cust_phone'],
                         "customer_discount"     => (float)$input['cust_discount'],
+                        "code"                  => $input['cust_code'],
+                        "payment_type"          => $input['cust_payment_method'],
+                        "credit_card_holder"    => $input['cust_cc_holder'],
+                        "credit_card_number"    => $input['cust_cc_number'],
                         "updated_at"            => date('Y-m-d H:i:s'),
                         );
                 if(Customers::where('id',$input['cust_id'])->update($data))
@@ -391,30 +399,78 @@ class BillController extends Controller
             $user_info = $this->checkUserAvailbility($user_id,$request);
             
             $get_bill = PendingBills::where('company_id',$company_id)->where('id',$id)->first();
+            $payment_method = PaymentMethods::where('is_show',1)->get();
 
             if ($get_bill == "") 
             {
-                return array("status"=>"0","msg"=>"Something went wrong.");
+                ?>
+                <center><p class="tx-danger">Something Went Wrong</p></center>
+                <?php
             }
             else
             {
-                if ($get_bill->customer_id == 0) 
-                {
-                    $result  = array(
-                                        "customer_name"=>"Walk In Customer",
-                                        "total_item"=>$get_bill->total_item." Items",
-                                        "total_bill"=>$get_bill->total_bill,
-                                    );
-                }
-                else
-                {
-                     $result  = array(
-                                        "customer_name"=>$get_bill->customer_name['customer_name'],
-                                        "total_item"=>$get_bill->total_item." Items",
-                                        "total_bill"=>$get_bill->total_bill,
-                                    );
-                }
-                return array("status"=>"1","msg"=>"Bill Details.","result"=>$result);
+                ?>
+                        <input type="hidden" id="bill_id" name="bill_id" value="<?php echo $id; ?>">
+                        <input type="hidden" id="total_bill_amount" name="total_bill_amount" value="<?php echo $get_bill->total_bill; ?>">
+                        <input type="hidden" id="bill_cash_change" name="bill_cash_change">
+
+                        <h4>Customer: <span id="bill_cust_name"><?php echo isset($get_bill->customer_name->customer_name)?$get_bill->customer_name->customer_name:"Walk In Customer"; ?></span></h4>
+                        <hr>
+                        <p id="bill_total_item"><b>Total Item: </b><?php echo $get_bill->total_item; ?></p>
+                        <p id="bill_total_amount"><b>Total Amount: </b><?php echo $get_bill->total_bill; ?></p>
+                        <hr>
+                         <div class="form-group">
+                          <label for="payment_method" class=" form-control-label">Payment Method:</label>
+                          <select required="" onchange="CheckPaymentMethod(this.value)" name="payment_method" id="payment_method" class="form-control">
+                            <?php foreach ($payment_method as $key): ?>
+                                <option <?php if ($key['id'] == (isset($get_bill->customer_name->payment_type)?$get_bill->customer_name->payment_type:0)): ?>
+                        selected
+                 <?php endif ?> value="<?php echo $key['id']; ?>"><?php echo $key['name']; ?></option>
+                            <?php endforeach; ?>
+                           
+                          </select>
+                        </div>
+
+
+                         <div class="form-group" <?php if ((isset($get_bill->customer_name->payment_type)?$get_bill->customer_name->payment_type:0) != 1 && $get_bill->customer_id != 0): ?>
+                             style ="display: none;"
+                         <?php else: ?>
+                             style ="display: block;"
+                         <?php endif; ?>
+
+                          id="for_cash">
+                          <label for="payment_amount"  class=" form-control-label">Payment Amount:</label>
+                          <input type="number" required="" name="payment_amount" onkeyup="CalculateBillChange(this.value)" value="<?php echo $get_bill->total_bill; ?>" id="payment_amount" class="form-control">
+                          <br>
+                          <label for="payment_amount" class=" form-control-label">Change: <span id="bill_change">0</span></label>
+                        </div>
+
+
+
+                         <div class="form-group" <?php if ((isset($get_bill->customer_name->payment_type)?$get_bill->customer_name->payment_type:0) != 2): ?>
+                             style ="display: none;"
+                             <?php else: ?>
+                             style ="display: block;"
+                         <?php endif ?>  id="for_credit_card">
+                          <label for="payment_amount" class=" form-control-label">Credit Card Number:</label>
+                          <input required="" name="credit_card_number" id="credit_card_number" class="form-control" type="tel" inputmode="numeric" pattern="[0-9\s]{13,19}" autocomplete="cc-number" maxlength="19"  value="<?php echo isset($get_bill->customer_name->credit_card_number)?$get_bill->customer_name->credit_card_number:"" ?>" placeholder="xxxx xxxx xxxx xxxx">
+                          <br>
+                          <label for="payment_amount" class=" form-control-label">Credit Card Holder:</label>
+                          <input type="text" required=""  value="<?php echo isset($get_bill->customer_name->credit_card_holder)?$get_bill->customer_name->credit_card_holder:"" ?>" name="credit_card_holder" id="credit_card_holder" class="form-control">
+                        </div>
+
+
+
+                        <div class="form-group" <?php if ((isset($get_bill->customer_name->payment_type)?$get_bill->customer_name->payment_type:0) != 3): ?>
+                             style ="display: none;"
+                             <?php else: ?>
+                             style ="display: block;"
+                         <?php endif ?> id="for_cheque">
+                          <label for="payment_amount" class=" form-control-label">Cheque Number:</label>
+                          <input type="text" required="" name="cheque_number" id="cheque_number" class="form-control">
+                        </div>
+
+                <?php
             }
 
         } 
@@ -425,7 +481,7 @@ class BillController extends Controller
         }
     }
 
-    public function GetPaymentMethod(Request $request)
+    public function GetPaymentMethod(Request $request,$id)
     {
         try 
         {
@@ -440,7 +496,9 @@ class BillController extends Controller
             foreach ($payment_method as $key) 
             {
                 ?>
-                 <option value="<?php echo $key['id']; ?>"><?php echo $key['name']; ?></option>
+                 <option <?php if ($key['id'] == $id): ?>
+                        selected
+                 <?php endif ?> value="<?php echo $key['id']; ?>"><?php echo $key['name']; ?></option>
                 <?php
             }
         } 

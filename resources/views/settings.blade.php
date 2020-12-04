@@ -38,122 +38,53 @@
                         {{ session()->forget('failed') }}
             @endif
             </center>
+
+
+                        <div class="row">
+                          <div class="col-lg-10"></div>
+                          <div class="col-lg-2"><button class="au-btn au-btn-icon au-btn--green au-btn--small" onclick="AddCompany()" type="button">
+                          <i class="zmdi zmdi-plus"></i>Add New Comapany</button></div>
+                        </div>
+                          <br>
       <div class="row">
         <div class="col-lg-12">
-                                <div class="card">
-                                    <div class="card-header">
-                                        <strong>Company</strong>
-                                        <small> Information</small>
+
+
+                 
+
+
+          <div class="card">
+              <div class="card-header">
+                <strong>Company</strong>
+                <small> List</small>
+              </div>
+              
+              <div class="card-body card-block">
+                  
+                  <div class="row" id="">
+                          @foreach($company as $key)
+                          <div class="col-lg-3">
+                                <div class="card" style="cursor: pointer;" onclick='EditCompany("<?php echo $key['id'] ?>")'>
+                                    <div class="card-body">
+                                        <div class="mx-auto d-block">
+                                            <img style="height: 100px;" class="mx-auto d-block" src="{{env('IMG_URL')}}{{$key['logo']}}" width="100" height="100" alt="{{$key['name']}}">
+                                            <hr>
+                                            <h5 class="text-sm-center mt-2 mb-1">{{$key['name']}}</h5>
+                                        </div>
                                     </div>
-                                    <div class="card-body card-block">
-                                      <form name="companyInfoForm" id="infoForm" method="post">
-                                        @csrf
-                                        <span class='arrow'>
-                                        <label class='error'></label>
-                                        </span>
-                                        <div class="row form-group">
-                                          <div class="col-lg-6">
-                                            <label for="name" class=" form-control-label">Company Name</label>
-                                            <input type="text" id="name" name="name" placeholder="Enter your company name" value="{{$company->name}}" class="form-control">
-                                          </div>
-                                          <div class="col-lg-6">
-                                            <label for="phone" class=" form-control-label">Company Phone</label>
-                                            <input type="text" id="phone" name="phone" placeholder="Enter your company phone" value="{{$company->phone}}" class="form-control">
-                                          </div>
-                                        </div>
-
-                                        <div class="row form-group">
-                                          <div class="col-lg-6">
-                                            <label for="email" class=" form-control-label">Company Email</label>
-                                            <input type="email" id="email" name="email" placeholder="Enter your company email address" value="{{$company->email}}" class="form-control">
-                                          </div>
-                                          <div class="col-lg-6">
-                                            <label for="country" class=" form-control-label">Company Country</label>
-                                            <select class="form-control" name="country" id="country">
-                                              <option value="" disabled="" selected="">Select Country</option>
-                                              @foreach($country as $key)
-                                                <option <?php if ($company->country_id == $key['id']): ?>
-                                                    selected
-                                                <?php endif ?> value="{{$key['id']}}">{{$key['name']}}</option>
-                                              @endforeach
-                                            </select>
-                                          </div>
-                                        </div>
-
-                                        <div class="row form-group">
-                                          <div class="col-lg-6">
-                                            <label for="discount" class=" form-control-label">Default Discount %</label>
-                                            <input type="number" id="discount" name="discount" placeholder="Enter your company default discount" value="{{$company->default_discount}}" min="0" max="100" class="form-control">
-                                          </div>
-                                          <div class="col-lg-6">
-                                            <label for="tax" class=" form-control-label">Default Tax %</label>
-                                            <input type="number" id="tax" name="tax" placeholder="Enter your company default tax" value="{{$company->default_tax}}" min="0" max="100" class="form-control">
-                                          </div>
-                                        </div>
-
-                                        <div class="row form-group" style="background: #333; border: solid gray 2px; border-radius: 3px; color: white; padding: 25px;">
-                                          <div class="col-lg-6">
-                                            <label class="form-control-label">FBR Invoice Data:</label>
-                                            &nbsp;&nbsp;&nbsp;
-                                            <label class="switch switch-3d switch-primary switch-lg mr-3">
-                                              <input onclick="FBRToggle(this.value)" type="checkbox" class="switch-input" id="fbr_input" name="fbr_input" <?php if ($company->fbr_invoice ==1): ?>
-                                                  checked
-                                              <?php endif ?> value="{{$company->fbr_invoice}}">
-                                              <span class="switch-label"></span>
-                                              <span class="switch-handle"></span>
-                                            </label>
-                                          </div>
-                                          <div class="col-lg-6" id="POSID_div" <?php if ($company->fbr_invoice ==1): ?>
-                                            style="display: block;"
-                                          <?php else: ?>
-                                            style="display: none;"
-                                          
-                                          <?php endif ?> >
-
-                                            
-                                            <label class="form-control-label" style="">POS ID:</label>&nbsp;&nbsp;&nbsp;
-                                            <input required="" type="text" class="form-control" name="pos_id" value="{{$company->pos_id}}">
-
-
-                                          </div>
-                                        </div>
-
-                                        <div class="row form-group">
-                                          <div class="col-lg-12">
-                                            <label for="company_logo_output" class="form-control-label">Company Logo:</label><br>
-                                            <img id="company_logo_output" src="{{ env('IMG_URL')}}{{$company->logo}}" width="130" height="130" style="border-radius: 2%; border: solid gray 1px; object-position: top; object-fit: cover;">&nbsp;&nbsp;&nbsp;<input type="file" onchange="logo_loadFile(event)" onclick="clearImage()"   name="company_logo"  accept="image/*" >
-                                          </div>
-                                        </div>
-
-                                        <div class="row form-group">
-                                          <div class="col-lg-12">
-                                            <label for="receipt_header" class="form-control-label">Text in the Receipt Header:</label>
-                                            <!-- <div id="editor">
-                                            <div id='edit' style="margin-top: 10px;"><p id="receipt_header">{!! $company->receipt_header !!}</p>
-                                            </div>
-                                            </div> -->
-                                            <textarea id="receipt_header" placeholder="Enter receipt header text" name="receipt_header" class="form-control" rows="4">{{$company->receipt_header}}</textarea>
-                                          </div>
-                                        </div>
-
-                                        <div class="row form-group">
-                                          <div class="col-lg-12">
-                                            <label for="receipt_footer" class="form-control-label">Text in the Receipt Footer:</label>
-                                            <input type="text" id="receipt_footer" name="receipt_footer" placeholder="Enter receipt footer text" value="{{$company->receipt_footer}}" class="form-control">
-                                            
-                                          </div>
-                                        </div>
-
-                                        <div class="row form-group">
-                                          <div class="col-lg-9"></div>
-                                          <div class="col-lg-3"><button style="width: 100%;" type="submit" class="btn btn-info">Save</button></div>
-                                        </div>
-
-                                      </form>
-                                        
-                                    </div>
+                                  
                                 </div>
                             </div>
+                          @endforeach
+                          </div>
+
+               </div>
+          
+          </div>             
+
+
+                               
+        </div>
       </div>     
 
       
@@ -200,143 +131,19 @@
     {
       if (val == "1") 
       {
-        document.getElementById("fbr_input").value = "0";
-        document.getElementById("fbr_input").checked = false;
-        document.getElementById("POSID_div").style.display = "none";
+        document.getElementById("company_fbr").value = "0";
+        document.getElementById("company_fbr").checked = false;
+        document.getElementById("company_pos_id_div").style.display = "none";
 
       }
       else
       {
-        document.getElementById("fbr_input").value = "1";
-        document.getElementById("fbr_input").checked = true; 
-        document.getElementById("POSID_div").style.display = "block";
+        document.getElementById("company_fbr").value = "1";
+        document.getElementById("company_fbr").checked = true; 
+        document.getElementById("company_pos_id_div").style.display = "block";
 
       }
     }
-
-
-    $.validator.addMethod('emailFormat', function(value, element) {
-        return this.optional(element) || (value.match(/^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$/));
-    },
-    'Please enter a valid email address.');
-  
-
-    $(function() {
-        $("form[name='companyInfoForm']").validate({
-             errorPlacement: function(label, element) {
-        label.addClass('arrow');
-        label.css({"color": "red", "font-size": "12px" ,"width":"100%"});
-        label.insertAfter(element);
-    },
-    wrapper: 'span',
-
-    rules: {
-      name: {
-        required: true,
-      },
-       email: {
-        required: true,
-        emailFormat: true,
-      },
-       phone: {
-        required: true,
-      },
-      country: {
-        required: true,
-      },
-      company_logo: {
-        required: false,
-      },
-      pos_id: {
-        required: true,
-        minlength: 6,
-        maxlength: 6,
-        digits: true,
-      },
-    },
-    messages: {
-      name: {
-        required: "Please Provide a Company Name",
-      },
-       email: {
-        required: "Please Provide a Company Email Address",
-      },
-       phone: {
-        required: "Please Provide a Company Phone Number",
-      },
-      country: {
-        required: "Please Select a Company Country",
-      },
-      company_logo: {
-        required: "Please Provide a Company Logo",
-      },
-       pos_id: {
-        required: "Please Provide a POS ID",
-        minlength: "POS ID Must be of 6 Digits",
-        maxlength: "POS ID Must be of 6 Digits",
-      },
-     
-    },
-    submitHandler: function(form) {
-
-        let myForm = document.getElementById('infoForm');
-        let formData = new FormData(myForm);
-
-         $.ajax({
-        type: "POST",
-        url: "{{ env('APP_URL')}}add-company-info",
-        enctype: 'multipart/form-data',
-        data: formData,
-        processData: false,
-        contentType: false,
-        beforeSend: function(){
-                            $('#LoadingModal').modal('show');
-                        },
-        success: function(data) {
-           
-                            $('#LoadingModal').modal('hide');
-
-            get_status = data['status'];
-            get_msg    = data['msg'];
-
-                            if (get_status == "0") 
-                            {
-
-                             document.getElementById('toast').style.visibility = "visible";
-                                document.getElementById('toast').className = "alert alert-danger alert-rounded fadeIn animated";
-                                document.getElementById('toastMsg').innerHTML = "Failed, Try Again Later";
-
-
-                                 setTimeout(function() {
-                                document.getElementById('toast').className = "alert alert-danger alert-rounded fadeOut animated";
-
-                            }, 5000);
-
-                            }
-                            else
-                            {
-                                document.getElementById('toast').style.visibility = "visible";
-                                document.getElementById('toast').className = "alert alert-success alert-rounded fadeIn animated";
-                                document.getElementById('toastMsg').innerHTML = get_msg;
-
-
-                                 setTimeout(function() {
-                                document.getElementById('toast').className = "alert alert-success alert-rounded fadeOut animated";
-
-                            }, 5000);
-
-
-                            }
-
-
-    }
-  });
-
-    }
-  });
-  });
-
-
 
 
 
@@ -352,6 +159,93 @@
     {
       document.getElementById('company_logo_output').src="{{ env('IMG_URL')}}choose_img.png";
     }
+
+
+
+
+// ______________________________________________________________________________________________
+// ______________________________________________________________________________________________
+// ______________________________________________________________________________________________
+
+
+
+    function AddCompany()
+    {
+        document.getElementById('company_name').value = "";
+        document.getElementById('company_phone').value = "";
+        document.getElementById('company_email').value = "";
+        document.getElementById('company_default_discount').value = "";
+        document.getElementById('company_default_tax').value = "";
+        
+        document.getElementById('company_fbr').checked = false;
+        document.getElementById('company_fbr').value = "0";
+        document.getElementById('company_pos_id_div').style.display = "none";
+        document.getElementById('company_pos_id').value = "";
+
+        document.getElementById('company_receipt_header').value = "";
+        document.getElementById('company_receipt_footer').value = "";
+
+
+
+        document.getElementById('company_id').value = "";
+        document.getElementById("company_logo").value = "";
+        document.getElementById('company_logo_output').src = "{{ env('IMG_URL')}}choose_img.png";
+        $('#CompanyModal').modal('show');
+        $('#CompanyModalLabel').html('Add New Company');
+
+        document.getElementById('CompanyModal').style.backgroundColor="rgba(0,0,0,0.8)";
+        document.getElementById('CompanyModalDialog').style.paddingTop="0px";
+        document.getElementById('CompanyModalData').style.padding="20px 20px 0px 20px";
+
+
+        $.ajax({
+        type: "GET",
+        url: "{{ env('APP_URL')}}get-country-name-list",
+        success: function(data) {
+
+            $('#company_country').html(data);
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            alert('Exception:' + errorThrown);
+        }
+    });
+    }
+
+
+
+    function EditCompany(id)
+    {
+        $('#CompanyModal').modal('show');
+        $('#CompanyModalLabel').html('Edit Company');
+
+        document.getElementById('CompanyModal').style.backgroundColor="rgba(0,0,0,0.8)";
+        document.getElementById('CompanyModalDialog').style.paddingTop="0px";
+        document.getElementById('CompanyModalData').style.padding="20px 20px 0px 20px";
+
+        $.ajax({
+        type: "GET",
+        url: "{{ env('APP_URL')}}get-company-info/"+id,
+        success: function(data) {
+
+            $('#CompanyModalData').html(data);
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            alert('Exception:' + errorThrown);
+        }
+    });
+
+
+    }
+
+
+
+
+
+
+
+
+
+
 </script>
 
 

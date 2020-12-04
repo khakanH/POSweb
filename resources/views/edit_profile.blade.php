@@ -69,7 +69,7 @@
                   <div class="form-group">
                     <label for="type" class="control-label mb-1">Account Type:</label>
                     
-                    <input type="text" id="type" class="form-control" disabled="" readonly="" value="{{$user_info->member_type_name['name']}}">                          
+                    <input type="text" id="type" class="form-control" disabled="" readonly="" value="{{isset($user_info->member_type_name['name'])?$user_info->member_type_name['name']:'Admin'}}">                          
                                 
                   </div>
                 </div>

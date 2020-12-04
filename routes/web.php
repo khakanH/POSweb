@@ -17,6 +17,10 @@ use App\Http\Controllers\Admin\OptionsController;
 use App\Http\Controllers\Admin\ModuleController;
 
 
+use App\Models\MemberRoles;
+use App\Models\Modules;
+
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -27,6 +31,22 @@ use App\Http\Controllers\Admin\ModuleController;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+
+// Route::get('/MB-Script',function(){
+
+// 	$modules = Modules::get();
+// 	foreach ($modules as $key) 
+// 	{
+// 		MemberRoles::insert(array(
+// 				'member_type'	=> 0,
+// 				'module_id'		=> $key['id'],
+// 		));
+// 	}
+// });
+
+
+
 Route::get('/api', function () {
 
 
@@ -124,17 +144,31 @@ Route::get('verify-email/{email}',[AccountController::class, 'VerifyEmail'])->na
 Route::get('settings',[AccountController::class, 'Settings'])->name('settings')->middleware('CheckMemberRoles');
 Route::post('add-company-info',[AccountController::class, 'AddCompanyInfo'])->name('add-company-info')->middleware('CheckMemberRoles');
 
+
+
+
+// $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+
 Route::get('notification-alert',[DashboardController::class,'NotificationAlert'])->name('notification-alert');
 Route::get('new-notifications-users',[DashboardController::class,'NewNotification'])->name('new-notifications-users');
 Route::get('mark-notification-read-user/{id}',[DashboardController::class,'MarkNotificationRead'])->name('mark-notification-read-user');
+Route::get('get-country-name-list',[AccountController::class,'CountryNameList'])->name('get-country-name-list');
+Route::get('get-company-info/{id}',[AccountController::class,'GetCompanyInfo'])->name('get-company-info');
 
+// $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
 
 
 Route::middleware(['LoginSession','CheckMemberRoles'])->group(function () 
-{
-	Route::get('dashboard',[DashboardController::class, 'Index'])->name('dashboard');
+{	
 	
+	
+	Route::get('dashboard',[DashboardController::class, 'Index'])->name('dashboard');
+
+	
+
+	Route::get('get-company-list/{id}',[AccountController::class,'GetCompanyList'])->name('get-company-list');
+	Route::get('change-company/{id}',[AccountController::class,'ChangeCompany'])->name('change-company');
 
 
 	Route::get('edit-profile',[AccountController::class, 'EditProfile'])->name('edit-profile');
@@ -198,6 +232,10 @@ Route::middleware(['LoginSession','CheckMemberRoles'])->group(function ()
 	Route::post('apply-bill-discount',[POSController::class,'ApplyBillDiscount'])->name('apply-bill-discount');
 
 
+
+	Route::get('get-customer-live-search-list/{code}/{bill_id}',[POSController::class, 'CustomerLiveSearchList'])->name('get-customer-live-search-list');
+
+
 			//________ B I L L -- C U S T O M E R S -- R O U T E S_______
 
 	Route::post('add-update-customer',[BillController::class,'AddUpdateCustomer'])->name('add-update-customer');
@@ -205,7 +243,7 @@ Route::middleware(['LoginSession','CheckMemberRoles'])->group(function ()
 	Route::get('change-bill-customer/{cust_id}/{bill_id}',[BillController::class, 'ChangeBillCustomer'])->name('change-bill-customer');
 
 	Route::get('get-bill-details/{id}',[BillController::class, 'GetBillDetails'])->name('get-bill-details');
-	Route::get('get-payment-method',[BillController::class, 'GetPaymentMethod'])->name('get-payment-method');
+	Route::get('get-payment-method/{id}',[BillController::class, 'GetPaymentMethod'])->name('get-payment-method');
 	Route::post('add-sale',[BillController::class,'AddSale'])->name('add-sale');
 
 	Route::get('get-bill-receipt/{id}',[BillController::class, 'GetBillReceipt'])->name('get-bill-receipt');
@@ -241,6 +279,21 @@ Route::middleware(['LoginSession','CheckMemberRoles'])->group(function ()
 
 
 	//___________________ M E M B E R -- T Y P E -- M A N A G E M E N T____________________
+
+   	Route::get('member-type-list',[UserController::class,'MemberTypeList'])->name('member-type-list');
+	Route::get('get-member-type-list-AJAX/{search_text}',[UserController::class,'MemberTypeListAJAX'])->name('get-member-type-list-AJAX');
+	Route::post('add-update-member-type',[UserController::class,'AddUpdateMemberType'])->name('add-update-member-type');
+	Route::get('delete-member-type/{id}',[UserController::class,'DeleteMemberType'])->name('delete-member-type');
+	Route::get('change-member-type-availability/{id}/{status}',[UserController::class,'ChangeMemberTypeAvailability'])->name('change-member-type-availability');
+
+
+	Route::get('member-role-list',[UserController::class,'MemberRoles'])->name('member-role-list');
+    Route::post('save-roles',[UserController::class,'SaveRoles'])->name('save-roles');
+    Route::get('get-member-roles-AJAX/{id}',[UserController::class,'MemberRolesAJAX'])->name('get-member-roles-AJAX');
+
+
+
+
 
 	Route::get('users',[UserController::class,'Index'])->name('users');
 	Route::get('get-user-list-AJAX/{search_text}',[UserController::class,'UserListAJAX'])->name('get-user-list-AJAX');
@@ -284,17 +337,17 @@ Route::prefix('admin')->group(function () {
 
 
 
-        Route::get('member-types',[MemberController::class,'MemberTypes'])->name('member-types');
-		Route::get('get-member-type-list-AJAX/{search_text}',[MemberController::class,'MemberTypeListAJAX'])->name('get-member-type-list-AJAX');
-		Route::post('add-update-member-type',[MemberController::class,'AddUpdateMemberType'])->name('add-update-member-type');
-		Route::get('delete-member-type/{id}',[MemberController::class,'DeleteMemberType'])->name('delete-member-type');
-		Route::get('change-member-type-availability/{id}/{status}',[MemberController::class,'ChangeMemberTypeAvailability'])->name('change-member-type-availability');
+  //       Route::get('member-types',[MemberController::class,'MemberTypes'])->name('member-types');
+		// Route::get('get-member-type-list-AJAX/{search_text}',[MemberController::class,'MemberTypeListAJAX'])->name('get-member-type-list-AJAX');
+		// Route::post('add-update-member-type',[MemberController::class,'AddUpdateMemberType'])->name('add-update-member-type');
+		// Route::get('delete-member-type/{id}',[MemberController::class,'DeleteMemberType'])->name('delete-member-type');
+		// Route::get('change-member-type-availability/{id}/{status}',[MemberController::class,'ChangeMemberTypeAvailability'])->name('change-member-type-availability');
 
-        Route::get('member-roles',[MemberController::class,'MemberRoles'])->name('member-roles');
-        Route::post('save-roles',[MemberController::class,'SaveRoles'])->name('save-roles');
+  //       Route::get('member-roles',[MemberController::class,'MemberRoles'])->name('member-roles');
+  //       Route::post('save-roles',[MemberController::class,'SaveRoles'])->name('save-roles');
 
 
-        Route::get('get-member-roles-AJAX/{id}',[MemberController::class,'MemberRolesAJAX'])->name('get-member-roles-AJAX');
+  //       Route::get('get-member-roles-AJAX/{id}',[MemberController::class,'MemberRolesAJAX'])->name('get-member-roles-AJAX');
 
 	//_________________________________________________________________________________
 

@@ -1,3 +1,44 @@
+
+
+
+
+@if(session('login.is_set_profile') == 1 && session('login.user_type')==0)
+
+<header class="header-desktop4" style="background-color: #000000;
+background-image: linear-gradient(147deg, #000000 0%, #04619f 74%);color: #000;">
+            <div class="container">
+                <div class="header4-wrap">
+                    <div class="header__logo" style="width: 100%;">
+                    <select class="form-control" name="company_list" style="width: 21%;" id="company_list" onchange="ChangeCompany(this.value)">
+                        <option selected="" value="{{session('login.company_id')}}">{{session('login.company_name')}}</option>
+                    </select>
+                    </div>
+                    
+                </div>
+            </div>
+        </header>
+
+@endif
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
  <header class="header-desktop3 d-none d-lg-block">
             <div class="section__content section__content--p35">
                 <div class="header3-wrap">
@@ -52,7 +93,8 @@
                             <div class="notifi-dropdown notifi-dropdown--no-bor js-dropdown" >
                                 
                                 <div id="notifications-div" style="max-height: 400px; overflow: auto;">
-                                    
+                                   &nbsp;
+                                    <br>
                                 <!-- <div class="notifi__footer">
                                     <a href="#">All notifications</a>
                                 </div> -->
@@ -79,9 +121,16 @@
                                                 <a href="#">{{explode(" ",session('login')['user_name'])[0]}}</a>
                                             </h5>
                                             <span class="email">{{session('login')['user_email']}}</span>
+
+
                                         </div>
                                     </div>
+
+
+
                                     <div class="account-dropdown__body">
+
+                                         
                                         <div class="account-dropdown__item">
                                             <a href="{{route('edit-profile')}}">
                                                 <i class="zmdi zmdi-account"></i>Account</a>
@@ -172,7 +221,9 @@
                             <div class="notifi-dropdown notifi-dropdown--no-bor js-dropdown" >
                                 
                                 <div id="notifications-div_mob-dev" style="max-height: 400px; overflow: auto;">
-                                    
+                                    <br>
+                                    <center><p class="tx-danger tx-16">No New Notification Found</p></center>
+                                    <br>
                                 <!-- <div class="notifi__footer">
                                     <a href="#">All notifications</a>
                                 </div> -->
@@ -265,8 +316,11 @@
     }
 
     document.addEventListener("DOMContentLoaded", function(event) { 
-     setInterval(NewNotification,3000);  
-     setInterval(NotificationAlert,3000);  
+     setTimeout(GetCompanyList,1000);  
+     setTimeout(NewNotification,1000);  
+     setInterval(NewNotification,15000);  
+     setTimeout(NotificationAlert,1000);  
+     setInterval(NotificationAlert,15000);  
     });
 
     function MarkNotificationRead(id)
@@ -281,6 +335,48 @@
             alert('Exception:' + errorThrown);
         }
     });
+    }
+
+    function GetCompanyList()
+    {   
+        id = <?php echo session('login.user_id'); ?>;
+
+        $.ajax({
+            type: "GET",
+            url: "{{ env('APP_URL')}}get-company-list/"+id,
+            success: function(data) {
+              $('#company_list').html(data);
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                alert('Exception:' + errorThrown);
+            }
+        });   
+    }
+
+    function ChangeCompany(id)
+    {
+        $.ajax({
+            type: "GET",
+            url: "{{ env('APP_URL')}}change-company/"+id,
+            success: function(data) {
+
+
+                get_status = data['status'];
+                get_msg    = data['msg'];
+
+                                if (get_status == "0") 
+                                {
+                                    alert(get_msg);
+                                }
+                                else
+                                {
+                                    location.reload();
+                                }
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                alert('Exception:' + errorThrown);
+            }
+        });   
     }
 
 </script>

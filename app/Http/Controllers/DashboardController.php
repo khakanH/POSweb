@@ -76,7 +76,7 @@ class DashboardController extends Controller
     {
         try 
         {   
-            $user_id = session("login")["user_id"];
+            $user_id = isset(session("login")["user_id"])?session("login")["user_id"]:0;
 
             $user_info = $this->checkUserAvailbility($user_id,$request);
 
@@ -103,7 +103,7 @@ class DashboardController extends Controller
     {
         try 
         {
-            $user_id = session("login")["user_id"];
+            $user_id = isset(session("login")["user_id"])?session("login")["user_id"]:0;
 
             $user_info = $this->checkUserAvailbility($user_id,$request);
 
@@ -151,7 +151,8 @@ class DashboardController extends Controller
     {
         try 
         {
-            $user_id = session("login")["user_id"];
+            
+            $user_id = isset(session("login")["user_id"])?session("login")["user_id"]:0;
 
             $user_info = $this->checkUserAvailbility($user_id,$request);
 
@@ -177,8 +178,16 @@ class DashboardController extends Controller
 
         if ($user == "") 
         {   
-            $request->session()->put("failed","Something went wrong.");
-            header('Location:'.url('signout'));
+
+            if($request->ajax()) 
+            {
+                return response()->json(['status'=>"0",'msg' => 'Session expired'],401);
+            }
+            else
+            {
+                $request->session()->put("failed","Something went wrong.");
+                header('Location:'.url('signout'));
+            }
             
             exit();
         }
