@@ -65,18 +65,14 @@ class UserController extends Controller
 
             }
 
-            // $code = rand(1111,9999);
-            $code = 1234;
-            $text_notes = "Thank you for Registering on ......";
-            // $this->SendMailVerification("0",$code,$input['user_email'],$text_notes);
-
+            
 
                 $data = array(  
                             'username'          => $input['user_name'],
                             'email'             => strtolower(trim($input['user_email'])),
                             'password'          => Hash::make($input['user_password']),
                             'user_image'        => "user/default_user_icon.png",
-                            'verification_code' => $code,
+                            'verification_code' => 0,
                             'is_verified'       => 0,
                             'is_set_profile'    => 1,
                             'is_blocked'        => 0,

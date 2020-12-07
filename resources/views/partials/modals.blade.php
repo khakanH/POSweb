@@ -660,6 +660,9 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.10/jquery.mask.js"></script>
 
 <script type="text/javascript">
+
+  $("#credit_card_number,#cust_cc_number").mask("9999-9999-9999-9999");
+
   function ToNormal()
   {
     document.getElementById("prod_cost").style.border = "solid lightgray 1px"
@@ -688,8 +691,7 @@
   }
 
 
-      $("#credit_card_number").mask("9999-9999-9999-9999");
-      $("#cust_cc_number").mask("9999-9999-9999-9999");
+      
 
 
     $(function() {

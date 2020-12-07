@@ -470,6 +470,10 @@ class BillController extends Controller
                           <input type="text" required="" name="cheque_number" id="cheque_number" class="form-control">
                         </div>
 
+                        <script type="text/javascript">
+                                $("#credit_card_number").mask("9999-9999-9999-9999");
+                            
+                        </script>
                 <?php
             }
 
