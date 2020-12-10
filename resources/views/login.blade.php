@@ -87,7 +87,7 @@
                                         <a href="javascript:void(0)" onclick="ForgotPassword()">Forgotten Password?</a>
                                     </label>
                                 </div>
-                                <button class="au-btn au-btn--block au-btn--green m-b-20" type="submit">sign in</button>
+                                <button id="login-btn" class="au-btn au-btn--block au-btn--green m-b-20" type="submit">sign in</button>
                             </form>
                             <div class="form-group">
                                 <p class="text-center">
@@ -174,6 +174,7 @@
     },
     submitHandler: function(form) {
 
+      document.getElementById("login-btn").disabled = true;  
       form.submit();
     }
   });
@@ -188,6 +189,7 @@
         }
         else
         {     
+                                 $("body").fadeOut();
 
                         var email  = document.getElementById('email').value.trim();
                         $.ajax({
@@ -204,6 +206,7 @@
 
                             if (get_status == "0") 
                             {
+                                 $("body").fadeIn();
                                 //failed
                                  document.getElementById('toast').style.visibility = "visible";
                                 document.getElementById('toast').className = "alert alert-danger alert-rounded fadeIn animated";

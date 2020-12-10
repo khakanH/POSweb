@@ -50,7 +50,7 @@ use App\Models\Modules;
 Route::get('/api', function () {
 
 
-		$response = Http::withToken('1298b5eb-b252-3d97-8622-a4a69d5bf818')->post('https://esp.fbr.gov.pk:8244/FBR/v1/api/Live/PostData',[
+		$response = Http::withToken('1298b5eb-b252-3d97-8622-a4a69d5bf818')->post('https://gw.fbr.gov.pk/imsp/v1/api/Live/PostData',[
 		    
 		"InvoiceNumber"=>"",
 		"POSID"=>110014,
@@ -332,6 +332,7 @@ Route::prefix('admin')->group(function () {
 
         Route::get('members-list',[MemberController::class,'MemberList'])->name('members-list');
         Route::get('get-member-details/{id}',[MemberController::class,'MemberDetails'])->name('get-member-details');
+        Route::get('get-company-details/{id}',[MemberController::class,'CompanyDetails'])->name('get-company-details');
 		Route::get('block-unblock-member/{id}',[MemberController::class,'BlockUnblockMember'])->name('block-unblock-member');
 		Route::get('get-member-list-AJAX/{search_text}',[MemberController::class,'MemberListAJAX'])->name('get-member-list-AJAX');
 

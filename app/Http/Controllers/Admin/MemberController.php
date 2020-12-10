@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use App\Models\Admin;
 use App\Models\Members;
 use App\Models\MemberType;
+use App\Models\MembersCompany;
 use App\Models\MemberRoles;
 use App\Models\Modules;
 use App\Models\CompanyInfo;
@@ -141,18 +142,18 @@ class MemberController extends Controller
 
 
             $member= Members::where('id',$id)->first();
-            $company = CompanyInfo::where('member_id',$id)->first();
+            $company = CompanyInfo::where('member_id',$id)->get();
 
-            $category   = Category::where('company_id',$company->id)->count();
-            $product    = Product::where('company_id',$company->id)->count();
-            $customer   = Customers::where('company_id',$company->id)->where('is_deleted',0)->count();
-            $sale       = Sales::where('company_id',$company->id)->count();
-            $sub_member = Members::where('parent_id',$id)->get();
-
-
+            // $category   = Category::where('company_id',$company->id)->count();
+            // $product    = Product::where('company_id',$company->id)->count();
+            // $customer   = Customers::where('company_id',$company->id)->where('is_deleted',0)->count();
+            // $sale       = Sales::where('company_id',$company->id)->count();
+            // $sub_member = Members::where('parent_id',$id)->get();
 
 
-            if ($member == "" || $company == "") 
+
+
+            if ($member == "") 
             {
                 ?>
                 <center><h5>No Details Found</h5></center>
@@ -163,7 +164,7 @@ class MemberController extends Controller
 
             <div class="row">
                 
-                <div class="col-lg-6" style="border-right: solid lightgray 1px;">
+                <div class="col-lg-12">
                     <center>
                         <h5>User Info</h5>
                         <br>
@@ -173,7 +174,7 @@ class MemberController extends Controller
                     <table class="table" style="font-size: 13px;">
                         <tbody>
                             <tr>
-                                <th>Username:</th>
+                                <th width="20%">Username:</th>
                                 <td><?php echo $member->username; ?></td>
                             </tr>
                             <tr>
@@ -184,43 +185,108 @@ class MemberController extends Controller
                                 <th>Account Type:</th>
                                 <td><?php echo isset($member->member_type_name->name)?$member->member_type_name->name:"Admin"; ?></td>
                             </tr>
+                            <tr>
+                                <th>Account Created:</th>
+                                <td><?php echo date("M d, Y h:i a",strtotime($member->created_at)); ?></td>
+                            </tr>
                         </tbody>
                     </table>
 
                 </div>
+            </div>
+            <hr>
+            <center><h5>Company Info</h5></center>
+            <br>
+            <div class="row">
+                <?php foreach($company as $key): ?>
+                        <div class="col-lg-3">
+                                <div class="card" style="cursor: pointer;" onclick='CompanyDetails("<?php echo $key['id'] ?>","<?php echo $id ?>")'>
+                                    <div class="card-body">
+                                        <div class="mx-auto d-block">
+                                            <img style="height: 50px;" class="mx-auto d-block" src="<?php echo env('IMG_URL') ?><?php echo $key['logo'] ?> " width="50" height="50" alt="<?php echo $key['name'] ?> ">
+                                            <hr>
+                                            <h5 class="text-sm-center"><?php echo $key['name'] ?> </h5>
+                                        </div>
+                                    </div>
+                                  
+                                </div>
+                        </div>
+                <?php endforeach; ?>
+            </div>
+
+            <?php
+
+        } 
+        catch (Exception $e) 
+        {
+            return response()->json($e,500);
+        }
+
+    }
 
 
+    public function CompanyDetails(Request $request,$id)
+    {
+        try 
+        {   
+            $user_id = session("admin_login.user_id");
+
+            $user_info = $this->checkUserAvailbility($user_id,$request);
 
 
-
-
-
-                <div class="col-lg-6">
-                    <center><h5>Company Info</h5>
-                    <br>
+            $company = CompanyInfo::where('id',$id)->first();
+            
+            if ($company == "") 
+            {
+                ?>
+                <center><h5>No Details Found</h5></center>
+                <?php
+                return;
+            }
+            ?>
+             <div class="row">
+                
+                <div class="col-lg-12">
+                    <center>
+                        <h5>Company Info</h5>
+                        <br>
                         <img src="<?php echo env('IMG_URL').$company->logo ?>" width="60" height="60">
                     </center>
                         <br>
                     <table class="table" style="font-size: 13px;">
                         <tbody>
                             <tr>
-                                <th>Company Name:</th>
+                                <th width="20%">Name:</th>
                                 <td><?php echo $company->name; ?></td>
                             </tr>
                             <tr>
-                                <th>Company Email:</th>
-                                <td><?php echo $company->email; ?></td>
+                                <th>Email:</th>
+                                <td style="word-break: break-all;"><?php echo $company->email; ?></td>
                             </tr>
                             <tr>
-                                <th>Company Phone:</th>
+                                <th>Phone:</th>
                                 <td><?php echo $company->phone; ?></td>
+                            </tr>
+                            <tr>
+                                <th>Company Created:</th>
+                                <td><?php echo date("M d, Y h:i a",strtotime($company->created_at)); ?></td>
                             </tr>
                         </tbody>
                     </table>
-                </div>
 
+                </div>
             </div>
-            <hr>
+
+            <?php
+            $get_user_id = MembersCompany::where('company_id',$id)->pluck('member_id');
+
+            $category   = Category::where('company_id',$id)->count();
+            $product    = Product::where('company_id',$id)->count();
+            $customer   = Customers::where('company_id',$id)->where('is_deleted',0)->count();
+            $sale       = Sales::where('company_id',$id)->count();
+            $sub_member = Members::whereIn('id',$get_user_id)->where('member_type','!=',0)->get();
+
+            ?>
             <table class="table tx-14">
                 <tbody>
                     <tr>
@@ -231,7 +297,7 @@ class MemberController extends Controller
                     <tr>
                         <td>Total Sub-Member: <?php echo count($sub_member); ?></td>
                         <td>Total Sale Receipt:  <?php echo $sale; ?> </td>
-                        <td>Account Created:  <?php echo date("d-M-Y h:i a",strtotime($member->created_at)); ?></td>
+                        <td>&nbsp;</td>
                     </tr>
                 </tbody>
             </table>
@@ -271,9 +337,11 @@ class MemberController extends Controller
                     </table>
             <?php endif; ?>
 
-
             <?php
 
+
+
+          
         } 
         catch (Exception $e) 
         {
@@ -281,7 +349,6 @@ class MemberController extends Controller
         }
 
     }
-
 
     public function BlockUnblockMember(Request $request,$id)
     {

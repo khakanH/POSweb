@@ -61,8 +61,8 @@ class AccountController extends Controller
             }
            
 
-            // $code = rand(1111,9999);
-            $code = 1234;
+            $code = rand(1111,9999);
+            // $code = 1234;
             $text_notes = "Thank you for Registering on ......";
             $this->SendMailVerification("0",$code,$input['email'],$text_notes);
 
@@ -138,8 +138,8 @@ class AccountController extends Controller
         try
         {
             $input = $request->all();
-            $code = 1234;
-            // $code = rand(1111,9999);
+            // $code = 1234;
+            $code = rand(1111,9999);
             
             $get_account = $this->member_model->where('email',strtolower(trim($input['email'])))->first();
 
@@ -320,8 +320,8 @@ class AccountController extends Controller
                 
                 if ($check_account->is_verified == 0) 
                 {
-                    // $code = rand(1111,9999);
-                    $code = 1234;
+                    $code = rand(1111,9999);
+                    // $code = 1234;
                     $username = empty($check_account->username)?"0":$check_account->username;
 
                     $text_notes = "Account Verification.";
@@ -456,8 +456,8 @@ class AccountController extends Controller
                                         'phone'             => $input['company_phone'],
                                         'logo'              => $path,
                                         'country_id'        => $input['company_country'],
-                                        'default_discount'  => $input['company_default_discount'],
-                                        'default_tax'       => $input['company_default_tax'],
+                                        'default_discount'  => isset($input['company_default_discount'])?$input['company_default_discount']:0,
+                                        'default_tax'       => isset($input['company_default_tax'])?$input['company_default_tax']:0,
                                         'receipt_header'    => $input['company_receipt_header'],
                                         'receipt_footer'    => $input['company_receipt_footer'],
                                         'fbr_invoice'       => isset($input['company_fbr'])?$input['company_fbr']:0,
@@ -531,8 +531,8 @@ class AccountController extends Controller
                                         'phone'             => $input['company_phone'],
                                         'logo'              => $path,
                                         'country_id'        => $input['company_country'],
-                                        'default_discount'  => $input['company_default_discount'],
-                                        'default_tax'       => $input['company_default_tax'],
+                                        'default_discount'  => isset($input['company_default_discount'])?$input['company_default_discount']:0,
+                                        'default_tax'       => isset($input['company_default_tax'])?$input['company_default_tax']:0,
                                         'receipt_header'    => $input['company_receipt_header'],
                                         'receipt_footer'    => $input['company_receipt_footer'],
                                         'fbr_invoice'       => isset($input['company_fbr'])?$input['company_fbr']:0,
@@ -693,8 +693,8 @@ class AccountController extends Controller
                 }
                 else
                 {   
-                    // $code = rand(1111,9999);
-                    $code = 1234;
+                    $code = rand(1111,9999);
+                    // $code = 1234;
                     $username = empty($user_info->username)?"0":$user_info->username;
                     $text_notes = "Change Email Address Verification.";
                     $this->SendMailVerification($username,$code,$new_email_add,$text_notes);

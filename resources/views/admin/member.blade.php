@@ -101,6 +101,7 @@
     function ViewMember(id)
     {
         $('#MemberDetailModal').modal('show');
+        $('#back-arrow-span').html("");
         $('#MemberDetailModalData').html("");
 
         $.ajax({
@@ -112,6 +113,31 @@
         success: function(data) {
                              document.getElementById("MemberDetailModalLoading").style.display = "none";
 
+
+            $('#MemberDetailModalData').html(data);
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            alert('Exception:' + errorThrown);
+        }
+        });   
+    }
+
+
+
+    function CompanyDetails(id,member_id)
+    {   
+        $('#MemberDetailModalData').html("");
+       
+        $.ajax({
+        type: "GET",
+        url: "{{ env('APP_URL')}}admin/get-company-details/"+id,
+        beforeSend: function(){
+                             document.getElementById("MemberDetailModalLoading").style.display = "block";
+                          },
+        success: function(data) {
+            
+                             document.getElementById("MemberDetailModalLoading").style.display = "none";
+ $('#back-arrow-span').html('<i id="back-arrow" onclick="ViewMember('+member_id+')" class="fa fa-arrow-left tx-16" style="padding: 10px; cursor: pointer;"></i>');
 
             $('#MemberDetailModalData').html(data);
         },

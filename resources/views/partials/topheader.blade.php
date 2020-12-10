@@ -89,7 +89,7 @@ background-image: linear-gradient(147deg, #000000 0%, #04619f 74%);color: #000;"
                         
                         <div class="account-wrap">
                         <div id="bell_icon" class="header-button-item js-item-menu">
-                            <i class="zmdi zmdi-notifications"></i>
+                            <i class="zmdi zmdi-notifications" onclick="OpenNotification()"></i>
                             <div class="notifi-dropdown notifi-dropdown--no-bor js-dropdown" >
                                 
                                 <div id="notifications-div" style="max-height: 400px; overflow: auto;">
@@ -217,7 +217,7 @@ background-image: linear-gradient(147deg, #000000 0%, #04619f 74%);color: #000;"
                 
                 <div class="account-wrap">
                      <div id="bell_icon_mob-dev" class="header-button-item js-item-menu">
-                            <i class="zmdi zmdi-notifications"></i>
+                            <i class="zmdi zmdi-notifications" onclick="OpenNotification()"></i>
                             <div class="notifi-dropdown notifi-dropdown--no-bor js-dropdown" >
                                 
                                 <div id="notifications-div_mob-dev" style="max-height: 400px; overflow: auto;">
@@ -270,6 +270,11 @@ background-image: linear-gradient(147deg, #000000 0%, #04619f 74%);color: #000;"
 
 
 <script type="text/javascript">
+    function OpenNotification()
+    {
+        document.getElementById("bell_icon").classList.remove("has-noti");
+        document.getElementById("bell_icon_mob-dev").classList.remove("has-noti");
+    }
     function NewNotification()
     {
       $.ajax({

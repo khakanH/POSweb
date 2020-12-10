@@ -417,8 +417,8 @@ class ProductController extends Controller
                         "category_id"           => $input['prod_cate'],
                         "description"           => $input['prod_descrip'],
                         "cost"                  => $input['prod_cost'],
-                        "tax"                   => $input['prod_tax'],
-                        "price"                 => (float) $input['prod_cost'] + ($input['prod_cost']*$input['prod_tax']/100),
+                        "tax"                   => isset($input['prod_tax'])?$input['prod_tax']:0,
+                        "price"                 => (float) $input['prod_cost'] + ($input['prod_cost']*(isset($input['prod_tax'])?$input['prod_tax']:0)/100),
                         "member_id"             => $user_id,
                         "company_id"            => $company_id,
                         "is_deleted"            => 0,
@@ -457,8 +457,8 @@ class ProductController extends Controller
                         "category_id"           => $input['prod_cate'],
                         "description"           => $input['prod_descrip'],
                         "cost"                  => $input['prod_cost'],
-                        "tax"                   => $input['prod_tax'],
-                        "price"                 => $input['prod_price'],
+                        "tax"                   => isset($input['prod_tax'])?$input['prod_tax']:0,
+                        "price"                 => (float) $input['prod_cost'] + ($input['prod_cost']*(isset($input['prod_tax'])?$input['prod_tax']:0)/100),
                         "updated_at"            => date('Y-m-d H:i:s'),
                         );
                 if($this->product_model->where('id',$input['prod_id'])->update($data))

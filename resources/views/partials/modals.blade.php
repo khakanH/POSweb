@@ -139,7 +139,7 @@
                             </select>
                           </div>
                           <div class="col-lg-6"> 
-                            <label>Product Cost: <i style="font-size: 12px">(without tax)</i> </label>
+                            <label>Actual Product Cost: </label>
                             <input type="number" onkeyup="GetProdPrice()" onchange="GetProdPrice()" onclick="ToNormal()" id="prod_cost" name="prod_cost" class="form-control" placeholder="Enter Product Cost"></div>
                         </div>
                         <br>
@@ -497,7 +497,7 @@
                         <div class="row">
                           
                           <div class="col-lg-6"> 
-                            <label>Compnay Email Address: <i style="font-size: 12px">(without tax)</i> </label>
+                            <label>Compnay Email Address:</label>
                             <input type="email" id="company_email" name="company_email" class="form-control" placeholder="Enter Compnay Email Address"></div>
                           <div class="col-lg-6"> 
                             <label>Compnay Country:</label>
@@ -672,6 +672,12 @@
   {
     val = parseFloat(document.getElementById("prod_tax").value);
     cost = parseFloat(document.getElementById("prod_cost").value);
+
+    if (!val) 
+    {
+      val = 0;
+    }
+
     document.getElementById("prod_cost").style.border = "solid lightgray 1px"
 
     if (!cost) 
@@ -822,9 +828,7 @@
       prod_cate: {
         required: true,
       },
-      prod_tax: {
-        required: true,
-      },
+     
       prod_cost: {
         required: true,
       },
@@ -844,9 +848,7 @@
       prod_cate: {
         required: "Please Select a Product Category",
       },
-      prod_tax: {
-        required: "Please Provide a Product Tax",
-      },
+      
       prod_cost: {
         required: "Please Provide a Product Cost",
       },
