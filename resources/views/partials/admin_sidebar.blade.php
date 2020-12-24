@@ -29,6 +29,11 @@
                         </li>
 
                         <li>
+                            <a href="{{route('company-type-list')}}">
+                            <i class="fas fa-th-list"></i>Company Types</a>
+                        </li>
+
+                        <li>
                             <a href="{{route('members-list')}}">
                             <i class="fas fa-users"></i>Members</a>
                         </li>

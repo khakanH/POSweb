@@ -115,7 +115,14 @@
 
 
 <script type="text/javascript">
-  
+  @if (session('login.is_set_profile') == 0) 
+  {
+    document.addEventListener("DOMContentLoaded", function(event) { 
+        EditCompany(<?php echo session('login.company_id'); ?>);
+        document.getElementById("set-profile-msg").innerHTML ='<br><center><p class="tx-danger">Kindly Save Your Company Information First!</p></center><br>'
+    });
+  }
+  @endif
 // (function () {
 //       new FroalaEditor("#edit", {
 //         // Set the list of available shortcuts.
@@ -171,6 +178,7 @@
 
     function AddCompany()
     {
+        document.getElementById("set-profile-msg").innerHTML = "";
         document.getElementById('company_name').value = "";
         document.getElementById('company_phone').value = "";
         document.getElementById('company_email').value = "";

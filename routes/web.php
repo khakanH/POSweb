@@ -124,6 +124,9 @@ Route::get('/signup', function () {
     return view('signup');
 })->name('signup');
 
+Route::get('check-email-registration',[AccountController::class, 'CheckEmailRegistration'])->name('check-email-registration');
+
+
 
 Route::post('/register', [AccountController::class, 'Register'])->name('register');
 
@@ -368,6 +371,16 @@ Route::prefix('admin')->group(function () {
 		Route::get('delete-payment-method/{id}',[OptionsController::class,'DeletePayment'])->name('delete-payment-method');
 		Route::get('change-payment-availability/{id}/{status}',[OptionsController::class,'ChangePaymentAvailability'])->name('change-payment-availability');
 
+
+
+	//_________________________________________________________________________________
+
+
+        Route::get('company-type-list',[OptionsController::class,'CompanyTypeList'])->name('company-type-list');
+		Route::get('get-company-type-list-AJAX/{search_text}',[OptionsController::class,'CompanyTypeListAJAX'])->name('get-company-type-list-AJAX');
+		Route::post('add-update-company-type',[OptionsController::class,'AddUpdateCompanyType'])->name('add-update-company-type');
+		Route::get('delete-company-type/{id}',[OptionsController::class,'DeleteCompanyType'])->name('delete-company-type');
+		Route::get('change-company-type-availability/{id}/{status}',[OptionsController::class,'ChangeCompanyTypeAvailability'])->name('change-company-type-availability');
 
 	//_________________________________________________________________________________
 

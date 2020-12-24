@@ -232,7 +232,7 @@
                                     </div>
                           <div class="row" id="pos-prod-list" style="min-height: 420px; max-height: 420px; overflow: auto;">
                           @foreach($product as $prod)
-                          <div class="col-3">
+                          <div class="col-lg-4">
                                 <div class="card" style="cursor: pointer;" onclick='AddProductToBill("{{$prod['id']}}","{{$prod['name']}}","{{$prod['price']}}")'>
                                     <div class="card-body">
                                         <div class="mx-auto d-block">
@@ -1220,7 +1220,11 @@
                                     type: "GET",
 
                                     url: "{{ env('APP_URL')}}get-customer-live-search-list/"+val+"/"+bill_id,
+                                      beforeSend: function(){
+                                      $('#customer-search-list').html('<center><img src="<?php echo env('IMG_URL') ?>loading.gif" width="30" height="30"><br></center>');
+                                      },
                                     success: function(data) {
+                                      $('#customer-search-list').html('');
                                            
                                       get_status = data['status'];
                                       if (get_status == 0) 

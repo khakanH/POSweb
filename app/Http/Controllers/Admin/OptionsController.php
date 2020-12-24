@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use App\Models\Admin;
 use App\Models\Countries;
 use App\Models\PaymentMethods;
+use App\Models\CompanyType;
 use DB;
 use File;
 
@@ -450,6 +451,252 @@ class OptionsController extends Controller
             
         }
     }
+
+
+
+
+
+
+
+
+
+    //_________________________________________________________________________________
+    //_________________________________________________________________________________
+    //_________________________________________________________________________________
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    public function CompanyTypeList(Request $request)
+    {
+        try 
+        {   
+            $user_id = session("admin_login.user_id");
+
+            $user_info = $this->checkUserAvailbility($user_id,$request);
+            
+            $company_type = CompanyType::get();
+
+            return view('admin.company_type',compact("company_type"));
+
+        } 
+        catch (Exception $e) 
+        {
+            return response()->json($e,500);
+        }
+
+    }
+
+
+
+
+    public function AddUpdateCompanyType(Request $request)
+    {
+        try 
+        {   
+            $user_id = session("admin_login.user_id");
+
+            $user_info = $this->checkUserAvailbility($user_id,$request);
+            
+            $input = $request->all();
+            
+            if (empty($input['company_type_id'])) 
+            {   
+                $data = array(
+                        "name"                  => $input['company_type_name'],
+                        "is_show"               => 1,
+                        "created_at"            => date('Y-m-d H:i:s'),
+                        "updated_at"            => date('Y-m-d H:i:s'),
+                        );
+                if(CompanyType::insert($data))
+                {
+                    return array("status"=>"1","msg"=>"Company Type Added Successfully.");
+                }
+                else
+                {
+                    return array("status"=>"0","msg"=>"Failed");
+
+                }
+            }
+            else
+            {
+
+                $data = array(
+                        "name"                  => $input['company_type_name'],
+                        );
+                if(CompanyType::where('id',$input['company_type_id'])->update($data))
+                {
+                    return array("status"=>"1","msg"=>"Company Type Updated Successfully.");
+                }
+                else
+                {
+                    return array("status"=>"0","msg"=>"Failed");
+                }
+
+
+            }
+
+            
+        } catch (Exception $e) 
+        {
+            return response()->json($e,500);
+        }
+    }
+
+    public function CompanyTypeListAJAX(Request $request,$search_text)
+    {
+        try 
+        {   
+            $user_id = session("admin_login.user_id");
+
+            $user_info = $this->checkUserAvailbility($user_id,$request);
+            
+
+            if (empty($search_text)) 
+            {       
+                    $get_company_type_list = CompanyType::get();
+            }
+            else
+            {   
+                    $get_company_type_list = CompanyType::where('name','like','%'.$search_text.'%')
+                                        ->get();
+
+            }
+            
+            if (count($get_company_type_list)==0) 
+            {
+                ?>
+                <tr><td colspan="3" class="text-center tx-18">No Company Type Found</td></tr>
+                <?php
+            }
+            else
+            {
+
+                foreach ($get_company_type_list as $key) 
+                {
+                ?>
+
+                    <tr id="company_type<?php echo $key['id']?>">
+                      <td><?php echo $key['name']?></td>
+                      <td class="tx-center">
+                                                        <label class="switch switch-3d switch-primary mr-3">
+                                                          <input id="visibility_value<?php echo $key['id']?>" onclick='CompanyTypeStatus("<?php echo $key['id']?>","<?php echo $key['is_show']; ?>")' type="checkbox" class="switch-input"  <?php if ($key['is_show'] ==1): ?>
+                                                              checked
+                                                          <?php endif ?> value="<?php echo $key['is_show'] ?>">
+                                                          <span class="switch-label"></span>
+                                                          <span class="switch-handle"></span>
+                                                        </label>
+                                                    </td>
+                                                    <td class="tx-center">
+                                                         <a class="btn btn-primary" href="javascript:void(0)" onclick='EditCompanyType("<?php echo $key['id']?>","<?php echo $key['name']?>")'><i class="fa fa-edit tx-15"></i></a>&nbsp;&nbsp;&nbsp;<a class="btn btn-danger" onclick='DeleteCompanyType("<?php echo $key['id'] ?>")' href="javascript:void(0)"><i class="fa fa-trash tx-15"></i></a>
+                                                    </td>
+
+                    </tr>
+
+                <?php
+                } 
+            }
+
+        } 
+        catch (Exception $e) 
+        {
+            
+        }
+    }
+
+    public function DeleteCompanyType(Request $request,$id)
+    {
+        try 
+        {
+            $user_id = session("admin_login.user_id");
+
+            $user_info = $this->checkUserAvailbility($user_id,$request);
+
+            if(CompanyType::where('id',$id)->delete())
+            {
+                return array("status"=>"1","msg"=>"Company Type Deleted Successfully.");
+            }
+            else
+            {
+                return array("status"=>"0","msg"=>"Failed to Delete Company Type.");
+            }
+        } catch (Exception $e) 
+        {
+            
+        }
+    }
+
+    
+
+    public function ChangeCompanyTypeAvailability(Request $request,$id,$status)
+    {
+        try 
+        {
+            $user_id = session("admin_login.user_id");
+
+            $user_info = $this->checkUserAvailbility($user_id,$request);
+            
+            if($status == 0)
+            {
+                CompanyType::where('id',$id)->update(array('is_show' =>1));
+                return array("status"=>"1","msg"=>"Company Type Visible Successfully.");
+            }
+            else
+            {
+                CompanyType::where('id',$id)->update(array('is_show' => 0));
+                return array("status"=>"1","msg"=>"Company Type Hide Successfully.");
+            }
+
+
+
+        } catch (Exception $e) 
+        {
+            
+        }
+    }
+
+
+
+
+
+
+
+
+
+    //_________________________________________________________________________________
+    //_________________________________________________________________________________
+    //_________________________________________________________________________________
+
+
+
+
+
+
+
+
+
+
+
 
 
 

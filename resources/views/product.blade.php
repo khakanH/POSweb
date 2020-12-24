@@ -2,11 +2,6 @@
 @section('content')
 
     
-    <style type="text/css">
-        
-    </style>
-  
-<div class="page-content--bgf7">
         
 
         
@@ -25,8 +20,9 @@
             @endif
             </center>
 
-                            <div class="table-data__tool">
-                                <div class="table-data__tool-left">
+
+                            <div class="row">
+                                <div class="col-lg-3">
 
                                     <div class="form-group">
                                         
@@ -35,9 +31,10 @@
                                     </div>
                                     
                                 </div>
+                                <div class="col-lg-2"></div>
+                                <div class="col-lg-5">
                                 <form method="post" action="{{route('upload-products-using-csv')}}" enctype="multipart/form-data">
                                         @csrf 
-                                <div class="table-data__tool-right">
                                     <button class="au-btn au-btn-icon au-btn--green au-btn--small" onclick="AddProduct()" type="button">
                                         <i class="zmdi zmdi-plus"></i>Add Product</button>
 
@@ -46,9 +43,11 @@
                                         
 
                                    
-                                </div>
                                         </form>
+                                </div>
                             </div>
+
+
 
 
 
@@ -94,7 +93,7 @@
                 </section>
            
 
-</div>
+
 
 
 

@@ -35,7 +35,7 @@
             
         </div>
 
-        <form method="post" action="{{route('save-roles')}}" name="memberRolesForm" id="memberRolesForm">
+        <form method="post" name="memberRolesForm" id="memberRolesForm">
         @csrf
 
       <div class="user-data">

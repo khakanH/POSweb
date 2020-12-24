@@ -29,7 +29,29 @@ class AccountController extends Controller
 
 
 
-    
+    public function CheckEmailRegistration(Request $request)
+    {
+        try 
+        {
+            $input = $request->all();
+            $get_email = $this->member_model->where('email',strtolower(trim($input['email'])))->first();
+
+             //check email Already
+            if ($get_email != "") 
+            {
+                return response()->json('Email Address is already taken.');
+            }
+            else
+            {
+                return 'true';
+            }
+        } 
+        catch (Exception $e) 
+        {
+            return response()->json($e,500);
+            
+        }
+    }
 
     public function Register(Request $request)
     {
@@ -61,10 +83,10 @@ class AccountController extends Controller
             }
            
 
-            $code = rand(1111,9999);
-            // $code = 1234;
+            // $code = rand(1111,9999);
+            $code = 1234;
             $text_notes = "Thank you for Registering on ......";
-            $this->SendMailVerification("0",$code,$input['email'],$text_notes);
+            // $this->SendMailVerification("0",$code,$input['email'],$text_notes);
 
             $data = array(  
                             'username'          => $input['username'],

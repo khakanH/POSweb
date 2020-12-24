@@ -476,7 +476,10 @@
                       <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                   </div>
                   <div class="modal-body">
+                        <div id="set-profile-msg"></div>
+
                       <div class="" id="CompanyModalData">
+
 
                         <input type="hidden" id="company_id" name="company_id">
 

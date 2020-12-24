@@ -386,6 +386,58 @@
 
 
 
+<!-- Company Type Modal                                         -->
+<!-- ----------------------------------------------------------------------------------------------------- -->
+
+<div id="CompanyTypeModal" class="modal fade show " tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-modal="true" aria-hidden="true" style="color: black;">
+    <div class="modal-dialog" id="CompanyTypeModalDialog">
+        <div class="modal-content" id="CompanyTypeModalContent">
+           
+            <form name="companyTypeForm" enctype="multipart/form-data" id="companyTypeForm">
+              @csrf
+               <span class='arrow'>
+              <label class='error'></label>
+              </span>
+                  <div class="modal-header">
+                      <h4 class="modal-title" id="CompanyTypeModalLabel"></h4>
+                      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                  </div>
+                  <div class="modal-body">
+                      <div class="" id="CompanyTypeModalData">
+
+                        <input type="hidden" id="company_type_id" name="company_type_id">
+
+
+                        
+                        <div class="row">
+                          <div class="col-lg-12"> 
+                            <label>Comapny Type:</label>
+                            <input type="text" id="company_type_name" name="company_type_name" class="form-control" placeholder="Enter Company Type"></div>
+                        </div>
+                        
+
+                      </div>
+              
+
+                      </div>
+                  <div class="modal-footer" id="CompanyTypeModalFooter">
+                      <button type="button" class="btn btn-danger waves-effect" data-dismiss="modal">Close</button>
+                      <button type="submit" class="btn btn-info ">Save</button>
+
+                  </div>
+            </form>
+
+
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+<!-- ----------------------------------------------------------------------------------------------------- -->
+<!-- ----------------------------------------------------------------------------------------------------- -->
+<!-- ----------------------------------------------------------------------------------------------------- -->
+
 
 
 
@@ -970,6 +1022,108 @@ $(function() {
   });
 
 
+// ----------------------------------------------------------------------------------------------------
+// ----------------------------------------------------------------------------------------------------
+// ----------------------------------------------------------------------------------------------------
+
+
+$(function() {
+        $("form[name='companyTypeForm']").validate({
+             errorPlacement: function(label, element) {
+        label.addClass('arrow');
+        label.css({"color": "red", "font-size": "12px" ,"width":"100%"});
+        label.insertAfter(element);
+    },
+    wrapper: 'span',
+
+    rules: {
+      company_type_name: {
+        required: true,
+      },
+     
+     
+     
+
+    },
+    messages: {
+      company_type_name: {
+        required: "Please Provide a Company Type Name",
+      },
+      
+    },
+    submitHandler: function(form) {
+
+        let myForm = document.getElementById('companyTypeForm');
+        let formData = new FormData(myForm);
+
+         $.ajax({
+        type: "POST",
+        url: "{{ env('APP_URL')}}admin/add-update-company-type",
+        enctype: 'multipart/form-data',
+        data: formData,
+        processData: false,
+        contentType: false,
+        beforeSend: function(){
+                            $('#CompanyTypeModal').modal('hide');
+                            $('#LoadingModal').modal('show');
+                        },
+        success: function(data) {
+           
+                            $('#LoadingModal').modal('hide');
+
+            get_status = data['status'];
+            get_msg    = data['msg'];
+
+                            if (get_status == "0") 
+                            {
+
+                             document.getElementById('toast').style.visibility = "visible";
+                                document.getElementById('toast').className = "alert alert-danger alert-rounded fadeIn animated";
+                                document.getElementById('toastMsg').innerHTML = "Failed, Try Again Later";
+
+
+                                 setTimeout(function() {
+                             document.getElementById('toast').style.visibility = "hidden";
+                                
+                            }, 5000);
+
+                            }
+                            else
+                            {
+                                document.getElementById('toast').style.visibility = "visible";
+                                document.getElementById('toast').className = "alert alert-success alert-rounded fadeIn animated";
+                                document.getElementById('toastMsg').innerHTML = get_msg;
+
+
+                                 setTimeout(function() {
+                             document.getElementById('toast').style.visibility = "hidden";
+                                
+
+                            }, 5000);
+
+
+                            }
+
+                            var search_text = (document.getElementById("company_type_search_text").value.trim() == "")?"0":document.getElementById("company_type_search_text").value.trim();
+        $.ajax({
+        type: "GET",
+        url: "{{ env('APP_URL')}}admin/get-company-type-list-AJAX/"+search_text,
+        success: function(data) {
+
+            $('#companyTypeTBody').html(data);
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            alert('Exception:' + errorThrown);
+        }
+    });
+
+
+    }
+  });
+
+    }
+  });
+  });
 
 
 

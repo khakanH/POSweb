@@ -1,0 +1,325 @@
+/* 
+
+*/
+*{
+    padding: 0;
+    margin: 0;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    font-family: 'Lato', sans-serif;
+}
+body{
+    font-family: 'Lato', sans-serif;
+    /* font-weight: 600; */
+}
+/* login page starts here */
+.logo-box{
+  padding-top: 35px;
+  padding-bottom: 35px;
+}
+.logo-img{
+  height: 60px;
+  width: 250px;
+}
+#tab-button{
+    padding-bottom: 10px;
+    border-bottom: solid 2px rgba(230, 232, 241, 1);
+}
+.login, .register{
+    color:   rgba(230, 232, 241, 1);
+    font-size: 20px;
+    font-weight: 600;
+    text-decoration: none;
+}
+.register:hover{
+    color:rgba(57, 63, 151, 1);
+}
+.login:hover{
+    color:rgba(57, 63, 151, 1);
+}
+ 
+.register{
+    margin-left: 100px;
+}
+.active{
+    color: #6c6d70;
+  }
+  .other{
+      display: none;
+  }
+  .content, .other{
+    /* line-height: 45px; */
+    font-size: 20px;
+    color: #6c6d70;
+    
+  }
+.content, .other{
+    margin-top: 10px;
+}
+.inp{
+    display: block;
+    padding: 12px;
+    border-radius:10px;
+    border: none;
+    background-color: rgba(230, 232, 241, 1);
+  }
+ .inp:focus {
+    outline: none; 
+    border: 0; 
+    background-color: rgba(230, 232, 241, 1);
+    box-shadow: none; 
+   }
+   #forgot-password{
+    text-decoration: none;
+    color: rgba(57, 63, 151, 1);
+    font-size: 13px;
+    font-weight: 600;
+    margin-top: -30px;
+  }
+  .sub-btn{
+    background-color: rgba(57, 63, 151, 1);
+    padding: 10px;
+    width: 32%;
+    border: none;
+    border-radius: 50px;
+    font-size: 19px;
+    font-weight: 400;
+    color: #ffffff;
+    margin-top: 70px;
+    cursor: pointer;
+  }
+  .sub-btn:focus {
+    outline: none; 
+    border: 0; 
+    box-shadow: none; 
+   }
+  .sub-btn:active{
+    border: none;
+  }
+  .already-acc{
+    font-size: 15px;
+    margin-top: 15px;
+    
+  }
+  .signin, .signup{
+    color: rgba(57, 63, 151, 1);
+    text-decoration: none;
+  }
+  .verification, .enter-code-text, 
+  .confrim-code, .code-p{
+    color: #6c6d70;
+    text-align: center;
+  }
+  .verification{
+    font-size: 25px;
+    font-weight: 400;
+    padding: 20px 0;
+    border-bottom: 1px solid #6c6d70;
+  
+  }
+  .enter-code-text{
+    font-size: 20px;
+    font-weight: 400;
+  }
+  .confrim-code{
+    margin-top: 10%;
+    background-color: #9c8c8c;
+    border-radius: 25px;
+  }
+  .code-p{
+    font-size: 20px;
+    margin-top: 30px;
+  }
+  .code-input{
+    display: inline;
+  }
+  /* login pge ends here */
+  /* ********************************************************************************************** */
+
+
+  /* dashboard starts here */
+    .side-bar{
+      background-color: #3a3e97;
+      padding: 20px 20px 20px 10px;
+      
+    }
+    .dashboard-logo{
+      padding: 20px 10px;
+      border-radius: 10px;
+    }
+    .dashboard-logo a{
+      text-decoration: none;
+      color: #ffffff;
+      font-size: 18px;
+    }
+    .dashboard-logo span, i{
+     padding-left: 5px;
+    }
+    .dashboard-logo i{
+      padding-left: 15px;
+     }
+    .active-class{
+      background-color: #6056A5;
+    }
+    .list-group-item {
+      font-size: 18px;
+      padding: 14px 10px;
+      border-radius: 10px;
+      border: none;
+      background-color:  #3a3e97;
+      color: #ffffff;
+    }
+    .list-group-item span{
+      padding-left: 10px;
+    }
+    .list-group-item-action:hover{
+      z-index: 0;
+      color: #ffffff;
+    text-decoration: none;
+    background-color:#3a3e97;
+    }
+
+    .list-group-item.active{
+      background-color: #6056A5;
+    }
+    .list-group> :nth-child(9) { 
+      margin-bottom: 65px; 
+    }
+    /* .list-group-item> :nth-child(10).active { margin-top: 62px; } */
+
+
+    .tab-content{
+      padding: 45px 15px 20px 15px;
+    }
+    .heading-calender h4{
+      display: inline;
+    }
+    .calender{
+      float: right;
+    }
+    .table-div
+    {margin-top: 30px;
+      border-radius: 10px;
+      box-shadow: 1px 1px 7px 4px rgba(7,7,7,0.55);
+    }
+    .revenue-head{
+      padding: 10px 0 0 30px;
+    }
+    .table-style{
+    padding: 10px 30px;
+    }
+    .table-style td {
+      padding: 30px 30px;
+      /* border-left: none;
+      border-right: none; */
+     
+    }
+    .table-style td .rev-head{
+      color: #ddcece;
+      font-weight: 600;
+    }
+    .table-style td .rev-value{
+      color: #6c6d70;
+      font-size: 30px;
+      font-weight: 600;
+    }
+    .top-products{
+      border-top: 1px solid rgba(230, 232, 241, 1);
+      border-bottom: 1px solid rgba(230, 232, 241, 1);
+    }
+    .top-prod-head{
+      padding: 10px 0 0px 30px;
+    }
+    .top-prod-box-item{
+      border-radius: 10px;
+      padding: 50px;
+    }
+    .top-prod-boxes {
+      padding: 10px 5px 1px 30px;
+   }
+    .top-prod-boxes .table-style td{
+      border: none;
+       padding: 10px 0 0px 30px;
+       background-color: rebeccapurple;
+       border-radius: 20px;
+       margin-left: 10px;
+       height: 50px !important;
+       width: 20px !important;
+    }
+    /* .table-style tbody tr> :nth-child(1) { 
+    border-left: none; 
+    }
+    .table-style tbody tr> :nth-child(3) { 
+      border-right: none; 
+      } */
+  /* dashboard ends here */
+  /* ********************************************************************************************* */
+
+
+
+
+
+
+  /* media query */
+  /* for table */
+  @media only screen and (max-width: 768px) {
+    .table-style td {
+      padding: 55px 10px;
+    }
+    .revenue-head, .top-prod-head {
+      padding: 10px 0 10px 10px;
+    }
+    .table-style td .rev-head{
+      font-size: 15px;
+    }
+    .table-style td .rev-value{
+      font-size: 25px;
+    }
+    .top-prod-boxes>.table-style td{
+      padding:0px 5px 1px 8px;
+    }
+    .top-prod-boxes{
+      padding:10px 5px 1px 11px;
+    }
+  }
+
+  @media only screen and (max-width: 600px) {
+    /* .table-style td {
+      padding: 55px 10px;
+    }
+    .revenue-head{
+      padding: 10px 0 10px 10px;
+    } */
+    .table-style td {
+      padding: 30px 10px;
+    }
+    .table-style td .rev-head{
+      font-size: 15px;
+    }
+    .table-style td .rev-value{
+      font-size: 24px;
+    }
+    .top-prod-boxes{
+      padding:10px 5px 1px 10px;
+    }
+    
+  }
+
+  @media only screen and (max-width: 320px) {
+    /* .table-style td {
+      padding: 55px 10px;
+    }
+    .revenue-head{
+      padding: 10px 0 10px 10px;
+    } */
+    .table-style td .rev-head{
+      font-size: 12px;
+    }
+    .table-style td .rev-value{
+      font-size: 18px;
+    }
+    .top-prod-boxes{
+      padding:10px 5px 1px 13px;
+    }
+  }

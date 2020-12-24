@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html dir="ltr" lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
-        @include('partials/css')  
+        @include('partials/admin_css')  
 
       <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -36,7 +36,7 @@
                 </div>
             </section>
  
-        @include('partials/js')  
+        @include('partials/admin_js')  
         @include('partials/modals')      
         @include('partials/admin_modals')      
         <!-- @include('partials/footer')       -->

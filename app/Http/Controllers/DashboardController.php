@@ -36,11 +36,18 @@ class DashboardController extends Controller
 
         $user_info = $this->checkUserAvailbility($user_id,$request);
 
-        $customer_count = Customers::where('company_id',$company_id)->where('is_deleted',0)->count();
-        $category_count = Category::where('company_id',$company_id)->where('is_deleted',0)->count();
-        $product_count = Product::where('company_id',$company_id)->where('is_deleted',0)->count();
-        $total_sale    = Sales::where('company_id',$company_id)->sum('total_bill');
-        $total_item    = Sales::where('company_id',$company_id)->sum('total_item');
+        // $customer_count = Customers::where('company_id',$company_id)->where('is_deleted',0)->count();
+        // $category_count = Category::where('company_id',$company_id)->where('is_deleted',0)->count();
+        // $product_count = Product::where('company_id',$company_id)->where('is_deleted',0)->count();
+        // $total_sale    = Sales::where('company_id',$company_id)->sum('total_bill');
+        // $total_item    = Sales::where('company_id',$company_id)->sum('total_item');
+
+
+        $total_sale_today    = Sales::whereDate('created_at',date("Y-m-d"))->where('company_id',$company_id)->sum('total_bill');
+        $total_sale_yesterday    = Sales::whereDate('created_at',date("Y-m-d",strtotime("-1 days")))->where('company_id',$company_id)->sum('total_bill');
+        $total_sale_month    = Sales::whereMonth('created_at',date("m"))->where('company_id',$company_id)->sum('total_bill');
+
+
 
         $get_top_prod = SalesItems::select('product_id', DB::raw('COUNT(id) as count'))
         ->groupBy('product_id')
@@ -55,7 +62,7 @@ class DashboardController extends Controller
     	$monthly_sale = array();
         for ($i=1; $i <= 12  ; $i++) 
         {   
-            $monthly_sale[] = Sales::where('company_id',$company_id)->whereMonth('created_at',$i)->sum('total_bill');
+            $monthly_sale[] = Sales::where('company_id',$company_id)->whereMonth('created_at',$i)->whereYear('created_at',date("Y"))->sum('total_bill');
         }
 
         $top_prod_name = array();
@@ -67,7 +74,7 @@ class DashboardController extends Controller
         }
         
 
-        return view('dashboard',compact("monthly_sale","customer_count","category_count","product_count","total_sale","total_item","top_prod_name","top_prod_count"));
+        return view('dashboard',compact("monthly_sale","top_prod_name","top_prod_count","total_sale_today","total_sale_yesterday","total_sale_month"));
     }
 
 

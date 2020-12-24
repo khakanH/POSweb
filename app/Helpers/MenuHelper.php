@@ -20,14 +20,12 @@ class MenuHelper{
  		{
  			?>
  			
- 			<li class="<?php if (\Request::route()->getName() == $key['route']): ?>
- 				active
- 			<?php endif ?>">
-                <a href="<?php echo route($key['route']) ?>">
-                    <i class="<?php echo $key['icon'] ?>"></i>
-                   	<span class="bot-line"></span><?php echo $key['name']; ?>
+       <a class="list-group-item list-group-item-action <?php if (\Request::route()->getName() == $key['route']): ?>
+        active
+      <?php endif ?>"  href="<?php echo route($key['route']) ?>" role="tab">
+                    <i class="<?php echo $key['icon'] ?>"></i><span><?php echo $key['name']; ?></span>
                 </a>
-            </li>
+
  			
  			<?php
  		}
