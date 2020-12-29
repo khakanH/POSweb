@@ -29,3 +29,34 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" 
     integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
     <link rel="stylesheet" href="{{asset('assets/css/login-resgister.css')}}">
+    <link rel="stylesheet" href="{{asset('assets/css/pos.css')}}">
+    <link rel="stylesheet" href="{{asset('assets/css/dashboard.css')}}">
+
+    <style type="text/css">
+         ::-webkit-scrollbar-track
+{
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.1);
+    background-color: rgba(0,0,0,0);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar
+{
+    width: 11px;
+    height: 10px;
+    background-color: rgba(0,0,0,0);
+}
+
+::-webkit-scrollbar-thumb
+{
+    border-radius: 10px;
+    background-color: #FFF;
+    background-image: -webkit-gradient(linear,
+                                       40% 0%,
+                                       75% 84%,
+                                       from(#6c6d70),
+                                       to(#6c6d70),
+                                       color-stop(.6,#6c6d70))
+}
+  
+    </style>

@@ -113,6 +113,15 @@ class BillController extends Controller
                       <td><?php echo number_format($key['discount'],1)?>%</td>
                       <td><?php echo $key['total_bill']?></td>
                       <td><?php echo $key['total_item']?></td>
+                       <td><?php echo $key->payment_method_name->name ?></td>
+                                                <td>
+                                                    <?php if($key['is_paid'] == 0): ?>
+                                                        <p class="text-danger">No</p>
+                                                    <?php else: ?>
+                                                        <p class="text-success">Yes</p>
+                                                    <?php endif; ?>
+
+                                                </td>
                       <td><?php echo date("d-M-Y",strtotime($key['created_at']))?></td>
                       <td class="text-center"><a class="btn btn-primary" href="javascript:void(0)" onclick='ViewSaleItem("<?php echo $key['id']?>","<?php echo $key['bill_code']?>")'><i class="fa fa-eye tx-15"></i></a>&nbsp;&nbsp;&nbsp;<!-- <a class="btn btn-danger" onclick='DeleteSale("<?php //echo $key['id'] ?>")' href="javascript:void(0)"><i class="fa fa-trash tx-15"></i></a> --></td>
                     </tr>
@@ -174,6 +183,9 @@ class BillController extends Controller
                         <td>Credit Card Number: <?php echo $get_sale->credit_card_number; ?></td>
                         <?php elseif($get_sale->payment_method ==3): ?>
                         <td colspan="2">Cheque Number: <?php echo $get_sale->cheque_number; ?></td>
+                        <td></td>
+                        <?php elseif($get_sale->payment_method ==4): ?>
+                        <td colspan="2"><?php echo ($get_sale->is_paid == 0 )?'<button class="btn btn-success" onclick="MarkBillPaid('.$id.')" style="width: 100%;">Mark Paid</button>':''; ?></td>
                         <td></td>
                         <?php endif; ?>
 
@@ -240,6 +252,30 @@ class BillController extends Controller
     } 
     
 
+     public function MarkBillPaid(Request $request, $id)
+    {
+        try 
+        {   
+            $user_id = session("login")["user_id"];
+            $company_id = session("login")["company_id"];
+
+            $user_info = $this->checkUserAvailbility($user_id,$request);
+            
+            Sales::where('company_id',$company_id)
+                                    ->where('id',$id) 
+                                    ->update(array('is_paid'=>1));
+
+            
+            
+           
+        } 
+        catch (Exception $e) 
+        {
+            
+            return response()->json($e,500);
+        }
+
+    } 
 
 
 
@@ -414,12 +450,15 @@ class BillController extends Controller
                         <input type="hidden" id="total_bill_amount" name="total_bill_amount" value="<?php echo $get_bill->total_bill; ?>">
                         <input type="hidden" id="bill_cash_change" name="bill_cash_change">
 
-                        <h4>Customer: <span id="bill_cust_name"><?php echo isset($get_bill->customer_name->customer_name)?$get_bill->customer_name->customer_name:"Walk In Customer"; ?></span></h4>
-                        <hr>
-                        <p id="bill_total_item"><b>Total Item: </b><?php echo $get_bill->total_item; ?></p>
-                        <p id="bill_total_amount"><b>Total Amount: </b><?php echo $get_bill->total_bill; ?></p>
-                        <hr>
-                         <div class="form-group">
+                         <div class="p-style">
+                        <p>Customer: <span id="bill_cust_name"><?php echo isset($get_bill->customer_name->customer_name)?$get_bill->customer_name->customer_name:"Walk In Customer"; ?></span></p>
+                        
+                        <p id="bill_total_item">Total Item: <?php echo $get_bill->total_item; ?></p>
+                        <p id="bill_total_amount">Total Amount: <?php echo $get_bill->total_bill; ?></p>
+                      </div>
+
+
+                         <div class="form-group pos-right-search">
                           <label for="payment_method" class=" form-control-label">Payment Method:</label>
                           <select required="" onchange="CheckPaymentMethod(this.value)" name="payment_method" id="payment_method" class="form-control">
                             <?php foreach ($payment_method as $key): ?>
@@ -432,7 +471,7 @@ class BillController extends Controller
                         </div>
 
 
-                         <div class="form-group" <?php if ((isset($get_bill->customer_name->payment_type)?$get_bill->customer_name->payment_type:0) != 1 && $get_bill->customer_id != 0): ?>
+                         <div class="form-group pos-right-search" <?php if ((isset($get_bill->customer_name->payment_type)?$get_bill->customer_name->payment_type:0) != 1 && $get_bill->customer_id != 0): ?>
                              style ="display: none;"
                          <?php else: ?>
                              style ="display: block;"
@@ -442,31 +481,31 @@ class BillController extends Controller
                           <label for="payment_amount"  class=" form-control-label">Payment Amount:</label>
                           <input type="number" required="" name="payment_amount" onkeyup="CalculateBillChange(this.value)" value="<?php echo $get_bill->total_bill; ?>" id="payment_amount" class="form-control">
                           <br>
-                          <label for="payment_amount" class=" form-control-label">Change: <span id="bill_change">0</span></label>
+                          <label for="bill_change" class=" form-control-label">Change: <span id="bill_change">0</span></label>
                         </div>
 
 
 
-                         <div class="form-group" <?php if ((isset($get_bill->customer_name->payment_type)?$get_bill->customer_name->payment_type:0) != 2): ?>
+                         <div class="form-group pos-right-search" <?php if ((isset($get_bill->customer_name->payment_type)?$get_bill->customer_name->payment_type:0) != 2): ?>
                              style ="display: none;"
                              <?php else: ?>
                              style ="display: block;"
                          <?php endif ?>  id="for_credit_card">
-                          <label for="payment_amount" class=" form-control-label">Credit Card Number:</label>
+                          <label for="credit_card_number" class=" form-control-label">Credit Card Number:</label>
                           <input required="" name="credit_card_number" id="credit_card_number" class="form-control" type="tel" inputmode="numeric" pattern="[0-9\s]{13,19}" autocomplete="cc-number" maxlength="19"  value="<?php echo isset($get_bill->customer_name->credit_card_number)?$get_bill->customer_name->credit_card_number:"" ?>" placeholder="xxxx xxxx xxxx xxxx">
                           <br>
-                          <label for="payment_amount" class=" form-control-label">Credit Card Holder:</label>
+                          <label for="credit_card_holder" class=" form-control-label">Credit Card Holder:</label>
                           <input type="text" required=""  value="<?php echo isset($get_bill->customer_name->credit_card_holder)?$get_bill->customer_name->credit_card_holder:"" ?>" name="credit_card_holder" id="credit_card_holder" class="form-control">
                         </div>
 
 
 
-                        <div class="form-group" <?php if ((isset($get_bill->customer_name->payment_type)?$get_bill->customer_name->payment_type:0) != 3): ?>
+                        <div class="form-group pos-right-search" <?php if ((isset($get_bill->customer_name->payment_type)?$get_bill->customer_name->payment_type:0) != 3): ?>
                              style ="display: none;"
                              <?php else: ?>
                              style ="display: block;"
                          <?php endif ?> id="for_cheque">
-                          <label for="payment_amount" class=" form-control-label">Cheque Number:</label>
+                          <label for="cheque_number" class=" form-control-label">Cheque Number:</label>
                           <input type="text" required="" name="cheque_number" id="cheque_number" class="form-control">
                         </div>
 
@@ -552,6 +591,7 @@ class BillController extends Controller
                                 'credit_card_holder'    => $input['credit_card_holder'],
                                 'credit_card_number'    => $input['credit_card_number'],
                                 'cheque_number'         => $input['cheque_number'],
+                                'is_paid'               => ($input['payment_method'] == 4)?0:1,
                                 'created_at'            => date("Y-m-d H:i:s"),
                                 'updated_at'            => date("Y-m-d H:i:s"),
                 ));
@@ -764,19 +804,23 @@ class BillController extends Controller
                 ?>
                     <center>
                         <img src="<?php echo env('IMG_URL').$company->logo; ?>" height="100" width="100">
-                        <h3>Title Here</h3>
+                        <br>
+                        <br>
+                        <h4><?php echo $company->name; ?></h4>
                         <p style="word-wrap: break-word;"><?php echo $company->receipt_header; ?></p>
                         <p style="font-size: 18px;">Sale No. <?php echo $get_bill->bill_code; ?></p>
                     </center>
                     <span>Date: <?php echo $get_bill->created_at; ?></span>
                     <br>
                     <span>Customer: <?php echo isset($get_bill->customer_name['customer_name'])?$get_bill->customer_name['customer_name']:"Walk In Customer"; ?></span>
-                    
-                    <table width="100%">
+                    <br>
+                      <span>Payment: <?php echo $get_bill->payment_method_name->name ?></span>
+                    <hr>
+                    <table class="table-receipt table table-sm"> 
                         <thead>
                             <tr>
-                                <th style="text-align: left;" width="5%">#</th>
                                 <th style="text-align: left;" width="60%">Product</th>
+                                <th style="text-align: left;" width="60%">Price</th>
                                 <th style="text-align: center;" width="5%">Qty</th>
                                 <th style="text-align: center;" width="30%">Subtotal</th>
                             </tr>
@@ -784,8 +828,8 @@ class BillController extends Controller
                         <tbody>
                             <?php $count=1; foreach($get_bill_item as $key): ?>
                                 <tr>
-                                    <td style="text-align: left;"><?php echo $count; ?></td>
                                     <td style="text-align: left;"><?php echo $key['product_name']?></td>
+                                    <td style="text-align: left;"><?php echo $key['product_price']?></td>
                                     <td style="text-align: center;"><?php echo $key['product_quantity']?></td>
                                     <td style="text-align: center;"><?php echo $key['product_subtotal']?></td>
                                 </tr>
@@ -822,8 +866,9 @@ class BillController extends Controller
                                 <td colspan="2" width="50%">Grand Total</td>
                                 <td style="text-align: right;" colspan="2" width="50%"><?php echo number_format($get_bill->total_bill,2) ?></td>
                             </tr>
-                            <tr><td colspan="4"><hr></td></tr>
+                            <?php if($get_bill->payment_method == 1): ?>
 
+                            <tr><td colspan="4"><hr></td></tr>
                             <tr>
                                 <td colspan="2" width="50%">Paid</td>
                                 <td style="text-align: right;" colspan="2" width="50%"><?php echo number_format($get_bill->cash_paid,2) ?></td>
@@ -834,11 +879,11 @@ class BillController extends Controller
                                 <td colspan="2" width="50%">Change</td>
                                 <td style="text-align: right;" colspan="2" width="50%"><?php echo number_format($get_bill->cash_change,2) ?></td>
                             </tr>
-                            <tr><td colspan="4"><hr style="border: solid black 2px;"></td></tr>
-                            <tr>
-                                <td colspan="2" width="50%"><?php echo $company->name; ?></td>
-                                <td style="text-align: right;" colspan="2" width="50%">Tel: <?php echo $company->phone ?></td>
-                            </tr>
+
+                            <?php endif;?>
+
+
+                          
 
                         </tbody>
 
@@ -861,9 +906,9 @@ class BillController extends Controller
 
                     <br>
 
-                    <div style="background: black; color: white; width: 100%; text-align: center; padding: 10px;">
-                        <?php echo $company->receipt_footer; ?>
-                    </div>
+                   <div class="modal-bottom-btns modal-reciept-btn">
+                <button type="button" class="" style="cursor: default; font-size: 12px !important;  width: 100%;background-color: #6c6d70;  color: #ffffff;  padding: 5px 46px;  border-radius: 50px; " disabled=""><?php echo $company->receipt_footer; ?></button>
+              </div>
                 <?php
             }
 

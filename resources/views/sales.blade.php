@@ -52,6 +52,8 @@
                                                 <th>Discount</th>
                                                 <th>Total Bill</th>
                                                 <th>Total Item</th>
+                                                <th>Payment Type</th>
+                                                <th>Is Paid</th>
                                                 <th>Date</th>
                                                 <th class="text-center">Action</th>
                                             </tr>
@@ -66,6 +68,15 @@
                                                 <td>{{number_format($key['discount'],1)}}%</td>
                                                 <td>{{$key['total_bill']}}</td>
                                                 <td>{{$key['total_item']}}</td>
+                                                <td>{{$key->payment_method_name->name}}</td>
+                                                <td>
+                                                    <?php if($key['is_paid'] == 0): ?>
+                                                        <p class="text-danger">No</p>
+                                                    <?php else: ?>
+                                                        <p class="text-success">Yes</p>
+                                                    <?php endif; ?>
+
+                                                </td>
                                                 <td>{{date("d-M-Y",strtotime($key['created_at']))}}</td>
                                                 <td class="text-center"><a class="btn btn-primary" href="javascript:void(0)" onclick='ViewSaleItem("<?php echo $key['id']?>","<?php echo $key['bill_code']?>")'><i class="fa fa-eye tx-15"></i></a>&nbsp;&nbsp;&nbsp;<!-- <a class="btn btn-danger" onclick='DeleteSale("<?php // echo $key['id'] ?>")' href="javascript:void(0)"><i class="fa fa-trash tx-15"></i></a> -->
                                             </td>
@@ -261,7 +272,22 @@
 
 
 
+ function MarkBillPaid(id)
+    {   
+         $.ajax({
+        type: "GET",
+        url: "{{ env('APP_URL')}}mark-bill-paid/"+id,
+        success: function(data) {
 
+             var search = document.getElementById("sale_search_text").value.trim();
+            SearchSale(search);
+            $('#SaleItemModal').modal('hide');
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            alert('Exception:' + errorThrown);
+        }
+        });   
+    }
 
 
     function ToNormal()

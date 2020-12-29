@@ -17,23 +17,14 @@
     padding: 3px;
     height: 20px;
   }
-  .qty-input{
-    width: 40%;
-    padding: 3px;
-    line-height: 0px;
-    font-size: 1rem;
-    margin-right:2px; 
-    margin-left:2px;
-    height: 25px;
-  }
+
 
     .tax-dis-input{
     padding: 3px;
     line-height: 0px;
     font-size: 1rem;
     height: 25px;
-    max-width: 100px;
-    margin-right: 25px;
+    max-width: auto;
   }
 
    input::-webkit-outer-spin-button,
@@ -42,20 +33,76 @@
                margin: 0;
             }
 
+            
+
   </style>
     
   
-     <div class="page-content--bgf7">
+     <div class="tab-content">
 
-            <section class="statistic statistic2">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-lg-4">
+             <div class="row">
+                          <div class="main-heading">
+                              <h4>POS</h4>
+                          </div>
 
-                          <div class="card">
-                 
-                  <div class="card-body">
-                      <nav>
+                          <div class="col-md-7 col-sm-6 col-xs-12">
+                              
+                              <!-- main content left -->
+                              <div class="pos-left-container">
+                                  <div class="left-heading">
+                                      <h4>create new sale</h4>
+                                  </div>
+                                  <hr>
+                                  <div class="left-heading">
+                                      <h5>Category</h5>
+                                    <!--  <div class="search-form">
+                                      <input class="form-control" id="search-inp" type="text" placeholder="Search...." aria-label="Search">
+                                     </div> -->
+                                  </div>
+                                  <div class="" style="display: flex;  float: none; height: 70px; white-space: nowrap; overflow-x:  auto; overflow-y: hidden; padding-top: 10px;">
+                                     @foreach($category as $cate)
+                                      <div class="col-lg-2" style="margin: 5px;">
+                                         <button style="width: 100%;" onclick='GetProductByCategory("{{$cate['id']}}")' class="pos-btn btn">{{$cate['name']}}</button>
+                                      </div>
+                                     @endforeach
+                                  </div>
+                                  <hr>
+                                  <div class="left-heading">
+                                      <h5>Item</h5>
+                                      <div class="search-form">
+                                          
+                                          <input class="form-control" type="text" name="search_text" id="prod_search_text" required="" style="padding-right: 105px;" placeholder="Enter Product Name or Code" onfocusout="SearchProduct(this.value)">
+                                      </div>
+                                      <div class="row left-heading left-slider" id="pos-prod-list" style="height: 383px; overflow-y: auto;">
+                                        @foreach($product as $prod)
+                                          <div class="col-lg-4">
+                                              <div class="card" style="cursor: pointer;" onclick='AddProductToBill("{{$prod['id']}}","{{$prod['name']}}","{{$prod['price']}}")'>
+                                    <div class="">
+                                        <div class="">
+                                            <img style="height: 100px;" class="rounded-circle mx-auto d-block" src="{{env('IMG_URL')}}{{$prod['image']}}" width="100" height="100" alt="{{$prod['name']}}">
+                                            <hr>
+                                            <center><span>{{$prod['name']}}</span></center>
+                                            <center><span>{{$prod['price']}}/-</span></center>
+                                            
+                                        </div>
+                                    </div>
+                                  
+                                </div>
+                                          </div>
+                                        @endforeach
+                                      </div>
+                                  </div>
+                                  
+                              </div>
+                              <!-- main content left  ends -->
+                          </div>
+
+                          <!-- main content right satrts here -->
+                          <div class="col-md-5 col-sm-6 col-xs-12 pos-rigt-content">
+                              <!-- pos-left-container satrts here -->
+                              <div class="pos-left-container">
+                              
+                               <nav>
                         <div class="nav nav-tabs" id="nav-tab_" role="tablist">
                           
 
@@ -76,17 +123,17 @@
                          <div id="bill_pos">
 
                           <div class="row">
-                           <div class="col-7"><h5 >Choose Client</h5></div>
+                           <div class="col-7">&nbsp;</div>
                            <div class="col-5"><i  style="float: right; padding-right: 5px; cursor: pointer;" onclick="CreateNewCustomer()" data-toggle="tooltip" title="Create Customer" class="fa fa-user"></i> <i  style="float: right; padding-right: 10px; cursor: pointer;" data-toggle="tooltip" title="Show Last Bill" onclick="ShowLastBill()" class="fa fa-list-alt"></i></div>
                           </div>
 
                            <div class=" row form-group">
-                           <div class="col-7">
+                           <div class="col-12 mb-2 pos-right-search">
                             <input type="hidden" name="customer_list" id="customer_list" value="{{$pending_bill[0]['customer_id']}}">
                             <input type="text" id="cust_live_search_field" value="{{isset($pending_bill[0]->customer_name->customer_name)?$pending_bill[0]->customer_name->customer_name:"Walk In Customer"}}" autocomplete="off" class="form-control" onkeyup='LiveSearchCustomer(this.value)' onfocusout="CheckSelectedCustomer(this.value)" >
                             <div id="customer-search-list" style="position: absolute;border: solid lightgray 1px;width: 95%; height: auto; background: #fff;display: none;"></div>
                            </div>
-                           <div class="col-5"> <input type="text" autofocus="on" name="bar_code" id="bar_code" class="form-control" onkeypress="AddProductToBillBarCode(this.value)" placeholder="Enter Barcode"></div>
+                           <div class="col-12 pos-right-search"> <input type="text" autofocus="on" name="bar_code" id="bar_code" class="form-control" onkeypress="AddProductToBillBarCode(this.value)" placeholder="Enter Barcode"></div>
 
                            
                            <input type="hidden" name="current_bill_id" id="current_bill_id" value="{{$pending_bill[0]['id']}}">
@@ -105,22 +152,23 @@
 
 
 
+                           <br>
 
-
-                           <div class="table-responsive" style="min-height: 200px; max-height: 200px;">
-                                    <table class="table table-data2 text-center">
-                                        <thead class="text-sm-center">
+                           <div class="table-responsive" style="min-height: 270px; max-height: 270px;">
+                                    <table class="table table-1 table-sm">
+                                        <thead class="">
                                             <tr>
-                                                <th width="2%">
-                                                    
-                                                </th>
+                                                
                                                 <th width="40%">Product</th>
-                                                <th width="10%">Price</th>
-                                                <th width="33%">Qty</th>
-                                                <th width="15%">Total</th>
+                                                <th width="5%">Price</th>
+                                                <th width="40%">Qty</th>
+                                                <th width="10%">Total</th>
+                                                <th width="15%">
+                                                    <i class="fas fa-trash"></i>
+                                                </th>
                                             </tr>
                                         </thead>
-                                        <tbody class="text-sm-center" id="bill-prod-list{{$pending_bill[0]['id']}}">
+                                        <tbody class="" id="bill-prod-list{{$pending_bill[0]['id']}}">
                                           @if(count($pending_bill_item)==0)
                                           <tr class="spacer"></tr>
                                           <tr class="spacer"></tr>
@@ -132,17 +180,18 @@
 
                                             @foreach($pending_bill_item as $bill_item)
                                             <tr class="tr-shadow" id="bill_item{{$bill_item['id']}}">
-                                                <td>
-                                                    <i class="fa fa-times-circle text-danger" style="cursor: pointer;" onclick='DeleteBillProductItem("{{$bill_item['id']}}")'></i>
-                                                </td>
+                                                
                                                 <td>{{$bill_item['product_name']}}</td>
                                                 <td>{{$bill_item['product_price']}}</td>
                                                 <td>
-                                                  <div class="row" style="margin: auto; vertical-align: middle;">
-                                                  <button class="btn btn-primary qty-btn" onclick='DecreaseBillItem("{{$bill_item['id']}}","{{$bill_item['product_id']}}")'>-</button><input class="form-control qty-input" type="number" value="{{$bill_item['product_quantity']}}" onkeypress='ChangeBillProductQty(this.value,"{{$bill_item['id']}}","{{$bill_item['product_id']}}")' step="1" min="1" name="prod-qty" id="prod-qty{{$bill_item['id']}}"><button class="btn btn-primary qty-btn" onclick='IncreaseBillItem("{{$bill_item['id']}}","{{$bill_item['product_id']}}")'>+</button>
+                                                  <div class="" style="margin: auto; vertical-align: middle;">
+                                                  <span style="cursor: pointer;" class="fa fa-minus" onclick='DecreaseBillItem("{{$bill_item['id']}}","{{$bill_item['product_id']}}")'></span><input class="qty-input" type="number" value="{{$bill_item['product_quantity']}}" onkeypress='ChangeBillProductQty(this.value,"{{$bill_item['id']}}","{{$bill_item['product_id']}}")' step="1" min="1" name="prod-qty" id="prod-qty{{$bill_item['id']}}"><span style="cursor: pointer;" class="fa fa-plus" onclick='IncreaseBillItem("{{$bill_item['id']}}","{{$bill_item['product_id']}}")'></span>
                                                   </div>
                                                 </td>
                                                 <td>{{$bill_item['product_subtotal']}}</td>
+                                                <td>
+                                                    <i class="fa fa-times" style="cursor: pointer;" onclick='DeleteBillProductItem("{{$bill_item['id']}}")'></i>
+                                                </td>
                                             </tr>
                                             @endforeach
                                           @endif
@@ -150,22 +199,38 @@
                                     </table>
                                 </div>
                                   <br>
-                                <table width="100%" class="table">
+                                  <br>
+                                <table width="100%" class="table-2 table table-sm bottom-table">
                                   <tbody id="bill-summary-total{{$pending_bill[0]['id']}}">
-                                    <tr><td width="50%" style="background: #ecf0f1;">SubTotal: </td><td>
-                                      <span style="float: left;">{{$pending_bill[0]['subtotal']}}</span><i style="float: right;"><b>{{$pending_bill[0]['total_item']}}</b> items</i>
-                                    </td></tr>
-                                    <tr><td width="50%" style="background: #ecf0f1;">Order Tax: </td><td><div class="d-flex"><span style="float: left;"><input autocomplete="off" type="text" class="form-control tax-dis-input" onkeypress='ApplyBillTax(this.value,"{{$pending_bill[0]['id']}}")' id="bill-tax-input{{$pending_bill[0]['id']}}" value="{{number_format($pending_bill[0]['tax_percentage'],1)}}%"></span><i style="float: right;">{{number_format($pending_bill[0]['tax_amount'],2)}}</i></div></td></tr>
-                                    <tr><td width="50%" style="background: #ecf0f1;">Discount: </td><td><div class="d-flex"><span style="float: left;"><input autocomplete="off" type="text" class="form-control tax-dis-input" onkeypress='ApplyBillDiscount(this.value,"{{$pending_bill[0]['id']}}")' id="bill-discount-input{{$pending_bill[0]['id']}}" value="{{number_format($pending_bill[0]['discount_percentage'],1)}}%"></span><i style="float: right;">{{number_format($pending_bill[0]['discount_amount'],2)}}</i></div></td></tr>
-                                    <tr><td width="50%" style="background: #ecf0f1;">Total: </td><td>{{number_format($pending_bill[0]['total_bill'],2)}}</td></tr>
+                                    <tr class="tr-1">
+                                      <td width="35%">Total Items: </td>
+                                      <td width="25%" style="text-align: center;">{{$pending_bill[0]['total_item']}}</td>
+                                      <td width="20%" style="text-align: center;">Subtotal: </td>
+                                      <td width="20%" style="text-align: right;">{{$pending_bill[0]['subtotal']}}</td>
+                                    </tr>
+                                    <tr>
+                                      <td >Total Tax: </td>
+                                      <td style="text-align: center;" colspan="2"><input autocomplete="off" type="text" class="form-control tax-dis-input" onkeypress='ApplyBillTax(this.value,"{{$pending_bill[0]['id']}}")' id="bill-tax-input{{$pending_bill[0]['id']}}" value="{{number_format($pending_bill[0]['tax_percentage'],1)}}%"></td>
+                                        <td style="text-align: left;"><i style="float: right;">{{number_format($pending_bill[0]['tax_amount'],2)}}</i></td>
+                                    </tr>
+                                    <tr>
+                                      <td >Bill Discount: </td>
+                                      <td style="text-align: center;" colspan="2"><input autocomplete="off" type="text" class="form-control tax-dis-input" onkeypress='ApplyBillDiscount(this.value,"{{$pending_bill[0]['id']}}")' id="bill-discount-input{{$pending_bill[0]['id']}}" value="{{number_format($pending_bill[0]['discount_percentage'],1)}}%"></td>
+                                        <td style="text-align: center;"><i style="float: right;">{{number_format($pending_bill[0]['discount_amount'],2)}}</i></td>
+                                    </tr>
+                                   <tr>
+                                    <td colspan="2"><b>Total Payable:</b> </td>
+                                    <td colspan="2">{{number_format($pending_bill[0]['total_bill'],2)}}</td>
+                                   </tr>
                                   </tbody>  
                                 </table>
 
                                 <div class="row" style="margin-top: 14px;">
-                                  <div class="col-6"><button style="width: 100%;" onclick='CancelBill("{{$pending_bill[0]['id']}}")' class="btn btn-danger">Cancel</button></div>
-                                  <div class="col-6"><button style="width: 100%;" id="payment_button{{$pending_bill[0]['id']}}" class="btn btn-success"<?php if($pending_bill[0]['total_item'] == 0):?>
+                                 
+                                  <div class="col-6"><button style="width: 100%;" id="payment_button{{$pending_bill[0]['id']}}" class="pos-btn btn-green btn btn-primary"<?php if($pending_bill[0]['total_item'] == 0):?>
                                     disabled=""
                                   <?php endif ?> onclick='PayBill("{{$pending_bill[0]['id']}}")'>Payment</button></div>
+                                   <div class="col-6"><button style="width: 100%;" onclick='CancelBill("{{$pending_bill[0]['id']}}")' class="pos-btn btn-red  btn btn-primary">Delete Sale</button></div>
                                 </div>
 
 
@@ -204,63 +269,15 @@
                         </div>
                        
                        
-                      </div>
+                      </div>                                 
 
-                  </div>
-                </div>
-
-
-                        </div>
-                        <div class="col-lg-8">
-                          <div class="card">
-                 
-                  <div class="card-body">
-                      <nav>
-                        <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                          <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" onclick="GetAllProducts()" aria-selected="false">Home</a>
-                          @foreach($category as $cate)
-                          <a class="nav-item nav-link" id="cate{{$cate['id']}}" data-toggle="tab" href="#nav-home" onclick='GetProductByCategory("{{$cate['id']}}")' role="tab" aria-controls="nav-profile" aria-selected="false">{{$cate['name']}}</a>
-                          @endforeach
-                        </div>
-                      </nav>
-                      <div class="tab-content pl-3 pt-2" id="nav-tabContent">
-                        <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
-                          <div class="form-group">
-                                        
-                                    <input class="au-input au-input--full" type="text" name="search_text" id="prod_search_text" required="" style="padding-right: 105px;" placeholder="Enter Product Name or Code" onfocusout="SearchProduct(this.value)">
-                                    <button class="btn btn-primary" style="float: right;position: absolute; margin: 0px 0px 0px -43px; height: 44px;"><i class="fa fa-search"></i></button>
-                                    </div>
-                          <div class="row" id="pos-prod-list" style="min-height: 420px; max-height: 420px; overflow: auto;">
-                          @foreach($product as $prod)
-                          <div class="col-lg-4">
-                                <div class="card" style="cursor: pointer;" onclick='AddProductToBill("{{$prod['id']}}","{{$prod['name']}}","{{$prod['price']}}")'>
-                                    <div class="card-body">
-                                        <div class="mx-auto d-block">
-                                            <img style="height: 100px;" class="rounded-circle mx-auto d-block" src="{{env('IMG_URL')}}{{$prod['image']}}" width="100" height="100" alt="{{$prod['name']}}">
-                                            <hr>
-                                            <h5 class="text-sm-center mt-2 mb-1">{{$prod['name']}}</h5>
-                                            <div class="location text-sm-center">
-                                                {{$prod['price']}} /-</div>
-                                        </div>
-                                    </div>
-                                  
-                                </div>
-                            </div>
-                          @endforeach
+                                 
+                              </div>
+                               <!-- pos-left-container ends here -->  
                           </div>
-
-                        </div>
-                       
-                       
+                          <!-- pos-left-container ends here -->
+                          <!-- main content ends here -->
                       </div>
-
-                  </div>
-                </div>
-                        </div>
-                        
-                    </div>
-                </div>
-            </section>
 
            
 
@@ -1112,6 +1129,7 @@
             if (val == "") 
             {
               alert('Kindly Select a Payment Method');
+              return;
             }
             else
             {
@@ -1127,11 +1145,18 @@
                 document.getElementById("for_credit_card").style.display = "block";
                 document.getElementById("for_cheque").style.display = "none";
               }
-              else
+              else if(val ==3)
               {
                 document.getElementById("for_cash").style.display = "none";
                 document.getElementById("for_credit_card").style.display = "none";
                 document.getElementById("for_cheque").style.display = "block";
+              }
+              else
+              {
+
+                document.getElementById("for_cash").style.display = "none";
+                document.getElementById("for_credit_card").style.display = "none";
+                document.getElementById("for_cheque").style.display = "none";
               }
 
             }

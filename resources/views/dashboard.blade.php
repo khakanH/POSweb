@@ -72,16 +72,9 @@
                         </div>
                     </div>
                 </div>
-                <!-- dashboard tab ends here -->
-                <div class="tab-pane" id="pos" role="tabpanel">pos</div>
-                <div class="tab-pane" id="categories" role="tabpanel">categories</div>
-                <div class="tab-pane" id="inventory" role="tabpanel">Inventory</div>
-                <div class="tab-pane" id="sales" role="tabpanel">sales</div>
-                <div class="tab-pane" id="customers" role="tabpanel">customers</div>
-                <div class="tab-pane" id="users" role="tabpanel">users</div>
-                <div class="tab-pane" id="settings" role="tabpanel">settings</div>
-                <div class="tab-pane" id="profile" role="tabpanel">profile</div>
-                <div class="tab-pane" id="logout" role="tabpanel">logout</div>
+              
+
+              
             </div>
 
 
@@ -177,7 +170,7 @@
                               fontFamily: "Poppins",
                               beginAtZero: true,  
                               suggestedMin: 0,
-                              suggestedMax: "<?php echo array_sum($monthly_sale)+(array_sum($monthly_sale)/2); ?>",
+                              suggestedMax: "<?php echo max($monthly_sale)+(max($monthly_sale)/10); ?>",
                             }
                           }]
                         },

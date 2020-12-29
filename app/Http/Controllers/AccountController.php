@@ -9,6 +9,7 @@ use App\Models\Members;
 use App\Models\MembersCompany;
 use App\Models\CompanyMemberType;
 use App\Models\CompanyInfo;
+use App\Models\CompanyType;
 use App\Models\Countries;
 
 use File;
@@ -411,6 +412,34 @@ class AccountController extends Controller
         }
     }    
 
+
+
+    public function CompanyTypeList(Request $request)
+    {
+        try 
+        {
+            $user_id = isset(session("login")['user_id'])?session("login")['user_id']:0;
+
+            $user_info = $this->checkUserAvailbility($user_id,$request);
+
+            $company_type  =CompanyType::where('is_show',1)->get();
+
+            foreach ($company_type as $key) 
+            {
+                ?>
+
+                    <option value="<?php echo $key['id'] ?>"><?php echo $key['name'] ?></option>
+
+                <?php
+            }
+
+        } 
+        catch (Exception $e) 
+        {
+            return response()->json($e,500);
+        }
+    }  
+
     public function Settings(Request $request)
     {
         try 
@@ -485,6 +514,7 @@ class AccountController extends Controller
                                         'fbr_invoice'       => isset($input['company_fbr'])?$input['company_fbr']:0,
                                         'pos_id'            => isset($input['company_pos_id'])?$input['company_pos_id']:"",
                                         'member_id'         => $user_id,
+                                        'company_type_id'   => $input['company_type'],
                                         'created_at'        => date("Y-m-d H:i:s"),
                                         'updated_at'        => date("Y-m-d H:i:s"),
                                      ));
@@ -559,6 +589,8 @@ class AccountController extends Controller
                                         'receipt_footer'    => $input['company_receipt_footer'],
                                         'fbr_invoice'       => isset($input['company_fbr'])?$input['company_fbr']:0,
                                         'pos_id'            => isset($input['company_pos_id'])?$input['company_pos_id']:"",
+                                        'company_type_id'   => $input['company_type'],
+
                                      ));
 
                 if ($result) 
@@ -838,6 +870,7 @@ class AccountController extends Controller
             $user_info = $this->checkUserAvailbility($user_id,$request);
 
             $country  =Countries::where('is_show',1)->get();
+            $company_type  =CompanyType::where('is_show',1)->get();
             $company = CompanyInfo::where('id',$id)->first();
 
             ?>
@@ -853,6 +886,7 @@ class AccountController extends Controller
                                             <input type="text" id="company_phone" name="company_phone" placeholder="Enter your company phone" value="<?php echo $company->phone; ?>" class="form-control">
                                           </div>
                                         </div>
+                                        <br>
 
                                         <div class="row form-group">
                                           <div class="col-lg-6">
@@ -871,7 +905,7 @@ class AccountController extends Controller
                                             </select>
                                           </div>
                                         </div>
-
+                                        <br>
                                         <div class="row form-group">
                                           <div class="col-lg-6">
                                             <label for="discount" class=" form-control-label">Default Discount %</label>
@@ -882,8 +916,30 @@ class AccountController extends Controller
                                             <input type="number" id="company_default_tax" name="company_default_tax" placeholder="Enter your company default tax" value="<?php echo $company->default_tax; ?>" min="0" max="100" class="form-control">
                                           </div>
                                         </div>
+                                        <br>
+                                 
 
-                                        <div class="row form-group" style="background: #333; border: solid gray 2px; border-radius: 3px; color: white; padding: 25px;">
+                                        <div class="row form-group">
+                                          <div class="col-lg-6">
+                                            <label for="company_logo_output" class="form-control-label">Company Logo:</label><br>
+                                            <img id="company_logo_output" src="<?php echo  env('IMG_URL'); ?><?php echo $company->logo; ?>" width="130" height="130" style="border-radius: 2%; border: solid gray 1px; object-position: top; object-fit: cover;">&nbsp;&nbsp;&nbsp;<input type="file" onchange="logo_loadFile(event)" onclick="clearImage()"   name="company_logo" id="company_logo" accept="image/*" >
+                                          </div>
+                                            <div class="col-lg-6">
+                                            <label for="company_type" class=" form-control-label">Company Type:</label>
+                                            <select class="form-control" name="company_type" id="company_type">
+                                              <option value="" disabled="" selected="">Select Company Type:</option>
+                                              <?php foreach($company_type as $key): ?>
+                                                <option <?php if ($company->company_type_id == $key['id']): ?>
+                                                    selected
+                                                <?php endif ?> value="<?php echo $key['id']; ?>"><?php echo $key['name']; ?></option>
+                                              <?php endforeach; ?>
+                                            </select>
+                                          </div>
+                                        </div>
+                                        
+                                        <br>
+
+                                               <div class="row form-group" style="background: #333; border: solid gray 2px; border-radius: 3px; color: white; padding: 25px;">
                                           <div class="col-lg-6">
                                             <label class="form-control-label">FBR Invoice Data:</label>
                                             &nbsp;&nbsp;&nbsp;
@@ -910,12 +966,7 @@ class AccountController extends Controller
                                           </div>
                                         </div>
 
-                                        <div class="row form-group">
-                                          <div class="col-lg-12">
-                                            <label for="company_logo_output" class="form-control-label">Company Logo:</label><br>
-                                            <img id="company_logo_output" src="<?php echo  env('IMG_URL'); ?><?php echo $company->logo; ?>" width="130" height="130" style="border-radius: 2%; border: solid gray 1px; object-position: top; object-fit: cover;">&nbsp;&nbsp;&nbsp;<input type="file" onchange="logo_loadFile(event)" onclick="clearImage()"   name="company_logo" id="company_logo" accept="image/*" >
-                                          </div>
-                                        </div>
+                                        <br>
 
                                         <div class="row form-group">
                                           <div class="col-lg-12">
@@ -927,6 +978,7 @@ class AccountController extends Controller
                                             <textarea id="company_receipt_header" placeholder="Enter receipt header text" name="company_receipt_header" class="form-control" rows="4"><?php echo $company->receipt_header; ?></textarea>
                                           </div>
                                         </div>
+                                        <br>
 
                                         <div class="row form-group">
                                           <div class="col-lg-12">
@@ -935,6 +987,8 @@ class AccountController extends Controller
                                             
                                           </div>
                                         </div>
+
+                                        <br>
 
             <?php
 

@@ -217,6 +217,19 @@
             alert('Exception:' + errorThrown);
         }
     });
+
+
+        $.ajax({
+        type: "GET",
+        url: "{{ env('APP_URL')}}get-company-type-list",
+        success: function(data) {
+
+            $('#company_type').html(data);
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            alert('Exception:' + errorThrown);
+        }
+    });
     }
 
 

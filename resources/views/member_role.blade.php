@@ -2,7 +2,7 @@
 @section('content')
        
 
- <div class="page-content--bgf7">
+ <div class="tab-content">
 
             <!-- STATISTIC-->
             <section class="statistic statistic2">
@@ -19,12 +19,12 @@
             @endif
             </center>
 
-       <div class="table-data__tool">
-            <div class="table-data__tool-left">
+       <div class="row">
+            <div class="col-lg-6">
 
                 <div class="form-group">
                    <label>Select Member Type</label>
-                      <select class="form-control" id="member_type_list" onchange='GetMemberRoles(this.value)'>
+                      <select class="form-control inp" id="member_type_list" onchange='GetMemberRoles(this.value)'>
                           @foreach($member_type as $key)
                           <option value="{{$key['id']}}">{{$key['name']}}</option>
                           @endforeach
@@ -34,6 +34,7 @@
             </div>
             
         </div>
+        <br>
 
         <form method="post" name="memberRolesForm" id="memberRolesForm">
         @csrf
@@ -74,7 +75,7 @@
 
         </div>
                                         <br>
-                                        <button class="btn btn-primary" style="float: right; width: 20%;" type="submit">Save</button>
+                                        <button class="btn btn-default-pos" style="float: right; width: 20%;" type="submit">Save</button>
                                         <br>
                                         <br>
 

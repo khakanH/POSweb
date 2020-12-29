@@ -8,7 +8,162 @@
 }
   </style>  
   
-<div class="page-content--bgf7">
+
+<div class="tab-content">
+
+ <h5 class=""> Greeting!</h5>
+
+  <div class="table-div">
+      <div class="revenue-head text-upper"> <h6 >User Profile Settings</h6></div>
+      <hr style="border:solid gray 1px;">
+      <br>
+
+      <div class="pad-20-div">
+        
+          <form name="profileForm" id="profileForm" method="post" enctype="multipart/form-data">
+              @csrf
+              <span class='arrow'>
+              <label class='error'></label>
+              </span> 
+
+              <div class="row" style="text-align: center;">
+                <div class="col-12">
+                              <img id="profile_output" src="{{ env('IMG_URL')}}{{$user_info['user_image'] }}" width="100" height="100" style=" min-width: 100px; min-height: 100px; border-radius: 50%; object-position: top; object-fit: cover;">&nbsp;&nbsp;<label style="cursor: pointer; vertical-align: middle;" onchange="profile_loadFile(event)"><i style="font-size: 30px;" class="fas fa-camera"></i><br> Choose Photo<input type="file"  name="profile_image"  accept="image/*"></label>
+                              @if($errors->has('profile_image'))
+                                <br><div style="margin-top: 10px; color: red; font-size: 12px; width: 100%; font-weight: bold;">{{ $errors->first('profile_image') }}</div>
+                              @endif
+                </div>
+              </div>
+
+              <br>
+                    
+              <div class="row">
+                <div class="col-lg-6">
+                  <div class="form-group">
+                    <label for="name" class="control-label mb-1">Name:</label>
+                      <div class="input-group">
+                          <input type="text"  value="{{ $user_info['username'] }}" id="name" name="name" class="form-control inp" placeholder="Enter Name"  autocomplete="off" >
+                                                      
+                      </div>
+                  </div>
+                </div>
+                            
+                <div class="col-lg-6">
+                  <div class="form-group">
+                    <label for="type" class="control-label mb-1">Account Type:</label>
+                    <input type="text" id="type" class="form-control inp" disabled="" readonly="" value="{{isset($user_info->member_type_name['name'])?$user_info->member_type_name['name']:'Admin'}}">                          
+                  </div>
+                </div>
+              </div>
+
+              <br>
+
+              <div class="form-group">
+                <button type="submit" class="btn btn-default-pos" style="width: 20%; float: right;">Save</button>
+              </div>
+
+          </form>
+      </div>
+
+
+      <hr>
+                     
+
+      <div class="row">
+        <div class="col-lg-6 pad-20-div" style="border-right: solid lightgray 1px;">
+            
+
+
+              <strong class="card-title">Change Email</strong>
+              
+
+              <form name="changeEmailAddress" method="post" enctype="multipart/form-data" id="emailForm">
+              @csrf
+              <span class='arrow'>
+              <label class='error'></label>
+              </span> 
+
+              <div class="form-group">
+                <label class="control-label mb-1">Current Email Address:</label>
+                  
+                  <input  type="text" class="form-control inp" readonly="" disabled="" value="{{$user_info->email}}">
+              </div>
+              
+              <div class="form-group">
+                <label for="new_email" class="control-label mb-1">New Email Address:</label>
+                              
+                <input type="email" value=""  id="new_email" name="new_email" class="form-control inp" placeholder="example@gmail.com">
+              </div>
+
+              <div class="form-group">
+                <label for="password" class="control-label mb-1">Password:</label>
+                <i id="pass-eye" style="font-size: 18px;  z-index: 1; display: flex; position: absolute; margin: 12px 0px 0px 12px; cursor: pointer;" class="fa fa-eye" onclick="ShowPassword('password','pass-eye')"></i>
+                <input style="padding-left: 45px;" type="password" id="password" name="password" placeholder="********" class="form-control inp">
+                                                    
+              </div>
+              <br>
+            <button type="submit" class="btn btn-default-pos" style="width: 30%; ">Save</button>
+    
+            <br><br>
+            </form> 
+       
+      </div>
+      <div class="col-lg-6 pad-20-div">
+        
+              <strong class="card-title">Change Password</strong>
+             
+               <form name="changePasswordForm" method="post" enctype="multipart/form-data" id="passForm">
+                            @csrf
+                            <span class='arrow'>
+                            <label class='error'></label>
+                            </span> 
+                            
+                            <div class="form-group">
+                                <label for="current_pass" class="control-label mb-1">Current Password:</label>
+                                                    <i id="cur_pass-eye" style="font-size: 18px;  z-index: 1; display: flex; position: absolute; margin: 12px 0px 0px 12px; cursor: pointer;" class="fa fa-eye" onclick="ShowPassword('current_pass','cur_pass-eye')"></i>
+                                                    <input style="padding-left: 45px;" type="password" id="current_pass" name="current_pass" placeholder="********" class="form-control inp">
+                                                    
+                            </div>
+                            <div class="form-group">
+                                <label for="new_pass" class="control-label mb-1">New Password:</label>
+                                                     <i id="new_pass-eye" style="font-size: 18px;  z-index: 1; display: flex; position: absolute; margin: 12px 0px 0px 12px; cursor: pointer;" class="fa fa-eye" onclick="ShowPassword('new_pass','new_pass-eye')"></i>
+                                                    <input style="padding-left: 45px;" type="password" id="new_pass" name="new_pass" placeholder="********" class="form-control inp">
+                                                    
+                            </div>
+                            <div class="form-group">
+                                <label for="confirm_new_pass" class="control-label mb-1">Confirm New Password:</label>              
+                                                     <i id="con_new_pass-eye" style="font-size: 18px;  z-index: 1; display: flex; position: absolute; margin: 12px 0px 0px 12px; cursor: pointer;" class="fa fa-eye" onclick="ShowPassword('confirm_new_pass','con_new_pass-eye')"></i>
+                                                    <input style="padding-left: 45px;" type="password" id="confirm_new_pass" name="confirm_new_pass" placeholder="********" class="form-control inp">
+                                                    
+                            </div>
+                            
+                         
+
+<!-- -------------------------------------------------------------------------------------------------------- -->
+    <br>
+          <button type="submit" class="btn btn-default-pos" id="change_password_loader" style="width: 30%;">Save</button>
+    
+<!-- -------------------------------------------------------------------------------------------------------- -->   
+                            </form>
+
+         
+      </div>
+
+      </div>
+
+
+
+            
+  </div>
+
+
+
+
+
+
+<!-- /////////////////////////////////////////////////////////////////////////////////////////////// -->
+
+
 
   <section class="statistic statistic2">
     <div class="container">
@@ -23,67 +178,20 @@
         @endif
       </center>
       
-      <h3 class="pb-4 display-5"> Greetings {{$user_info['username']}}</h3>
+     
 
 
 
 
-      <div class="col-12">
-          <div class="card">
-            <div class="card-header">
-              <strong class="card-title">Profile Settings</strong>
-            </div>
-            <div class="card-body">
+  
 
 
-              <form name="profileForm" id="profileForm" method="post" enctype="multipart/form-data">
-              @csrf
-              <span class='arrow'>
-              <label class='error'></label>
-              </span> 
 
-              <div class="row" style="text-align: center;">
-                <div class="col-12">
 
-                  <img id="profile_output" src="{{ env('IMG_URL')}}{{$user_info['user_image'] }}" width="100" height="100" style=" min-width: 100px; min-height: 100px; border-radius: 50%; object-position: top; object-fit: cover;">&nbsp;&nbsp;<label style="cursor: pointer; vertical-align: middle;" onchange="profile_loadFile(event)"><i style="font-size: 30px;" class="fas fa-camera"></i><br> Choose Photo<input type="file"  name="profile_image"  accept="image/*"></label>
-                  @if($errors->has('profile_image'))
-                    <br><div style="margin-top: 10px; color: red; font-size: 12px; width: 100%; font-weight: bold;">{{ $errors->first('profile_image') }}</div>
-                  @endif
-                </div>
-              </div>
 
-              <br>
-                        
-              <div class="row">
-                  <div class="col-lg-6">
-                    <div class="form-group">
-                      <label for="name" class="control-label mb-1">Name:</label>
-                        <div class="input-group">
-                          <input type="text"  value="{{ $user_info['username'] }}" id="name" name="name" class="form-control" placeholder="Enter Name"  autocomplete="off" >
-                                                      
-                        </div>
-                    </div>
-                  </div>
-                            
-                <div class="col-lg-6">
-                  <div class="form-group">
-                    <label for="type" class="control-label mb-1">Account Type:</label>
-                    
-                    <input type="text" id="type" class="form-control" disabled="" readonly="" value="{{isset($user_info->member_type_name['name'])?$user_info->member_type_name['name']:'Admin'}}">                          
-                                
-                  </div>
-                </div>
-              </div>
-                    
 
-            <button type="submit" class="btn btn-primary" style="width: 20%; float: right;">Save</button>
-    
-            </form>
 
 
-            </div>
-          </div>
-      </div>
 
 
 
@@ -134,106 +242,7 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-      <div class="col-12">
-          <div class="card">
-            <div class="card-header">
-              <strong class="card-title">Change Email Address</strong>
-            </div>
-            <div class="card-body">
-              
-
-              <form name="changeEmailAddress" method="post" enctype="multipart/form-data" id="emailForm">
-              @csrf
-              <span class='arrow'>
-              <label class='error'></label>
-              </span> 
-
-              <div class="form-group">
-                <label class="control-label mb-1">Current Email Address:</label>
-                  
-                  <input  type="text" class="form-control" readonly="" disabled="" value="{{$user_info->email}}">
-              </div>
-              
-              <div class="form-group">
-                <label for="new_email" class="control-label mb-1">New Email Address:</label>
-                              
-                <input type="email" value=""  id="new_email" name="new_email" class="form-control" placeholder="example@gmail.com">
-              </div>
-
-              <div class="form-group">
-                <label for="password" class="control-label mb-1">Password:</label>
-                <i id="pass-eye" style="font-size: 18px;  z-index: 1; display: flex; position: absolute; margin: 12px 0px 0px 12px; cursor: pointer;" class="fa fa-eye" onclick="ShowPassword('password','pass-eye')"></i>
-                <input style="padding-left: 45px;" type="password" id="password" name="password" placeholder="********" class="form-control">
-                                                    
-              </div>
-
-            <button type="submit" class="btn btn-primary" style="width: 20%; float: right;">Save</button>
-    
-            <br><br>
-            </form>    
-
-
-            </div>
-          </div>
-      </div>
-
-      <div class="col-12">
-          <div class="card">
-            <div class="card-header">
-              <strong class="card-title">Change Password</strong>
-            </div>
-            <div class="card-body">
-              
-               <form name="changePasswordForm" method="post" enctype="multipart/form-data" id="passForm">
-                            @csrf
-                            <span class='arrow'>
-                            <label class='error'></label>
-                            </span> 
-                            
-                            <div class="form-group">
-                                <label for="current_pass" class="control-label mb-1">Current Password:</label>
-                                                    <i id="cur_pass-eye" style="font-size: 18px;  z-index: 1; display: flex; position: absolute; margin: 12px 0px 0px 12px; cursor: pointer;" class="fa fa-eye" onclick="ShowPassword('current_pass','cur_pass-eye')"></i>
-                                                    <input style="padding-left: 45px;" type="password" id="current_pass" name="current_pass" placeholder="********" class="form-control">
-                                                    
-                            </div>
-                            <div class="form-group">
-                                <label for="new_pass" class="control-label mb-1">New Password:</label>
-                                                     <i id="new_pass-eye" style="font-size: 18px;  z-index: 1; display: flex; position: absolute; margin: 12px 0px 0px 12px; cursor: pointer;" class="fa fa-eye" onclick="ShowPassword('new_pass','new_pass-eye')"></i>
-                                                    <input style="padding-left: 45px;" type="password" id="new_pass" name="new_pass" placeholder="********" class="form-control">
-                                                    
-                            </div>
-                            <div class="form-group">
-                                <label for="confirm_new_pass" class="control-label mb-1">Confirm New Password:</label>              
-                                                     <i id="con_new_pass-eye" style="font-size: 18px;  z-index: 1; display: flex; position: absolute; margin: 12px 0px 0px 12px; cursor: pointer;" class="fa fa-eye" onclick="ShowPassword('confirm_new_pass','con_new_pass-eye')"></i>
-                                                    <input style="padding-left: 45px;" type="password" id="confirm_new_pass" name="confirm_new_pass" placeholder="********" class="form-control">
-                                                    
-                            </div>
-                            
-                         
-
-<!-- -------------------------------------------------------------------------------------------------------- -->
-
-          <button type="submit" class="btn btn-primary" id="change_password_loader" style="width: 20%; float: right;">Save</button>
-    
-<!-- -------------------------------------------------------------------------------------------------------- -->   
-<br><br>
-
-                            </form>
-
-            </div>
-          </div>
-      </div>
-
+      
 
 
 

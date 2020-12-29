@@ -13,6 +13,11 @@ body{
     font-family: 'Lato', sans-serif;
     /* font-weight: 600; */
 }
+
+
+
+
+
 /* login page starts here */
 .logo-box{
   padding-top: 35px;
@@ -323,3 +328,35 @@ body{
       padding:10px 5px 1px 13px;
     }
   }
+
+
+
+
+
+
+
+/*_________________________________________________________________________________*/
+                              /*ADDED BY OSAMA*/
+/*_________________________________________________________________________________*/
+
+.text-upper{
+  text-transform: uppercase;
+}
+
+.pad-20-div{
+  padding: 0px 20px 50px 35px;
+}
+.table-pad-div{
+  padding: 20px;
+}
+.btn-default-pos{
+  background-color: rgba(57, 63, 151, 1);
+    padding: 10px;
+    border: none;
+    border-radius: 50px;
+    font-size: 16px;
+    font-weight: 400;
+    color: #ffffff;
+    cursor: pointer;
+}
+/*_________________________________________________________________________________*/

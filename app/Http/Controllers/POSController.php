@@ -140,20 +140,20 @@ class POSController extends Controller
                 {
                 ?>
 
-                  <div class="col-3">
-                                <div class="card" style="cursor: pointer;" onclick='AddProductToBill("<?php echo $prod['id'] ?>","<?php echo $prod['name'] ?>","<?php echo $prod['price'] ?>")'>
-                                    <div class="card-body">
-                                        <div class="mx-auto d-block">
-                                            <img class="rounded-circle mx-auto d-block" src="<?php echo env('IMG_URL').$prod['image'] ?>" width="100" height="100" alt="<?php echo $prod['name']?> ">
+                  <div class="col-lg-4">
+                                              <div class="card" style="cursor: pointer;" onclick='AddProductToBill("<?php echo $prod['id'] ?>","<?php echo $prod['name'] ?>","<?php echo $prod['price'] ?>")'>
+                                    <div class="">
+                                        <div class="">
+                                            <img style="height: 100px;" class="rounded-circle mx-auto d-block" src="<?php echo env('IMG_URL') ?><?php echo $prod['image'] ?>" width="100" height="100" alt="<?php echo $prod['name'] ?>">
                                             <hr>
-                                            <h5 class="text-sm-center mt-2 mb-1"><?php echo $prod['name']?></h5>
-                                            <div class="location text-sm-center">
-                                                <?php echo $prod['price']?> /-</div>
+                                            <center><span><?php echo $prod['name'] ?></span></center>
+                                            <center><span><?php echo $prod['price'] ?>/-</span></center>
+                                            
                                         </div>
                                     </div>
                                   
                                 </div>
-                            </div>
+                                          </div>
 
                 <?php
                 } 
@@ -211,17 +211,19 @@ class POSController extends Controller
 
         ?> 
 
-                   <div class="row">
-                           <div class="col-7"><h5 >Choose Client</h5></div>
+                 <div class="row">
+                           <div class="col-7">&nbsp;</div>
                            <div class="col-5"><i  style="float: right; padding-right: 5px; cursor: pointer;" onclick="CreateNewCustomer()" data-toggle="tooltip" title="Create Customer" class="fa fa-user"></i> <i  style="float: right; padding-right: 10px; cursor: pointer;" data-toggle="tooltip" title="Show Last Bill" onclick="ShowLastBill()" class="fa fa-list-alt"></i></div>
                           </div>
+
+
                            <div class=" row form-group">
-                           <div class="col-7">
+                           <div class="col-12 mb-2 pos-right-search">
                             <input type="hidden" name="customer_list" id="customer_list" value="<?php echo $pending_bill->customer_id ?>">
                             <input type="text" id="cust_live_search_field" value='<?php echo isset($pending_bill->customer_name->customer_name)?$pending_bill->customer_name->customer_name:"Walk In Customer" ?>' autocomplete="off" class="form-control" onkeyup='LiveSearchCustomer(this.value)'  onfocusout="CheckSelectedCustomer(this.value)">
                             <div id="customer-search-list" style="position: absolute;border: solid lightgray 1px;width: 95%; height: auto; background: #fff;display: none;"></div>
                          </div>
-                           <div class="col-5"> <input type="text" autofocus="on" name="bar_code" id="bar_code" onkeypress="AddProductToBillBarCode(this.value)" class="form-control" placeholder="Enter Barcode"></div>
+                           <div class="col-12 pos-right-search"> <input type="text" autofocus="on" name="bar_code" id="bar_code" onkeypress="AddProductToBillBarCode(this.value)" class="form-control" placeholder="Enter Barcode"></div>
 
 
                            <!-- ______________________________________________ -->
@@ -232,20 +234,23 @@ class POSController extends Controller
 
 
                            </div>
-                    <div class="table-responsive" style="min-height: 200px; max-height: 200px;">
-                                    <table class="table table-data2">
-                                        <thead class="text-sm-center">
+
+                           <br>
+                      <div class="table-responsive" style="min-height: 270px; max-height: 270px;">
+                                    <table class="table table-1 table-sm">
+                                         <thead class="">
                                             <tr>
-                                                <th width="2%">
-                                                    
-                                                </th>
+                                                
                                                 <th width="40%">Product</th>
-                                                <th width="10%">Price</th>
-                                                <th width="33%">Qty</th>
-                                                <th width="15%">Total</th>
+                                                <th width="5%">Price</th>
+                                                <th width="40%">Qty</th>
+                                                <th width="10%">Total</th>
+                                                <th width="15%">
+                                                    <i class="fas fa-trash"></i>
+                                                </th>
                                             </tr>
                                         </thead>
-                                        <tbody class="text-sm-center" id="bill-prod-list<?php echo $id; ?>">
+                                        <tbody  id="bill-prod-list<?php echo $id; ?>">
                                             
                                         <?php if(count($pending_bill_item)==0): ?>
                                           <tr class="spacer"></tr>
@@ -258,15 +263,16 @@ class POSController extends Controller
 
                                             <?php foreach($pending_bill_item as $bill_item):?>
                                             <tr class="tr-shadow" id="bill_item<?php echo $bill_item['id'] ?>">
-                                                <td>
-                                                    <i class="fa fa-times-circle text-danger" style="cursor: pointer;" onclick='DeleteBillProductItem("<?php echo $bill_item['id'] ?>")'></i>
-                                                </td>
+                                                
                                                 <td><?php echo $bill_item['product_name']; ?></td>
                                                 <td><?php echo $bill_item['product_price']; ?></td>
-                                                <td><div class="row" style="margin: auto; vertical-align: middle;">
-                                                  <button class="btn btn-primary qty-btn" onclick='DecreaseBillItem("<?php echo $bill_item['id'] ?>","<?php echo $bill_item['product_id']; ?>")'>-</button><input class="form-control qty-input" type="number" value="<?php echo $bill_item['product_quantity']; ?>" onkeypress='ChangeBillProductQty(this.value,"<?php echo $bill_item['id'] ?>","<?php echo $bill_item['product_id']; ?>")' step="1" min="1" name="prod-qty" id="prod-qty<?php echo $bill_item['id'] ?>"><button class="btn btn-primary qty-btn" onclick='IncreaseBillItem("<?php echo $bill_item['id'] ?>","<?php echo $bill_item['product_id']; ?>")'>+</button>
+                                                <td><div class="" style="margin: auto; vertical-align: middle;">
+                                                  <span style="cursor: pointer;" class="fa fa-minus" onclick='DecreaseBillItem("<?php echo $bill_item['id'] ?>","<?php echo $bill_item['product_id']; ?>")'></span><input class="qty-input" type="number" value="<?php echo $bill_item['product_quantity']; ?>" onkeypress='ChangeBillProductQty(this.value,"<?php echo $bill_item['id'] ?>","<?php echo $bill_item['product_id']; ?>")' step="1" min="1" name="prod-qty" id="prod-qty<?php echo $bill_item['id'] ?>"><span style="cursor: pointer;" class="fa fa-plus" onclick='IncreaseBillItem("<?php echo $bill_item['id'] ?>","<?php echo $bill_item['product_id']; ?>")'></span>
                                                   </div></td>
                                                 <td><?php echo $bill_item['product_subtotal']; ?></td>
+                                                <td>
+                                                    <i class="fa fa-times" style="cursor: pointer;" onclick='DeleteBillProductItem("<?php echo $bill_item['id'] ?>")'></i>
+                                                </td>
                                             </tr>
                                             <?php endforeach; ?>
                                         <?php endif; ?>
@@ -275,22 +281,46 @@ class POSController extends Controller
                                     </table>
                                 </div>      
                                 <br>
+                                <br>
 
-                                <table width="100%" class="table">
+                                <table width="100%" class="table-2 table table-sm bottom-table">
                                   <tbody id="bill-summary-total<?php echo $id; ?>">
-                                    <tr><td width="50%" style="background: #ecf0f1;">SubTotal: </td><td>
-                                      <span style="float: left;"><?php echo $pending_bill->subtotal ?></span><i style="float: right;"><b><?php echo $pending_bill->total_item ?></b> items</i>
-                                    </td></tr>
-                                    <tr><td width="50%" style="background: #ecf0f1;">Order Tax: </td><td><div class="d-flex"><span style="float: left;"><input autocomplete="off" type="text" class="form-control tax-dis-input" onkeypress='ApplyBillTax(this.value,"<?php echo $pending_bill->id ?>")' id="bill-tax-input<?php echo $pending_bill->id ?>" value="<?php echo number_format($pending_bill->tax_percentage,1) ?>%"></span><i style="float: right;"><?php echo number_format($pending_bill->tax_amount,2) ?></i></div></td></tr>
-                                    <tr><td width="50%" style="background: #ecf0f1;">Discount: </td><td><div class="d-flex"><span style="float: left;"><input autocomplete="off" type="text" class="form-control tax-dis-input" onkeypress='ApplyBillDiscount(this.value,"<?php echo $pending_bill->id ?>")' id="bill-discount-input<?php echo $pending_bill->id ?>" value="<?php echo number_format($pending_bill->discount_percentage,1) ?>%"></span><i style="float: right;"><?php echo number_format($pending_bill->discount_amount,2) ?></i></div></td></tr>
-                                    <tr><td width="50%" style="background: #ecf0f1;">Total: </td><td><?php echo number_format($pending_bill->total_bill,2) ?></td></tr>
+                                    
+                                    <tr class="tr-1">
+                                      <td width="35%">Total Items: </td>
+                                      <td width="25%" style="text-align: center;"><?php echo  $pending_bill->total_item ?></td>
+                                      <td width="20%" style="text-align: center;">Subtotal: </td>
+                                      <td width="20%" style="text-align: right;"><?php echo  $pending_bill->subtotal ?></td>
+                                    </tr>
+
+                                    <tr>
+                                      <td >Total Tax: </td>
+                                      <td style="text-align: center;" colspan="2"><input autocomplete="off" type="text" class="form-control tax-dis-input" onkeypress='ApplyBillTax(this.value,"<?php echo  $pending_bill->id ?>")' id="bill-tax-input<?php echo  $pending_bill->id ?>" value="<?php echo  number_format($pending_bill->tax_percentage,1) ?>%"></td>
+                                        <td style="text-align: left;"><i style="float: right;"><?php echo  number_format($pending_bill->tax_amount,2) ?></i></td>
+                                    </tr>
+
+
+                                    <tr>
+                                      <td >Bill Discount: </td>
+                                      <td style="text-align: center;" colspan="2"><input autocomplete="off" type="text" class="form-control tax-dis-input" onkeypress='ApplyBillDiscount(this.value,"<?php echo $pending_bill->id ?>")' id="bill-discount-input<?php echo $pending_bill->id ?>" value="<?php echo number_format($pending_bill->discount_percentage,1) ?>%"></td>
+                                        <td style="text-align: center;"><i style="float: right;"><?php echo number_format($pending_bill->discount_amount,2) ?></i></td>
+                                    </tr>
+
+
+                                     <tr>
+                                    <td colspan="2"><b>Total Payable:</b> </td>
+                                    <td colspan="2"><?php echo number_format($pending_bill->total_bill,2) ?></td>
+                                   </tr>
                                   </tbody>  
                                 </table>
+
+
                                 <div class="row" style="margin-top: 14px;">
-                                  <div class="col-6"><button style="width: 100%;" class="btn btn-danger" onclick='CancelBill("<?php echo $id; ?>")'>Cancel</button></div>
-                                  <div class="col-6"><button style="width: 100%;" class="btn btn-success" id="payment_button<?php echo $id; ?>" <?php if ($pending_bill->total_item == 0): ?>
+                                 
+                                  <div class="col-6"><button style="width: 100%;" class="pos-btn btn-green btn btn-primary" id="payment_button<?php echo $id; ?>" <?php if ($pending_bill->total_item == 0): ?>
                                     disabled=""
                                   <?php endif ?> onclick='PayBill("<?php echo $id; ?>")'>Payment</button></div>
+                                   <div class="col-6"><button style="width: 100%;" class="pos-btn btn-red  btn btn-primary" onclick='CancelBill("<?php echo $id; ?>")'>Delete Sale</button></div>
                                 </div>
 
 
@@ -328,17 +358,19 @@ class POSController extends Controller
 
 
         ?>
-                   <div class="row">
-                           <div class="col-7"><h5 >Choose Client</h5></div>
+                  
+                          <div class="row">
+                           <div class="col-7">&nbsp;</div>
                            <div class="col-5"><i  style="float: right; padding-right: 5px; cursor: pointer;" onclick="CreateNewCustomer()" data-toggle="tooltip" title="Create Customer" class="fa fa-user"></i> <i  style="float: right; padding-right: 10px; cursor: pointer;" data-toggle="tooltip" title="Show Last Bill" onclick="ShowLastBill()" class="fa fa-list-alt"></i></div>
                           </div>
+
                            <div class=" row form-group">
-                           <div class="col-7">
+                           <div class="col-12 mb-2 pos-right-search">
                              <input type="hidden" name="customer_list" id="customer_list" value="0">
                             <input type="text" id="cust_live_search_field" value='Walk In Customer' class="form-control" autocomplete="off" onkeyup='LiveSearchCustomer(this.value)' onfocusout="CheckSelectedCustomer(this.value)">
                             <div id="customer-search-list" style="position: absolute;border: solid lightgray 1px;width: 95%; height: auto; background: #fff;display: none;"></div>
                            </div>
-                           <div class="col-5"> <input type="text" autofocus="on" name="bar_code" id="bar_code" onkeypress="AddProductToBillBarCode(this.value)" class="form-control" placeholder="Enter Barcode"></div>
+                           <div class="col-12 pos-right-search"> <input type="text" autofocus="on" name="bar_code" id="bar_code" onkeypress="AddProductToBillBarCode(this.value)" class="form-control" placeholder="Enter Barcode"></div>
                            
 
                            <!-- ______________________________________________ -->
@@ -349,17 +381,21 @@ class POSController extends Controller
                            
 
                            </div>
-                    <div class="table-responsive" style="min-height: 200px; max-height: 200px;">
-                                    <table class="table table-data2">
-                                        <thead class="text-sm-center">
+                        
+                        <br>
+
+                    <div class="table-responsive" style="min-height: 270px; max-height: 270px;">
+                                     <table class="table table-1 table-sm">
+                                         <thead class="">
                                             <tr>
-                                                <th width="2%">
-                                                    
-                                                </th>
+                                                
                                                 <th width="40%">Product</th>
-                                                <th width="10%">Price</th>
-                                                <th width="33%">Qty</th>
-                                                <th width="15%">Total</th>
+                                                <th width="5%">Price</th>
+                                                <th width="40%">Qty</th>
+                                                <th width="10%">Total</th>
+                                                <th width="15%">
+                                                    <i class="fas fa-trash"></i>
+                                                </th>
                                             </tr>
                                         </thead>
                                         <tbody class="text-sm-center" id="bill-prod-list<?php echo $new_bill; ?>">
@@ -373,19 +409,46 @@ class POSController extends Controller
                                     </table>
                                 </div>      
                                 <br>
-                                <table width="100%" class="table">
+                                <br>
+
+
+                                <table width="100%" class="table-2 table table-sm bottom-table">
                                   <tbody id="bill-summary-total<?php echo $new_bill; ?>">
-                                    <tr><td width="50%" style="background: #ecf0f1;">SubTotal: </td><td>
-                                      <span style="float: left;">0</span><i style="float: right;"><b>0</b> items</i>
-                                    </td></tr>
-                                    <tr><td width="50%" style="background: #ecf0f1;">Order Tax: </td><td><div class="d-flex"><span style="float: left;"><input autocomplete="off" type="text" class="form-control tax-dis-input" onkeypress='ApplyBillTax(this.value,"<?php echo $new_bill; ?>")' id="bill-tax-input<?php echo $new_bill; ?>" value="<?php echo number_format($company->default_tax,1); ?>%"></span><i style="float: right;">0.00</i></div></td></tr>
-                                    <tr><td width="50%" style="background: #ecf0f1;">Discount: </td><td><div class="d-flex"><span style="float: left;"><input autocomplete="off" type="text" class="form-control tax-dis-input" onkeypress='ApplyBillDiscount(this.value,"<?php echo $new_bill; ?>")' id="bill-discount-input<?php echo $new_bill; ?>" value="<?php echo number_format($company->default_discount,1); ?>%"></span><i style="float: right;">0.00</i></div></td></tr>
-                                    <tr><td width="50%" style="background: #ecf0f1;">Total: </td><td>0.00</td></tr>
+                                    
+                                    <tr class="tr-1">
+                                      <td width="35%">Total Items: </td>
+                                      <td width="25%" style="text-align: center;">0</td>
+                                      <td width="20%" style="text-align: center;">Subtotal: </td>
+                                      <td width="20%" style="text-align: right;">0</td>
+                                    </tr>
+
+
+                                    <tr>
+                                      <td >Total Tax: </td>
+                                      <td style="text-align: center;" colspan="2"><input autocomplete="off" type="text" class="form-control tax-dis-input" onkeypress='ApplyBillTax(this.value,"<?php echo $new_bill; ?>")' id="bill-tax-input<?php echo $new_bill; ?>" value="<?php echo number_format($company->default_tax,1); ?>%"></td>
+                                        <td style="text-align: left;"><i style="float: right;">0.00</i></td>
+                                    </tr>
+
+                                    <tr>
+                                      <td >Bill Discount: </td>
+                                      <td style="text-align: center;" colspan="2"><input autocomplete="off" type="text" class="form-control tax-dis-input" onkeypress='ApplyBillDiscount(this.value,"<?php echo $new_bill; ?>")' id="bill-discount-input<?php echo $new_bill; ?>" value="<?php echo number_format($company->default_discount,1); ?>%"></td>
+                                        <td style="text-align: center;"><i style="float: right;">0.00</i></td>
+                                    </tr>
+                                    
+                                    
+                                   <tr>
+                                    <td colspan="2"><b>Total Payable:</b> </td>
+                                    <td colspan="2">0.00</td>
+                                   </tr>
+
                                   </tbody>  
                                 </table>
+
+
                                 <div class="row" style="margin-top: 14px;">
-                                  <div class="col-6"><button style="width: 100%;" class="btn btn-danger" onclick='CancelBill("<?php echo $new_bill; ?>")'>Cancel</button></div>
-                                  <div class="col-6"><button style="width: 100%;" class="btn btn-success" disabled="" id="payment_button<?php echo $new_bill; ?>" onclick='PayBill("<?php echo $new_bill; ?>")'>Payment</button></div>
+                                 
+                                  <div class="col-6"><button style="width: 100%;" class="pos-btn btn-green btn btn-primary" disabled="" id="payment_button<?php echo $new_bill; ?>" onclick='PayBill("<?php echo $new_bill; ?>")'>Payment</button></div>
+                                   <div class="col-6"><button style="width: 100%;" class="pos-btn btn-red  btn btn-primary" onclick='CancelBill("<?php echo $new_bill; ?>")'>Delete Sale</button></div>
                                 </div>
 
         <?php
@@ -423,17 +486,20 @@ class POSController extends Controller
 
 
         ?>
-                    <div class="row">
-                           <div class="col-7"><h5 >Choose Client</h5></div>
+                   <div class="row">
+                           <div class="col-7">&nbsp;</div>
                            <div class="col-5"><i  style="float: right; padding-right: 5px; cursor: pointer;" onclick="CreateNewCustomer()" data-toggle="tooltip" title="Create Customer" class="fa fa-user"></i> <i  style="float: right; padding-right: 10px; cursor: pointer;" data-toggle="tooltip" title="Show Last Bill" onclick="ShowLastBill()" class="fa fa-list-alt"></i></div>
                           </div>
+
+
                            <div class=" row form-group">
-                           <div class="col-7">
-                             <input type="hidden" name="customer_list" id="customer_list" value="<?php echo $pending_bill->customer_id ?>">
-                            <input type="text" id="cust_live_search_field" value='<?php echo isset($pending_bill->customer_name->customer_name)?$pending_bill->customer_name->customer_name:"Walk In Customer" ?>' class="form-control" autocomplete="off" onkeyup='LiveSearchCustomer(this.value)' onfocusout="CheckSelectedCustomer(this.value)">
+                           <div class="col-12 mb-2 pos-right-search">
+                            <input type="hidden" name="customer_list" id="customer_list" value="<?php echo $pending_bill->customer_id ?>">
+                            <input type="text" id="cust_live_search_field" value='<?php echo isset($pending_bill->customer_name->customer_name)?$pending_bill->customer_name->customer_name:"Walk In Customer" ?>' autocomplete="off" class="form-control" onkeyup='LiveSearchCustomer(this.value)'  onfocusout="CheckSelectedCustomer(this.value)">
                             <div id="customer-search-list" style="position: absolute;border: solid lightgray 1px;width: 95%; height: auto; background: #fff;display: none;"></div>
-                           </div>
-                           <div class="col-5"> <input type="text" autofocus="on" name="bar_code" id="bar_code" onkeypress="AddProductToBillBarCode(this.value)" class="form-control" placeholder="Enter Barcode"></div>
+                         </div>
+                           <div class="col-12 pos-right-search"> <input type="text" autofocus="on" name="bar_code" id="bar_code" onkeypress="AddProductToBillBarCode(this.value)" class="form-control" placeholder="Enter Barcode"></div>
+
 
                            <!-- ______________________________________________ -->
                            <!-- H I D D E N -- C U R R E N T -- B I L L -- I D -->
@@ -443,20 +509,23 @@ class POSController extends Controller
 
 
                            </div>
-                    <div class="table-responsive" style="min-height: 200px; max-height: 200px;">
-                                    <table class="table table-data2">
-                                        <thead class="text-sm-center">
+
+                           <br>
+                      <div class="table-responsive" style="min-height: 270px; max-height: 270px;">
+                                    <table class="table table-1 table-sm">
+                                         <thead class="">
                                             <tr>
-                                                <th width="2%">
-                                                    
-                                                </th>
+                                                
                                                 <th width="40%">Product</th>
-                                                <th width="10%">Price</th>
-                                                <th width="33%">Qty</th>
-                                                <th width="15%">Total</th>
+                                                <th width="5%">Price</th>
+                                                <th width="40%">Qty</th>
+                                                <th width="10%">Total</th>
+                                                <th width="15%">
+                                                    <i class="fas fa-trash"></i>
+                                                </th>
                                             </tr>
                                         </thead>
-                                        <tbody class="text-sm-center" id="bill-prod-list<?php echo $pending_bill->id; ?>">
+                                        <tbody  id="bill-prod-list<?php echo $pending_bill->id; ?>">
                                             
                                         <?php if(count($pending_bill_item)==0): ?>
                                           <tr class="spacer"></tr>
@@ -469,15 +538,16 @@ class POSController extends Controller
 
                                             <?php foreach($pending_bill_item as $bill_item):?>
                                             <tr class="tr-shadow" id="bill_item<?php echo $bill_item['id'] ?>">
-                                                <td>
-                                                    <i class="fa fa-times-circle text-danger" style="cursor: pointer;" onclick='DeleteBillProductItem("<?php echo $bill_item['id'] ?>")'></i>
-                                                </td>
+                                                
                                                 <td><?php echo $bill_item['product_name']; ?></td>
                                                 <td><?php echo $bill_item['product_price']; ?></td>
-                                                <td><div class="row" style="margin: auto; vertical-align: middle;">
-                                                  <button class="btn btn-primary qty-btn" onclick='DecreaseBillItem("<?php echo $bill_item['id'] ?>","<?php echo $bill_item['product_id']; ?>")'>-</button><input class="form-control qty-input" type="number" value="<?php echo $bill_item['product_quantity']; ?>" onkeypress='ChangeBillProductQty(this.value,"<?php echo $bill_item['id'] ?>","<?php echo $bill_item['product_id']; ?>")' step="1" min="1" name="prod-qty" id="prod-qty<?php echo $bill_item['id'] ?>"><button class="btn btn-primary qty-btn" onclick='IncreaseBillItem("<?php echo $bill_item['id'] ?>","<?php echo $bill_item['product_id']; ?>")'>+</button>
+                                                <td><div class="" style="margin: auto; vertical-align: middle;">
+                                                  <span style="cursor: pointer;" class="fa fa-minus" onclick='DecreaseBillItem("<?php echo $bill_item['id'] ?>","<?php echo $bill_item['product_id']; ?>")'></span><input class="qty-input" type="number" value="<?php echo $bill_item['product_quantity']; ?>" onkeypress='ChangeBillProductQty(this.value,"<?php echo $bill_item['id'] ?>","<?php echo $bill_item['product_id']; ?>")' step="1" min="1" name="prod-qty" id="prod-qty<?php echo $bill_item['id'] ?>"><span style="cursor: pointer;" class="fa fa-plus" onclick='IncreaseBillItem("<?php echo $bill_item['id'] ?>","<?php echo $bill_item['product_id']; ?>")'></span>
                                                   </div></td>
                                                 <td><?php echo $bill_item['product_subtotal']; ?></td>
+                                                <td>
+                                                    <i class="fa fa-times" style="cursor: pointer;" onclick='DeleteBillProductItem("<?php echo $bill_item['id'] ?>")'></i>
+                                                </td>
                                             </tr>
                                             <?php endforeach; ?>
                                         <?php endif; ?>
@@ -486,21 +556,46 @@ class POSController extends Controller
                                     </table>
                                 </div>      
                                 <br>
-                                <table width="100%" class="table">
+                                <br>
+
+                                <table width="100%" class="table-2 table table-sm bottom-table">
                                   <tbody id="bill-summary-total<?php echo $pending_bill->id; ?>">
-                                    <tr><td width="50%" style="background: #ecf0f1;">SubTotal: </td><td>
-                                      <span style="float: left;"><?php echo $pending_bill->subtotal ?></span><i style="float: right;"><b><?php echo $pending_bill->total_item ?></b> items</i>
-                                    </td></tr>
-                                    <tr><td width="50%" style="background: #ecf0f1;">Order Tax: </td><td><div class="d-flex"><span style="float: left;"><input autocomplete="off" type="text" class="form-control tax-dis-input" onkeypress='ApplyBillTax(this.value,"<?php echo $pending_bill->id ?>")' id="bill-tax-input<?php echo $pending_bill->id ?>" value="<?php echo number_format($pending_bill->tax_percentage,1) ?>%"></span><i style="float: right;"><?php echo number_format($pending_bill->tax_amount,2) ?></i></div></td></tr>
-                                    <tr><td width="50%" style="background: #ecf0f1;">Discount: </td><td><div class="d-flex"><span style="float: left;"><input autocomplete="off" type="text" class="form-control tax-dis-input" onkeypress='ApplyBillDiscount(this.value,"<?php echo $pending_bill->id ?>")' id="bill-discount-input<?php echo $pending_bill->id ?>" value="<?php echo number_format($pending_bill->discount_percentage,1) ?>%"></span><i style="float: right;"><?php echo number_format($pending_bill->discount_amount,2) ?></i></div></td></tr>
-                                    <tr><td width="50%" style="background: #ecf0f1;">Total: </td><td><?php echo number_format($pending_bill->total_bill,2) ?></td></tr>
+                                    
+                                    <tr class="tr-1">
+                                      <td width="35%">Total Items: </td>
+                                      <td width="25%" style="text-align: center;"><?php echo  $pending_bill->total_item ?></td>
+                                      <td width="20%" style="text-align: center;">Subtotal: </td>
+                                      <td width="20%" style="text-align: right;"><?php echo  $pending_bill->subtotal ?></td>
+                                    </tr>
+
+                                    <tr>
+                                      <td >Total Tax: </td>
+                                      <td style="text-align: center;" colspan="2"><input autocomplete="off" type="text" class="form-control tax-dis-input" onkeypress='ApplyBillTax(this.value,"<?php echo  $pending_bill->id ?>")' id="bill-tax-input<?php echo  $pending_bill->id ?>" value="<?php echo  number_format($pending_bill->tax_percentage,1) ?>%"></td>
+                                        <td style="text-align: left;"><i style="float: right;"><?php echo  number_format($pending_bill->tax_amount,2) ?></i></td>
+                                    </tr>
+
+
+                                    <tr>
+                                      <td >Bill Discount: </td>
+                                      <td style="text-align: center;" colspan="2"><input autocomplete="off" type="text" class="form-control tax-dis-input" onkeypress='ApplyBillDiscount(this.value,"<?php echo $pending_bill->id ?>")' id="bill-discount-input<?php echo $pending_bill->id ?>" value="<?php echo number_format($pending_bill->discount_percentage,1) ?>%"></td>
+                                        <td style="text-align: center;"><i style="float: right;"><?php echo number_format($pending_bill->discount_amount,2) ?></i></td>
+                                    </tr>
+
+
+                                     <tr>
+                                    <td colspan="2"><b>Total Payable:</b> </td>
+                                    <td colspan="2"><?php echo number_format($pending_bill->total_bill,2) ?></td>
+                                   </tr>
                                   </tbody>  
                                 </table>
+
+
                                 <div class="row" style="margin-top: 14px;">
-                                  <div class="col-6"><button style="width: 100%;" class="btn btn-danger" onclick='CancelBill("<?php echo $pending_bill->id ?>")'>Cancel</button></div>
-                                  <div class="col-6"><button style="width: 100%;" id="payment_button<?php echo $pending_bill->id ?>" class="btn btn-success" <?php if ($pending_bill->total_item == 0): ?>
-                                      disabled=""
-                                  <?php endif ?> onclick='PayBill("<?php echo $pending_bill->id ?>")'>Payment</button></div>
+                                 
+                                  <div class="col-6"><button style="width: 100%;" class="pos-btn btn-green btn btn-primary" id="payment_button<?php echo $pending_bill->id; ?>" <?php if ($pending_bill->total_item == 0): ?>
+                                    disabled=""
+                                  <?php endif ?> onclick='PayBill("<?php echo $pending_bill->id; ?>")'>Payment</button></div>
+                                   <div class="col-6"><button style="width: 100%;" class="pos-btn btn-red  btn btn-primary" onclick='CancelBill("<?php echo $pending_bill->id; ?>")'>Delete Sale</button></div>
                                 </div>
 
         <?php
@@ -637,15 +732,16 @@ class POSController extends Controller
                 foreach($pending_bill_item as $bill_item):
           ?>
               <tr class="tr-shadow" id="bill_item<?php echo $bill_item['id'] ?>">
-              <td>
-                <i class="fa fa-times-circle text-danger" style="cursor: pointer;" onclick='DeleteBillProductItem("<?php echo $bill_item['id'] ?>")'></i>
-              </td>
+            
               <td><?php echo $bill_item['product_name']; ?></td>
               <td><?php echo $bill_item['product_price']; ?></td>
-              <td><div class="row" style="margin: auto; vertical-align: middle;">
-                                                  <button class="btn btn-primary qty-btn" onclick='DecreaseBillItem("<?php echo $bill_item['id'] ?>","<?php echo $bill_item['product_id']; ?>")'>-</button><input class="form-control qty-input" type="number" value="<?php echo $bill_item['product_quantity']; ?>" onkeypress='ChangeBillProductQty(this.value,"<?php echo $bill_item['id'] ?>","<?php echo $bill_item['product_id']; ?>")' step="1" min="1" name="prod-qty" id="prod-qty<?php echo $bill_item['id'] ?>"><button class="btn btn-primary qty-btn" onclick='IncreaseBillItem("<?php echo $bill_item['id'] ?>","<?php echo $bill_item['product_id']; ?>")'>+</button>
+              <td><div class="" style="margin: auto; vertical-align: middle;">
+                                                  <span style="cursor: pointer;" class="fa fa-minus" onclick='DecreaseBillItem("<?php echo $bill_item['id'] ?>","<?php echo $bill_item['product_id']; ?>")'></span><input class="qty-input" type="number" value="<?php echo $bill_item['product_quantity']; ?>" onkeypress='ChangeBillProductQty(this.value,"<?php echo $bill_item['id'] ?>","<?php echo $bill_item['product_id']; ?>")' step="1" min="1" name="prod-qty" id="prod-qty<?php echo $bill_item['id'] ?>"><span style="cursor: pointer;" class="fa fa-plus"  onclick='IncreaseBillItem("<?php echo $bill_item['id'] ?>","<?php echo $bill_item['product_id']; ?>")'></span>
                                                   </div></td>
               <td><?php echo $bill_item['product_subtotal']; ?></td>
+                <td>
+                <i class="fa fa-times" style="cursor: pointer;" onclick='DeleteBillProductItem("<?php echo $bill_item['id'] ?>")'></i>
+              </td>
               </tr>
           <?php endforeach; 
                 endif; 
@@ -700,15 +796,16 @@ class POSController extends Controller
                 foreach($pending_bill_item as $bill_item):
           ?>
               <tr class="tr-shadow" id="bill_item<?php echo $bill_item['id'] ?>">
-              <td>
-                <i class="fa fa-times-circle text-danger" style="cursor: pointer;" onclick='DeleteBillProductItem("<?php echo $bill_item['id'] ?>")'></i>
-              </td>
+              
               <td><?php echo $bill_item['product_name']; ?></td>
               <td><?php echo $bill_item['product_price']; ?></td>
-              <td><div class="row" style="margin: auto; vertical-align: middle;">
-                                                  <button class="btn btn-primary qty-btn" onclick='DecreaseBillItem("<?php echo $bill_item['id'] ?>","<?php echo $bill_item['product_id']; ?>")'>-</button><input class="form-control qty-input" type="number" value="<?php echo $bill_item['product_quantity']; ?>" onkeypress='ChangeBillProductQty(this.value,"<?php echo $bill_item['id'] ?>","<?php echo $bill_item['product_id']; ?>")' step="1" min="1" name="prod-qty" id="prod-qty<?php echo $bill_item['id'] ?>"><button class="btn btn-primary qty-btn" onclick='IncreaseBillItem("<?php echo $bill_item['id'] ?>","<?php echo $bill_item['product_id']; ?>")'>+</button>
+              <td><div class="" style="margin: auto; vertical-align: middle;">
+                                                  <span style="cursor: pointer;" class="fa fa-minus" onclick='DecreaseBillItem("<?php echo $bill_item['id'] ?>","<?php echo $bill_item['product_id']; ?>")'></span><input class="qty-input" type="number" value="<?php echo $bill_item['product_quantity']; ?>" onkeypress='ChangeBillProductQty(this.value,"<?php echo $bill_item['id'] ?>","<?php echo $bill_item['product_id']; ?>")' step="1" min="1" name="prod-qty" id="prod-qty<?php echo $bill_item['id'] ?>"><span style="cursor: pointer;" class="fa fa-plus"  onclick='IncreaseBillItem("<?php echo $bill_item['id'] ?>","<?php echo $bill_item['product_id']; ?>")'></span>
                                                   </div></td>
               <td><?php echo $bill_item['product_subtotal']; ?></td>
+              <td>
+                <i class="fa fa-times" style="cursor: pointer;" onclick='DeleteBillProductItem("<?php echo $bill_item['id'] ?>")'></i>
+              </td>
               </tr>
           <?php endforeach; 
                 endif; 
@@ -757,15 +854,16 @@ class POSController extends Controller
                 foreach($pending_bill_item as $bill_item):
           ?>
               <tr class="tr-shadow" id="bill_item<?php echo $bill_item['id'] ?>">
-              <td>
-                <i class="fa fa-times-circle text-danger" style="cursor: pointer;" onclick='DeleteBillProductItem("<?php echo $bill_item['id'] ?>")'></i>
-              </td>
+             
               <td><?php echo $bill_item['product_name']; ?></td>
               <td><?php echo $bill_item['product_price']; ?></td>
-              <td><div class="row" style="margin: auto; vertical-align: middle;">
-                                                  <button class="btn btn-primary qty-btn" onclick='DecreaseBillItem("<?php echo $bill_item['id'] ?>","<?php echo $bill_item['product_id']; ?>")'>-</button><input class="form-control qty-input" type="number" value="<?php echo $bill_item['product_quantity']; ?>" onkeypress='ChangeBillProductQty(this.value,"<?php echo $bill_item['id'] ?>","<?php echo $bill_item['product_id']; ?>")' step="1" min="1" name="prod-qty" id="prod-qty<?php echo $bill_item['id'] ?>"><button class="btn btn-primary qty-btn" onclick='IncreaseBillItem("<?php echo $bill_item['id'] ?>","<?php echo $bill_item['product_id']; ?>")'>+</button>
+              <td><div class="" style="margin: auto; vertical-align: middle;">
+                                                  <span style="cursor: pointer;" class="fa fa-minus" onclick='DecreaseBillItem("<?php echo $bill_item['id'] ?>","<?php echo $bill_item['product_id']; ?>")'></span><input class="qty-input" type="number" value="<?php echo $bill_item['product_quantity']; ?>" onkeypress='ChangeBillProductQty(this.value,"<?php echo $bill_item['id'] ?>","<?php echo $bill_item['product_id']; ?>")' step="1" min="1" name="prod-qty" id="prod-qty<?php echo $bill_item['id'] ?>"><span style="cursor: pointer;" class="fa fa-plus"  onclick='IncreaseBillItem("<?php echo $bill_item['id'] ?>","<?php echo $bill_item['product_id']; ?>")'></span>
                                                   </div></td>
               <td><?php echo $bill_item['product_subtotal']; ?></td>
+               <td>
+                <i class="fa fa-times" style="cursor: pointer;" onclick='DeleteBillProductItem("<?php echo $bill_item['id'] ?>")'></i>
+              </td>
               </tr>
           <?php endforeach; 
                 endif; 
@@ -811,15 +909,16 @@ class POSController extends Controller
                 foreach($pending_bill_item as $bill_item):
           ?>
               <tr class="tr-shadow" id="bill_item<?php echo $bill_item['id'] ?>">
-              <td>
-                <i class="fa fa-times-circle text-danger" style="cursor: pointer;" onclick='DeleteBillProductItem("<?php echo $bill_item['id'] ?>")'></i>
-              </td>
+             
               <td><?php echo $bill_item['product_name']; ?></td>
               <td><?php echo $bill_item['product_price']; ?></td>
-              <td><div class="row" style="margin: auto; vertical-align: middle;">
-                                                  <button class="btn btn-primary qty-btn" onclick='DecreaseBillItem("<?php echo $bill_item['id'] ?>","<?php echo $bill_item['product_id']; ?>")'>-</button><input class="form-control qty-input" type="number" value="<?php echo $bill_item['product_quantity']; ?>" onkeypress='ChangeBillProductQty(this.value,"<?php echo $bill_item['id'] ?>","<?php echo $bill_item['product_id']; ?>")' step="1" min="1" name="prod-qty" id="prod-qty<?php echo $bill_item['id'] ?>"><button class="btn btn-primary qty-btn" onclick='IncreaseBillItem("<?php echo $bill_item['id'] ?>","<?php echo $bill_item['product_id']; ?>")'>+</button>
+              <td><div class="" style="margin: auto; vertical-align: middle;">
+                                                  <span style="cursor: pointer;" class="fa fa-minus" onclick='DecreaseBillItem("<?php echo $bill_item['id'] ?>","<?php echo $bill_item['product_id']; ?>")'></span><input class="qty-input" type="number" value="<?php echo $bill_item['product_quantity']; ?>" onkeypress='ChangeBillProductQty(this.value,"<?php echo $bill_item['id'] ?>","<?php echo $bill_item['product_id']; ?>")' step="1" min="1" name="prod-qty" id="prod-qty<?php echo $bill_item['id'] ?>"><span style="cursor: pointer;" class="fa fa-plus"  onclick='IncreaseBillItem("<?php echo $bill_item['id'] ?>","<?php echo $bill_item['product_id']; ?>")'></span>
                                                   </div></td>
               <td><?php echo $bill_item['product_subtotal']; ?></td>
+               <td>
+                <i class="fa fa-times" style="cursor: pointer;" onclick='DeleteBillProductItem("<?php echo $bill_item['id'] ?>")'></i>
+              </td>
               </tr>
           <?php endforeach; 
                 endif; 
@@ -846,7 +945,7 @@ class POSController extends Controller
       {
         PendingBillItems::where('id',$input['bill_item_id'])->update(array(
                                         'product_quantity'=>$input['prod_qty'],
-                                        'product_subtotal' => $get_bill_item->product_price * $input['prod_qty'],
+                                        'product_subtotal' => $get_bill_item->product_price * round($input['prod_qty']),
                                                               ));
         $pending_bill_item = PendingBillItems::where('company_id',$company_id)
                           ->where('pending_bill_id',$input['bill_id'])
@@ -865,15 +964,16 @@ class POSController extends Controller
                 foreach($pending_bill_item as $bill_item):
           ?>
               <tr class="tr-shadow" id="bill_item<?php echo $bill_item['id'] ?>">
-              <td>
-                <i class="fa fa-times-circle text-danger" style="cursor: pointer;" onclick='DeleteBillProductItem("<?php echo $bill_item['id'] ?>")'></i>
-              </td>
+             
               <td><?php echo $bill_item['product_name']; ?></td>
               <td><?php echo $bill_item['product_price']; ?></td>
-              <td><div class="row" style="margin: auto; vertical-align: middle;">
-                                                  <button class="btn btn-primary qty-btn" onclick='DecreaseBillItem("<?php echo $bill_item['id'] ?>","<?php echo $bill_item['product_id']; ?>")'>-</button><input class="form-control qty-input" type="number" value="<?php echo $bill_item['product_quantity']; ?>" onkeypress='ChangeBillProductQty(this.value,"<?php echo $bill_item['id'] ?>","<?php echo $bill_item['product_id']; ?>")' step="1" min="1" name="prod-qty" id="prod-qty<?php echo $bill_item['id'] ?>"><button class="btn btn-primary qty-btn" onclick='IncreaseBillItem("<?php echo $bill_item['id'] ?>","<?php echo $bill_item['product_id']; ?>")'>+</button>
+              <td><div class="" style="margin: auto; vertical-align: middle;">
+                                                  <span style="cursor: pointer;" class="fa fa-minus"  onclick='DecreaseBillItem("<?php echo $bill_item['id'] ?>","<?php echo $bill_item['product_id']; ?>")'></span><input class="qty-input" type="number" value="<?php echo $bill_item['product_quantity']; ?>" onkeypress='ChangeBillProductQty(this.value,"<?php echo $bill_item['id'] ?>","<?php echo $bill_item['product_id']; ?>")' step="1" min="1" name="prod-qty" id="prod-qty<?php echo $bill_item['id'] ?>"><span style="cursor: pointer;" class="fa fa-plus"  onclick='IncreaseBillItem("<?php echo $bill_item['id'] ?>","<?php echo $bill_item['product_id']; ?>")'></span>
                                                   </div></td>
               <td><?php echo $bill_item['product_subtotal']; ?></td>
+               <td>
+                <i class="fa fa-times" style="cursor: pointer;" onclick='DeleteBillProductItem("<?php echo $bill_item['id'] ?>")'></i>
+              </td>
               </tr>
           <?php endforeach; 
                 endif; 
@@ -1000,27 +1100,32 @@ class POSController extends Controller
 
 
           ?>
-            <tr>
-              <td width="50%" style="background: #ecf0f1;">SubTotal: </td>
-              <td>
-                <span style="float: left;"><?php echo $subtotal; ?></span>
-                <i style="float: right;"><b><?php echo $total_item; ?></b> items</i>
-              </td>
+
+            <tr class="tr-1">
+              <td width="35%">Total Items: </td>
+              <td width="25%" style="text-align: center;"><?php echo $total_item; ?></td>
+              <td width="20%" style="text-align: center;">Subtotal: </td>
+              <td width="20%" style="text-align: right;"><?php echo $subtotal; ?></td>
             </tr>
             
+
             <tr>
-              <td width="50%" style="background: #ecf0f1;">Order Tax: </td>
-              <td><div class="d-flex"><span style="float: left;"><input autocomplete="off" type="text" class="form-control tax-dis-input" onkeypress='ApplyBillTax(this.value,"<?php echo $id ?>")' id="bill-tax-input<?php echo $id ?>" value="<?php echo number_format($get_bill->tax_percentage,1) ?>%"></span><i style="float: right;"><?php echo number_format($tax_amount,2) ?></i></div></td>
+              <td >Total Tax: </td>
+              <td style="text-align: center;" colspan="2"><input autocomplete="off" type="text" class="form-control tax-dis-input" onkeypress='ApplyBillTax(this.value,"<?php echo $id ?>")' id="bill-tax-input<?php echo $id ?>" value="<?php echo number_format($get_bill->tax_percentage,1) ?>%"></td>
+              <td style="text-align: left;"><i style="float: right;"><?php echo number_format($tax_amount,2) ?></i></td>
+            </tr>
+
+            <tr>
+              <td >Bill Discount: </td>
+              <td style="text-align: center;" colspan="2"><input autocomplete="off" type="text" class="form-control tax-dis-input" onkeypress='ApplyBillDiscount(this.value,"<?php echo $id ?>")' id="bill-discount-input<?php echo $id ?>" value="<?php echo number_format($get_bill->discount_percentage,1) ?>%"></td>
+              <td style="text-align: center;"><i style="float: right;"><?php echo number_format($discount_amount,2) ?></i></td>
+            </tr>
+
+            <tr>
+              <td colspan="2"><b>Total Payable:</b> </td>
+              <td colspan="2"><?php echo number_format($total_bill,2) ?></td>
             </tr>
             
-            <tr>
-              <td width="50%" style="background: #ecf0f1;">Discount: </td>
-              <td><div class="d-flex"><span style="float: left;"><input autocomplete="off" type="text" class="form-control tax-dis-input" onkeypress='ApplyBillDiscount(this.value,"<?php echo $id ?>")' id="bill-discount-input<?php echo $id ?>" value="<?php echo number_format($get_bill->discount_percentage,1) ?>%"></span><i style="float: right;"><?php echo number_format($discount_amount,2) ?></i></div></td>
-            </tr>
-            <tr>
-              <td width="50%" style="background: #ecf0f1;">Total: </td>
-              <td><?php echo number_format($total_bill,2) ?></td>
-            </tr>
           
           <?php
 
@@ -1035,33 +1140,20 @@ class POSController extends Controller
 
     public function getBillCode($id)
     {
-        $last_bill = Sales::where('company_id',$id)->orderBy('bill_code','desc')->first();
+        $gen_code = str_pad(strtoupper(substr(session("login.company_name"), 0,2) )."_".substr(time(),4,9).strtoupper(substr(uniqid(), 7,12) ),15,'#',STR_PAD_LEFT);
 
-        $last_pending_bill = PendingBills::where('company_id',$id)->orderBy('bill_code','desc')->first();
-        if ($last_bill == "") 
+
+        $last_bill = Sales::where('bill_code',$gen_code)->first();
+
+        $last_pending_bill = PendingBills::where('bill_code',$gen_code)->first();
+        
+        if ($last_bill != "" || $last_pending_bill != "") 
         {   
-
-           
-            if ($last_pending_bill == "") 
-            {
-                return "00001";
-            }
-            else
-            {
-                return str_pad((int)$last_pending_bill->bill_code+1, 5, '0', STR_PAD_LEFT);
-            }
+          $this->getBillCode($id);
         }
         else
         {
-            if ($last_pending_bill == "") 
-            {
-                return str_pad((int)$last_bill->bill_code+1, 5, '0', STR_PAD_LEFT);
-            }
-            else
-            {
-                return str_pad((int)$last_pending_bill->bill_code+1, 5, '0', STR_PAD_LEFT);
-
-            }
+          return $gen_code;   
         }
     }
 

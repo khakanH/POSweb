@@ -2,6 +2,9 @@
   /*input[type="file"] {
     display: none;
 }*/
+.modal-footer{
+  display: block;
+}
 </style>
 
 <div id="myModal" class="modal fade show " tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-modal="true" aria-hidden="true">
@@ -208,7 +211,7 @@
                       <input type="hidden" id="create_type" name="create_type">
 
 
-                        <div class="row">
+                        <div class="row pos-right-search">
 
                           <div class="form-group col-lg-6">
                             <label for="cust_name" class=" form-control-label">Code:</label>
@@ -223,7 +226,7 @@
                         </div>
 
 
-                        <div class="row">
+                        <div class="row pos-right-search">
                           <div class="form-group col-lg-6">
                             <label for="cust_email" class=" form-control-label">Email:</label>
                             <input type="email" id="cust_email" required="" name="cust_email" class="form-control" placeholder="Enter Customer Email Address">
@@ -233,7 +236,7 @@
                             <input type="text" id="cust_phone" required="" name="cust_phone" class="form-control" placeholder="Enter Customer Phone Number">
                           </div>
                         </div>
-                        <div class="row">
+                        <div class="row pos-right-search">
                            <div class="form-group col-lg-6">
                             <label for="cust_discount" class=" form-control-label">Discount:</label>
                             <input type=number id="cust_discount" name="cust_discount" class="form-control" min="0" max="100" placeholder="Enter Customer Discount">
@@ -246,7 +249,7 @@
                           </div>
                         </div>       
 
-                        <div  class="row" id="cust_cc" style="display: none;">
+                        <div  class="row pos-right-search" id="cust_cc" style="display: none;">
                            <div class="form-group col-lg-6">
                             <label>Credit Card Holder:</label>
                             <input type="text" required="" name="cust_cc_holder" id="cust_cc_holder" class="form-control">
@@ -264,8 +267,8 @@
 
                       </div>
                   <div class="modal-footer" id="CustomerModalFooter">
-                      <button type="button" class="btn btn-danger waves-effect" data-dismiss="modal">Close</button>
-                      <button type="submit" class="btn btn-info ">Save</button>
+                      <button type="submit" class="btn pos-btn ">Save</button>
+                      <button type="button" class="btn pos-btn-secondary" data-dismiss="modal">Close</button>
 
                   </div>
             </form>
@@ -308,11 +311,11 @@
               
 
                       </div>
-                  <div class="modal-footer" id="BillModalFooter">
-                      <button type="button" class="btn btn-danger waves-effect" data-dismiss="modal">Close</button>
-                      <button type="submit" id="bill-payment-btn" class="btn btn-info ">Save</button>
-
-                  </div>
+                
+                  <div class="modal-footer modal-bottom-btns" id="CustomerModalFooter">
+                      <button type="submit" id="bill-payment-btn" class="pos-btn mt-3 mb-3 btn btn-default-pos">Save</button>
+                      <button type="button" class="btn pos-btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
             </form>
 
 
@@ -347,8 +350,8 @@
 
                   </div>
                   <div class="modal-footer" id="ReceiptModalFooter">
-                      <button type="button" class="btn btn-danger waves-effect" data-dismiss="modal">Close</button>
-                      <button type="button" class="btn btn-info" onclick="PrintReceipt()">Print</button>
+                      <button type="button" class="btn pos-btn" onclick="PrintReceipt()">Print</button>
+                      <button type="button" class="btn pos-btn-secondary" data-dismiss="modal">Close</button>
 
                   </div>
             </form>
@@ -519,8 +522,27 @@
                             <label>Company Default Tax %</label>
                             <input type="number" id="company_default_tax" name="company_default_tax" class="form-control" placeholder="Enter Default Tax"></div>
                         </div>
+                              <br>
+
+
+
+                                          <div class="row form-group">
+                                          <div class="col-lg-6">
+                                            <label for="company_logo_output" class="form-control-label">Company Logo:</label><br>
+                                            <img id="company_logo_output" width="130" height="130" style="border-radius: 2%; border: solid gray 1px; object-position: top; object-fit: cover;">&nbsp;&nbsp;&nbsp;<input type="file" onchange="logo_loadFile(event)" onclick="clearImage()"   name="company_logo" id="company_logo" required="" accept="image/*" >
+                                          </div>
+                                           <div class="col-lg-6"> 
+                            <label>Company Type</label>
+                           <select class="form-control" name="company_type" id="company_type">
+                              <option value="" disabled="" selected="">Select Company Type</option>
+                            </select>
+                                        </div>
+                                      </div>
+
                         <br>
-                              <div class="row form-group" style="background: #333; border: solid gray 2px; border-radius: 3px; color: white; padding: 25px;">
+
+
+                                        <div class="row form-group" style="background: #333; border: solid gray 2px; border-radius: 3px; color: white; padding: 25px;">
                                           <div class="col-lg-6">
                                             <label class="form-control-label">FBR Invoice Data:</label>
                                             &nbsp;&nbsp;&nbsp;
@@ -537,16 +559,7 @@
 
                                           </div>
                                         </div>
-
-
-
-                                          <div class="row form-group">
-                                          <div class="col-lg-12">
-                                            <label for="company_logo_output" class="form-control-label">Company Logo:</label><br>
-                                            <img id="company_logo_output" width="130" height="130" style="border-radius: 2%; border: solid gray 1px; object-position: top; object-fit: cover;">&nbsp;&nbsp;&nbsp;<input type="file" onchange="logo_loadFile(event)" onclick="clearImage()"   name="company_logo" id="company_logo" required="" accept="image/*" >
-                                          </div>
-                                        </div>
-
+                                        <br>
 
                                         <div class="row form-group">
                                           <div class="col-lg-12">
@@ -555,7 +568,7 @@
                                             <textarea placeholder="Enter receipt header text" name="company_receipt_header" id="company_receipt_header" class="form-control" rows="4"></textarea>
                                           </div>
                                         </div>
-
+                                        <br>
                                         <div class="row form-group">
                                           <div class="col-lg-12">
                                             <label for="receipt_footer" class="form-control-label">Text in the Receipt Footer:</label>
@@ -1338,6 +1351,9 @@
       company_country: {
         required: true,
       },
+       company_type: {
+        required: true,
+      },
      
       company_pos_id: {
         required: true,
@@ -1360,6 +1376,9 @@
       },
       company_country: {
         required: "Please Select a Company Country",
+      },
+       company_type: {
+        required: "Please Select a Company Type",
       },
       
       company_pos_id: {

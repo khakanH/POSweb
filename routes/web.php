@@ -158,6 +158,10 @@ Route::get('mark-notification-read-user/{id}',[DashboardController::class,'MarkN
 Route::get('get-country-name-list',[AccountController::class,'CountryNameList'])->name('get-country-name-list');
 Route::get('get-company-info/{id}',[AccountController::class,'GetCompanyInfo'])->name('get-company-info');
 
+Route::get('get-company-type-list',[AccountController::class,'CompanyTypeList'])->name('get-company-type-list');
+
+
+
 // $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
 
@@ -274,6 +278,8 @@ Route::middleware(['LoginSession','CheckMemberRoles'])->group(function ()
 	
 	Route::get('get-bill-sale-items/{id}',[BillController::class,'BillSaleItems'])->name('get-bill-sale-items');
 	Route::get('export-sale-csv',[BillController::class,'ExportSaleCSV'])->name('export-sale-csv');
+
+	Route::get('mark-bill-paid/{id}',[BillController::class,'MarkBillPaid'])->name('mark-bill-paid');
 
 	//_________________________________________________________________________________
 

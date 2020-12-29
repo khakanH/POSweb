@@ -2,7 +2,7 @@
 @section('content')
        
 
-     <div class="page-content--bgf7">
+     <div class="tab-content">
 
             <!-- STATISTIC-->
             <section class="statistic statistic2">

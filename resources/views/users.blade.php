@@ -3,7 +3,7 @@
 
     
   
-     <div class="page-content--bgf7">
+     <div class="tab-content">
 
             <!-- STATISTIC-->
             <section class="statistic statistic2">
@@ -46,8 +46,10 @@
 
 
                                 <!-- DATA TABLE-->
-                                <div class="table-responsive m-b-40">
-                                    <table class="table table-borderless table-data3 tx-14">
+                                <div class="table-div">
+                                <div class="table-pad-div">
+                                    
+                                    <table class="table table-data3 tx-14">
                                         <thead>
                                             <tr>
                                                 <th width="5%">S No.</th>
@@ -90,6 +92,7 @@
                                             
                                         </tbody>
                                     </table>
+                                </div>
                                 </div>
                                 <!-- END DATA TABLE-->
 
