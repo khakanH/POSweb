@@ -22,13 +22,19 @@
       margin: auto;
       text-align: left;
     }
+    .company-list-div{
+      border-radius: 10%;
+      background: #e6e8f1;
+      border-color: #e6e8f1;
+    }
   </style>
 
 
     
-<div class="page-content--bgf7">
-  <section class="statistic statistic2">
-    <div class="container">
+
+     <div class="tab-content">
+ <h5 class=""> Settings</h5>
+            <!-- STATISTIC-->
        <center>
             @if(session('success'))
                         <p class="text-success pulse animated">{{ session('success') }}</p>
@@ -40,35 +46,17 @@
             </center>
 
 
-                        <div class="row">
-                          <div class="col-lg-10"></div>
-                          <div class="col-lg-2"><button class="au-btn au-btn-icon au-btn--green au-btn--small" onclick="AddCompany()" type="button">
-                          <i class="zmdi zmdi-plus"></i>Add New Comapany</button></div>
-                        </div>
-                          <br>
-      <div class="row">
-        <div class="col-lg-12">
 
-
-                 
-
-
-          <div class="card">
-              <div class="card-header">
-                <strong>Company</strong>
-                <small> List</small>
-              </div>
-              
-              <div class="card-body card-block">
-                  
-                  <div class="row" id="">
+            <div class="table-div">
+              <div class="table-pad-div">
+                 <div class="row" id="">
                           @foreach($company as $key)
                           <div class="col-lg-3">
-                                <div class="card" style="cursor: pointer;" onclick='EditCompany("<?php echo $key['id'] ?>")'>
+                                <div class="card company-list-div" style="cursor: pointer;" onclick='EditCompany("<?php echo $key['id'] ?>")'>
                                     <div class="card-body">
                                         <div class="mx-auto d-block">
                                             <img style="height: 100px;" class="mx-auto d-block" src="{{env('IMG_URL')}}{{$key['logo']}}" width="100" height="100" alt="{{$key['name']}}">
-                                            <hr>
+                                            <br>
                                             <h5 class="text-sm-center mt-2 mb-1">{{$key['name']}}</h5>
                                         </div>
                                     </div>
@@ -76,25 +64,27 @@
                                 </div>
                             </div>
                           @endforeach
+                          <div class="col-lg-3">
+                            <div class="card company-list-div" style="cursor: pointer;" onclick='AddCompany()'>
+                                    <div class="card-body">
+                                        <div class="mx-auto d-block">
+                                          <center>
+                                           <i class="fa fa-plus" style="font-size: 80px; color:#cdd0dc; padding-top: 38px; padding-bottom: 38px;"></i>
+                                        </center>
+                                        </div>
+                                    </div>
+                                  
+                                </div>
                           </div>
-
-               </div>
-          
-          </div>             
-
-
-                               
-        </div>
-      </div>     
-
-      
+                          </div>
+              </div>
+            </div>
 
 
 
 
 
-    </div>
-  </section>
+
 </div>   
 
 

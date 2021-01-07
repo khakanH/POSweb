@@ -8,9 +8,11 @@
 
 
 
-    <section class="statistic statistic2">
-        <div class="container">
-            <center>
+     <div class="tab-content">
+        <h5 class=""> Products</h5>
+            <!-- STATISTIC-->
+            
+                   <center>
             @if(session('success'))
                         <p class="text-success pulse animated">{{ session('success') }}</p>
                         {{ session()->forget('success') }}
@@ -22,24 +24,24 @@
 
 
                             <div class="row">
-                                <div class="col-lg-3">
+                                <div class="col-lg-4">
 
                                     <div class="form-group">
                                         
-                                    <input class="au-input au-input--full" type="text" name="search_text" id="prod_search_text" required="" style="padding-right: 105px;" placeholder="Enter Product Name or Code" onfocusout="SearchProduct(this.value)">
-                                    <button class="btn btn-primary" style="float: right;position: absolute; margin: 0px 0px 0px -43px; height: 44px;"><i class="fa fa-search"></i></button>
+                                    <input class="form-control inp" type="text" name="search_text" id="prod_search_text" required="" style="" placeholder="Enter Product Name or Code" onfocusout="SearchProduct(this.value)">
+                                   
                                     </div>
                                     
                                 </div>
-                                <div class="col-lg-2"></div>
+                                <div class="col-lg-3"></div>
                                 <div class="col-lg-5">
                                 <form method="post" action="{{route('upload-products-using-csv')}}" enctype="multipart/form-data">
                                         @csrf 
-                                    <button class="au-btn au-btn-icon au-btn--green au-btn--small" onclick="AddProduct()" type="button">
-                                        <i class="zmdi zmdi-plus"></i>Add Product</button>
+                                    <button class="btn btn-default-pos" onclick="AddProduct()" type="button">
+                                        &nbsp;&nbsp;<i class="zmdi zmdi-plus"></i> &nbsp;Add Product &nbsp;&nbsp;</button>
 
-                                           
-                                       <label for="csv_file" class="au-btn au-btn-icon au-btn--blue au-btn--small"><i class="fa fa-file"></i> Select CSV File</label><input id="csv_file" name="csv_file" style="visibility:hidden; width: 15px;" onchange="form.submit()" type="file" accept=".csv">
+                                           &nbsp;&nbsp;&nbsp;
+                                       <label for="csv_file" class="btn btn-default-pos">&nbsp;&nbsp;<i class="fa fa-file"></i> &nbsp;Select CSV File&nbsp;&nbsp;</label><input id="csv_file" name="csv_file" style="visibility:hidden; width: 15px;" onchange="form.submit()" type="file" accept=".csv">
                                         
 
                                    
@@ -51,9 +53,10 @@
 
 
 
-                                <!-- DATA TABLE-->
-                                <div class="table-responsive m-b-40">
-                                    <table class="table table-borderless table-data3">
+                               <div class="table-div">
+                                <div class="table-pad-div">
+                                    
+                                    <table class="table table-1 table-sm">
                                         <thead>
                                             <tr>
                                                 <th>S No.</th>
@@ -78,7 +81,7 @@
                                                 <td>{{$key['cost']}}</td>
                                                 <td>{{$key['tax']}}%</td>
                                                 <td>{{$key['price']}}</td>
-                                                <td><a class="btn btn-primary" href="javascript:void(0)" onclick='EditProduct("<?php echo $key['id']?>","<?php echo $key['product_code']?>","<?php echo $key['name']?>","<?php echo $key['category_id']?>","<?php echo $key['cost']?>","<?php echo $key['tax']?>","<?php echo $key['price']?>","<?php echo $key['description']?>","<?php echo $key['image']?>")'><i class="fa fa-edit tx-15"></i></a>&nbsp;&nbsp;&nbsp;<a class="btn btn-danger" onclick='DeleteProduct("<?php echo $key['id'] ?>")' href="javascript:void(0)"><i class="fa fa-trash tx-15"></i></a>&nbsp;&nbsp;&nbsp;<a href="{{env('IMG_URL')}}{{$key['image']}}" class="btn btn-success"><i class="fa fa-picture-o"></i></a>
+                                                <td><a class="" href="javascript:void(0)" onclick='EditProduct("<?php echo $key['id']?>","<?php echo $key['product_code']?>","<?php echo $key['name']?>","<?php echo $key['category_id']?>","<?php echo $key['cost']?>","<?php echo $key['tax']?>","<?php echo $key['price']?>","<?php echo $key['description']?>","<?php echo $key['image']?>")'><i class="fa fa-edit tx-20"></i></a>&nbsp;&nbsp;&nbsp;<a class="" onclick='DeleteProduct("<?php echo $key['id'] ?>")' href="javascript:void(0)"><i class="fa fa-trash tx-20 text-danger"></i></a>&nbsp;&nbsp;&nbsp;<a href="{{env('IMG_URL')}}{{$key['image']}}" class="" target="_blank"><i class="fa fa-picture-o text-success tx-20"></i></a>
 											</td>
                                             </tr>
                                             @endforeach
@@ -87,10 +90,10 @@
                                         </tbody>
                                     </table>
                                 </div>
+                            </div>
                                 <!-- END DATA TABLE-->
 
                     </div>
-                </section>
            
 
 

@@ -3,7 +3,7 @@
  <div class="col-md-3  side-bar">
             <div class="list-group" id="myList" role="tablist">
                 <div class="mb-3 dashboard-logo active-class">
-                    <a href="#"><span><img src="" alt="">Logo here</span><i class="fa-icon fa fa-plus"></i></a>
+                    <center><a href="#"><span><img src="{{env('IMG_URL')}}icon/Tradvalley-Logo-02.png"  width="100" alt=""></span></a></center>
                 </div>
                 <a class="list-group-item list-group-item-action <?php if (Request::is('dashboard')): ?>
         active

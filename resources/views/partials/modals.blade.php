@@ -72,7 +72,7 @@
 
 
                         
-                        <div class="form-group">
+                        <div class="form-group pos-right-search">
                           <input type="text" id="cate_name" name="cate_name" class="form-control" placeholder="Enter Category Name">
                         </div>
                                 
@@ -81,8 +81,8 @@
 
                       </div>
                   <div class="modal-footer" id="CategoryModalFooter">
-                      <button type="button" class="btn btn-danger waves-effect" data-dismiss="modal">Close</button>
-                      <button type="submit" class="btn btn-info ">Save</button>
+                        <button type="submit" class="btn pos-btn ">Save</button>
+                      <button type="button" class="btn pos-btn-secondary" data-dismiss="modal">Close</button>
 
                   </div>
             </form>
@@ -122,46 +122,53 @@
 
 
                         
-                        <div class="row">
+                        <div class="row pos-right-search">
                           <div class="col-lg-6"> 
-                            <label>Product Code: <i style="font-size: 12px">(Barcode)</i></label>
+                            <label>Item Code: <i style="font-size: 12px">(Barcode)</i></label>
                             <input type="text" id="prod_code" name="prod_code" class="form-control" placeholder="Enter Product Code"></div>
                             <!-- <div class="col-lg-3"> 
                             <label>PCT Code: <i style="font-size: 12px">(optional)</i></label>
                             <input type="text" id="pct_code" name="pct_code" class="form-control" placeholder="Enter PCT Code"  data-toggle="tooltip" title="Only Required For FBR Integration"></div> -->
                           <div class="col-lg-6"> 
-                            <label>Product Name:</label>
+                            <label>Iteem Name:</label>
                             <input type="text" id="prod_name" name="prod_name" class="form-control" placeholder="Enter Product Name"></div>
                         </div>
                         <br>
-                        <div class="row">
+                        <div class="row pos-right-search">
                           <div class="col-lg-6"> 
-                            <label>Product Category:</label>
+                            <label>Category:</label>
                             <select class="form-control" name="prod_cate" id="prod_cate">
                               <option value="" disabled="" selected="">Selecet Category</option>
                             </select>
                           </div>
-                          <div class="col-lg-6"> 
-                            <label>Actual Product Cost: </label>
-                            <input type="number" onkeyup="GetProdPrice()" onchange="GetProdPrice()" onclick="ToNormal()" id="prod_cost" name="prod_cost" class="form-control" placeholder="Enter Product Cost"></div>
+                          
                         </div>
                         <br>
-                        <div class="row">
-                          <div class="col-lg-6"> 
-                            <label>Product Tax: <i style="font-size: 12px">(percentage value)</i></label>
+                        <div class="row pos-right-search">
+                          <div class="col-lg-4"> 
+                            <label>Item Cost: </label>
+                            <input type="number" onkeyup="GetProdPrice()" onchange="GetProdPrice()" onclick="ToNormal()" id="prod_cost" name="prod_cost" class="form-control" placeholder="Enter Product Cost"></div>
+                          <div class="col-lg-4"> 
+                            <label>Item Tax: <i style="font-size: 12px">(percentage value)</i></label>
                             <input type="number" min="0" max="100" onkeyup="GetProdPrice()" onchange="GetProdPrice()" id="prod_tax" name="prod_tax" class="form-control" placeholder="Enter Product Tax"></div>
-                          <div class="col-lg-6"> 
-                            <label>Product Price: <i style="font-size: 12px">(sale price including tax)</i></label>
+                          <div class="col-lg-4"> 
+                            <label>Item Price: <i style="font-size: 12px">(sale price including tax)</i></label>
                             <input type="number" id="prod_price" name="prod_price" class="form-control" placeholder="Enter Product Price" readonly=""></div>
                         </div>
                         <br>
-                        <div class="row">
+                        <div class="row pos-right-search">
+                           <div class="col-lg-12"> 
+                            <label>Product Description:</label>
+                            <textarea class="form-control inp" name="prod_descrip" id="prod_descrip" rows="3" placeholder="Enter Product Description"></textarea></div>
+                        </div>
+                        <br>
+                        <div class="row pos-right-search">
                           <div class="col-lg-6"> 
                             <label>Product Image:</label><br>
-                            <img id="product_image_output" src="{{ env('IMG_URL')}}choose_img.png" width="130" height="130" style="border-radius: 2%; border: solid gray 1px; object-position: top; object-fit: cover;">&nbsp;&nbsp;<input type="file"  name="product_image" id="product_image" onchange="product_loadFile(event)"  accept="image/*" ></div>
-                          <div class="col-lg-6"> 
-                            <label>Product Description:</label>
-                            <textarea class="form-control" name="prod_descrip" id="prod_descrip" rows="5" placeholder="Enter Product Description"></textarea></div>
+                              
+                            <img id="product_image_output" src="{{ env('IMG_URL')}}choose_img.png" width="130" height="130" style="border-radius: 2%; border: solid gray 1px; object-position: top; object-fit: cover;">&nbsp;&nbsp;<input type="file"  name="product_image" id="product_image" onchange="product_loadFile(event)"  accept="image/*" >
+                          </div>
+                         
                         </div>
 
 
@@ -170,8 +177,8 @@
 
                       </div>
                   <div class="modal-footer" id="ProductModalFooter">
-                      <button type="button" class="btn btn-danger waves-effect" data-dismiss="modal">Close</button>
-                      <button type="submit" class="btn btn-info ">Save</button>
+                       <button type="submit" class="btn pos-btn ">Save</button>
+                      <button type="button" class="btn pos-btn-secondary" data-dismiss="modal">Close</button>
 
                   </div>
             </form>
@@ -225,7 +232,7 @@
                           
                         </div>
 
-
+                        <br>
                         <div class="row pos-right-search">
                           <div class="form-group col-lg-6">
                             <label for="cust_email" class=" form-control-label">Email:</label>
@@ -236,6 +243,7 @@
                             <input type="text" id="cust_phone" required="" name="cust_phone" class="form-control" placeholder="Enter Customer Phone Number">
                           </div>
                         </div>
+                        <br>
                         <div class="row pos-right-search">
                            <div class="form-group col-lg-6">
                             <label for="cust_discount" class=" form-control-label">Discount:</label>
@@ -247,7 +255,8 @@
                             <option value="">Select Payment Method</option>
                           </select>
                           </div>
-                        </div>       
+                        </div>   
+                        <br>    
 
                         <div  class="row pos-right-search" id="cust_cc" style="display: none;">
                            <div class="form-group col-lg-6">
@@ -333,9 +342,14 @@
 <!-- Receipt Modal                                         -->
 <!-- ----------------------------------------------------------------------------------------------------- -->
 
-<div id="ReceiptModal" class="modal fade show " tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-modal="true" aria-hidden="true" style="color: black;">
-    <div class="modal-dialog" id="ReceiptModalDialog">
-        <div class="modal-content" id="ReceiptModalContent">
+<div id="ReceiptModal" class="modal fade show " tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-modal="true" aria-hidden="true" style="color: black; ">
+    <div class="modal-dialog" id="ReceiptModalDialog" >
+  <span style="position: absolute; margin-top: -10px; ">
+  @for($i=1; $i <=16; $i++)
+    <i class="fa fa-circle tx-20 tx-white"></i>&nbsp;&nbsp;
+    @endfor
+  </span>
+        <div class="modal-content" id="ReceiptModalContent" style="border: none;">
            
                   <div class="modal-header">
                       <h4 class="modal-title" id="ReceiptModalLabel">Receipt</h4>
@@ -359,6 +373,11 @@
 
         </div>
         <!-- /.modal-content -->
+        <span style="position: absolute; margin-top: -10px; ">
+  @for($i=1; $i <=16; $i++)
+    <i class="fa fa-circle tx-20 tx-white"></i>&nbsp;&nbsp;
+    @endfor
+  </span>
     </div>
     <!-- /.modal-dialog -->
 </div>
@@ -430,10 +449,10 @@
 
                         
                         <div class="form-group">
-                          <input type="text" id="user_name" name="user_name" class="form-control" placeholder="Enter User Name"><br>
-                          <input type="email" id="user_email" name="user_email" class="form-control" placeholder="Enter User Email"><br>
-                          <input type="password" id="user_password" name="user_password" class="form-control" placeholder="Enter User password"><br>
-                          <select class="form-control" name="user_type" id="user_type">
+                          <input type="text" id="user_name" name="user_name" class="form-control inp" placeholder="Enter User Name"><br>
+                          <input type="email" id="user_email" name="user_email" class="form-control inp" placeholder="Enter User Email"><br>
+                          <input type="password" id="user_password" name="user_password" class="form-control inp" placeholder="Enter User password"><br>
+                          <select class="form-control inp" name="user_type" id="user_type">
                           </select>
                         </div>
                                 
@@ -442,8 +461,8 @@
 
                       </div>
                   <div class="modal-footer" id="UserModalFooter">
-                      <button type="button" class="btn btn-danger waves-effect" data-dismiss="modal">Close</button>
-                      <button type="submit" class="btn btn-info ">Save</button>
+                      <button type="submit" class="pos-btn mt-3 mb-3 btn btn-default-poss">Save</button>
+                      <button type="button" class="btn pos-btn-secondary" data-dismiss="modal">Close</button>
 
                   </div>
             </form>
@@ -488,7 +507,7 @@
 
 
                         
-                        <div class="row">
+                        <div class="row pos-right-search">
                           <div class="col-lg-6"> 
                             <label>Compnay Name:</label>
                             <input type="text" id="company_name" name="company_name" class="form-control" placeholder="Enter Company Name"></div>
@@ -500,7 +519,7 @@
                             <input type="text" id="company_phone" name="company_phone" class="form-control" placeholder="Enter Compnay Phone"></div>
                         </div>
                         <br>
-                        <div class="row">
+                        <div class="row pos-right-search">
                           
                           <div class="col-lg-6"> 
                             <label>Compnay Email Address:</label>
@@ -514,7 +533,7 @@
                         </div>
 
                         <br>
-                        <div class="row">
+                        <div class="row pos-right-search">
                           <div class="col-lg-6"> 
                             <label>Company Default Discount %</label>
                             <input type="number" min="0" max="100" id="company_default_discount" name="company_default_discount" class="form-control" placeholder="Enter Default Discount"></div>
@@ -526,10 +545,10 @@
 
 
 
-                                          <div class="row form-group">
+                                          <div class="row form-group pos-right-search">
                                           <div class="col-lg-6">
                                             <label for="company_logo_output" class="form-control-label">Company Logo:</label><br>
-                                            <img id="company_logo_output" width="130" height="130" style="border-radius: 2%; border: solid gray 1px; object-position: top; object-fit: cover;">&nbsp;&nbsp;&nbsp;<input type="file" onchange="logo_loadFile(event)" onclick="clearImage()"   name="company_logo" id="company_logo" required="" accept="image/*" >
+                                            <img id="company_logo_output" width="0" height="0" style="visibility: hidden; border-radius: 2%; border: solid gray 1px; object-position: top; object-fit: cover;">&nbsp;&nbsp;&nbsp;<input type="file" onchange="logo_loadFile(event)" onclick="clearImage()"   name="company_logo" id="company_logo" required="" accept="image/*" >
                                           </div>
                                            <div class="col-lg-6"> 
                             <label>Company Type</label>
@@ -542,7 +561,7 @@
                         <br>
 
 
-                                        <div class="row form-group" style="background: #333; border: solid gray 2px; border-radius: 3px; color: white; padding: 25px;">
+                                        <div class="row form-group pos-right-search" style="background: #333; border: solid gray 2px; border-radius: 3px; color: white; padding: 25px;">
                                           <div class="col-lg-6">
                                             <label class="form-control-label">FBR Invoice Data:</label>
                                             &nbsp;&nbsp;&nbsp;
@@ -561,15 +580,15 @@
                                         </div>
                                         <br>
 
-                                        <div class="row form-group">
+                                        <div class="row form-group pos-right-search">
                                           <div class="col-lg-12">
                                             <label for="receipt_header" class="form-control-label">Text in the Receipt Header:</label>
                                             
-                                            <textarea placeholder="Enter receipt header text" name="company_receipt_header" id="company_receipt_header" class="form-control" rows="4"></textarea>
+                                            <textarea placeholder="Enter receipt header text" name="company_receipt_header" id="company_receipt_header" class="form-control inp" rows="4"></textarea>
                                           </div>
                                         </div>
                                         <br>
-                                        <div class="row form-group">
+                                        <div class="row form-group pos-right-search">
                                           <div class="col-lg-12">
                                             <label for="receipt_footer" class="form-control-label">Text in the Receipt Footer:</label>
                                             <input type="text" id="company_receipt_footer" name="company_receipt_footer" placeholder="Enter receipt footer text" value="" class="form-control">
@@ -584,8 +603,8 @@
 
                       </div>
                   <div class="modal-footer" id="CompanyModalFooter">
-                      <button type="button" class="btn btn-danger waves-effect" data-dismiss="modal">Close</button>
-                      <button type="submit" class="btn btn-info ">Save</button>
+                      <button type="submit" class="pos-btn mt-3 mb-3 btn btn-default-pos">Save</button>
+                      <button type="button" class="btn pos-btn-secondary" data-dismiss="modal">Close</button>
 
                   </div>
             </form>
@@ -632,8 +651,8 @@
                         
                         <div class="row">
                           <div class="col-lg-12"> 
-                            <label>Member Type Name:</label>
-                            <input type="text" id="member_type_name" name="member_type_name" class="form-control" placeholder="Enter Member Type Name"></div>
+                            <label>User Type Name:</label>
+                            <input type="text" id="member_type_name" name="member_type_name" class="form-control inp" placeholder="Enter User Type Name"></div>
                         </div>
                         
 
@@ -642,8 +661,8 @@
 
                       </div>
                   <div class="modal-footer" id="MemberTypeModalFooter">
-                      <button type="button" class="btn btn-danger waves-effect" data-dismiss="modal">Close</button>
-                      <button type="submit" class="btn btn-info ">Save</button>
+                      <button type="submit" class="pos-btn mt-3 mb-3 btn btn-default-pos">Save</button>
+                      <button type="button" class="btn pos-btn-secondary" data-dismiss="modal">Close</button>
 
                   </div>
             </form>

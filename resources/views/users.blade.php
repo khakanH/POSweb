@@ -4,11 +4,9 @@
     
   
      <div class="tab-content">
-
+ <h5 class=""> Users</h5>
             <!-- STATISTIC-->
-            <section class="statistic statistic2">
-                <div class="container">
-
+            
                    <center>
             @if(session('success'))
                         <p class="text-success pulse animated">{{ session('success') }}</p>
@@ -29,16 +27,16 @@
 
                                     <div class="form-group">
                                         
-                                    <input class="au-input au-input--full" type="text" name="search_text" id="user_search_text" required="" style="padding-right: 75px;" placeholder="Enter User Name" onfocusout="SearchUser(this.value)">
-                                    <button class="btn btn-primary" style="float: right;position: absolute; margin: 0px 0px 0px -43px; height: 44px;"><i class="fa fa-search"></i></button>
+                                    <input class="form-control inp" type="text" name="search_text" id="user_search_text" required="" style="" placeholder="Enter User Name" onfocusout="SearchUser(this.value)">
+                                  
                                     </div>
                                     
                                 </div>
                                 <div class="table-data__tool-right">
-                                    <a href="{{route('member-role-list')}}"><button class="au-btn au-btn-icon au-btn--blue au-btn--small"><i class="fa fa-gears"></i>Manage User Roles</button></a>
-                                    <a href="{{route('member-type-list')}}"><button class="au-btn au-btn-icon au-btn--blue au-btn--small"><i class="fa fa-bars"></i>Manage User Type</button></a>
-                                    <button class="au-btn au-btn-icon au-btn--green au-btn--small" onclick="AddUser()">
-                                        <i class="zmdi zmdi-plus"></i>Add User</button>
+                                    <a href="{{route('member-role-list')}}"><button class="btn btn-default-pos">&nbsp;&nbsp;<i class="fa fa-gears"></i> &nbsp;Manage User Roles&nbsp;&nbsp;</button></a>&nbsp;&nbsp;
+                                    <a href="{{route('member-type-list')}}"><button class="btn btn-default-pos">&nbsp;&nbsp;<i class="fa fa-bars"></i> &nbsp;Manage User Type&nbsp;&nbsp;</button></a>&nbsp;&nbsp;
+                                    <button class="btn btn-default-pos" onclick="AddUser()">
+                                        &nbsp;&nbsp;<i class="zmdi zmdi-plus"></i>&nbsp; Add User&nbsp;&nbsp;</button>
                                    
                                 </div>
                             </div>
@@ -49,7 +47,7 @@
                                 <div class="table-div">
                                 <div class="table-pad-div">
                                     
-                                    <table class="table table-data3 tx-14">
+                                    <table class="table table-1 table-sm">
                                         <thead>
                                             <tr>
                                                 <th width="5%">S No.</th>
@@ -69,21 +67,14 @@
                                                 <td>{{isset($key->member_type_name['name'])?$key->member_type_name['name']:"Super Admin"}}</td>
                                                 <td>
                                                   @if($key['is_verified'] == 0)
-                                                  <span class="badge badge-danger">Not Verified!</span>
+                                                  <span class="text-danger">Not Verified!</span>
                                                   @else
-                                                  <span class="badge badge-success">Verified!</span>
+                                                  <span class="text-success">Verified!</span>
                                                   @endif
                                                 </td>
                                                 <td>
                                                   
-                                                  <a data-toggle="tooltip" title="Block/Unblock User" id="status-btn-color<?php echo $key['id']?>" class="<?php if ($key['is_blocked'] == 0): ?>btn btn-danger<?php else: ?>btn btn-success<?php endif ?>" href="javascript:void(0)" onclick='BlockUnblockUser("<?php echo $key['id']?>")'><i id="status-btn-icon<?php echo $key['id']?>"  class="
-                                                    <?php if ($key['is_blocked'] == 0): ?>
-                                                    fa fa-lock tx-15
-                                                    <?php else: ?>
-                                                    fa fa-unlock tx-15
-                                                    <?php endif ?>
-
-                                                    "></i></a>
+                                                  <a data-toggle="tooltip" title="Block/Unblock User" id="status-btn-color<?php echo $key['id']?>"  href="javascript:void(0)" onclick='BlockUnblockUser("<?php echo $key['id']?>")'><i id="status-btn-icon<?php echo $key['id']?>"  class="<?php if ($key['is_blocked'] == 0): ?>fa fa-lock tx-20 text-danger<?php else: ?>fa fa-unlock tx-20 text-success<?php endif ?>"></i></a>
                                                 
                                                 &nbsp;&nbsp;&nbsp;<!-- <a class="btn btn-danger" onclick='DeleteUser("<?php // echo $key['id'] ?>")' href="javascript:void(0)"><i class="fa fa-trash tx-15"></i></a> --></td>
                                             </tr>
@@ -97,8 +88,7 @@
                                 <!-- END DATA TABLE-->
 
 
-                      </div>
-                    </section>
+                     
            
 
         </div>
@@ -247,17 +237,13 @@
                                 else
                                 {
 
-                                  if (document.getElementById("status-btn-color"+id).className == "btn btn-danger") 
+                                  if (document.getElementById("status-btn-icon"+id).className == "fa fa-lock tx-20 text-danger") 
                                   {
-                                    document.getElementById("status-btn-color"+id).className = "btn btn-success";
-                                    document.getElementById("status-btn-icon"+id).className = "fa fa-unlock tx-15";
-                                    
+                                    document.getElementById("status-btn-icon"+id).className = "fa fa-unlock tx-20 text-success";
                                   }
                                   else
                                   {
-                                    document.getElementById("status-btn-color"+id).className = "btn btn-danger";
-                                    document.getElementById("status-btn-icon"+id).className = "fa fa-lock tx-15";
-
+                                    document.getElementById("status-btn-icon"+id).className = "fa fa-lock tx-20 text-danger";
                                   }
 
                                     document.getElementById('toast').style.visibility = "visible";

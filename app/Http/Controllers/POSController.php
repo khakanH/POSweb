@@ -144,7 +144,7 @@ class POSController extends Controller
                                               <div class="card" style="cursor: pointer;" onclick='AddProductToBill("<?php echo $prod['id'] ?>","<?php echo $prod['name'] ?>","<?php echo $prod['price'] ?>")'>
                                     <div class="">
                                         <div class="">
-                                            <img style="height: 100px;" class="rounded-circle mx-auto d-block" src="<?php echo env('IMG_URL') ?><?php echo $prod['image'] ?>" width="100" height="100" alt="<?php echo $prod['name'] ?>">
+                                            <img style="height: 70px; margin: 5px;" class="rounded-circle mx-auto d-block" src="<?php echo env('IMG_URL') ?><?php echo $prod['image'] ?>" width="70" height="70" alt="<?php echo $prod['name'] ?>">
                                             <hr>
                                             <center><span><?php echo $prod['name'] ?></span></center>
                                             <center><span><?php echo $prod['price'] ?>/-</span></center>

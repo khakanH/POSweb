@@ -60,8 +60,11 @@
                                      </div> -->
                                   </div>
                                   <div class="" style="display: flex;  float: none; height: 70px; white-space: nowrap; overflow-x:  auto; overflow-y: hidden; padding-top: 10px;">
+                                    <div class="col-lg-2" style="margin: 5px; min-width: 50px;">
+                                         <button style="width: 100%;" onclick="GetAllProducts()" class="pos-btn btn">All</button>
+                                      </div>
                                      @foreach($category as $cate)
-                                      <div class="col-lg-2" style="margin: 5px;">
+                                      <div class="col-lg-2" style="margin: 5px; min-width: 70px; width: auto;">
                                          <button style="width: 100%;" onclick='GetProductByCategory("{{$cate['id']}}")' class="pos-btn btn">{{$cate['name']}}</button>
                                       </div>
                                      @endforeach
@@ -79,7 +82,7 @@
                                               <div class="card" style="cursor: pointer;" onclick='AddProductToBill("{{$prod['id']}}","{{$prod['name']}}","{{$prod['price']}}")'>
                                     <div class="">
                                         <div class="">
-                                            <img style="height: 100px;" class="rounded-circle mx-auto d-block" src="{{env('IMG_URL')}}{{$prod['image']}}" width="100" height="100" alt="{{$prod['name']}}">
+                                            <img style="height: 70px; margin: 5px;" class="rounded-circle mx-auto d-block" src="{{env('IMG_URL')}}{{$prod['image']}}" width="70" height="70" alt="{{$prod['name']}}">
                                             <hr>
                                             <center><span>{{$prod['name']}}</span></center>
                                             <center><span>{{$prod['price']}}/-</span></center>

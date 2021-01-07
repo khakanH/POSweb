@@ -59,4 +59,88 @@
                                        color-stop(.6,#6c6d70))
 }
   
+
+          .tx-12{
+            font-size: 12px;
+        }
+        .tx-14{
+            font-size: 14px;
+        }
+        .tx-16{
+            font-size: 16px;
+        }
+        .tx-18{
+            font-size: 18px;
+        }
+        .tx-20{
+            font-size: 20px;
+        }
+        .tx-22{
+            font-size: 22px;
+        }
+        .tx-24{
+            font-size: 24px;
+        }
+        .tx-26{
+            font-size: 26px;
+        }
+        .tx-28{
+            font-size: 28px;
+        }
+        .tx-30{
+            font-size: 30px;
+        }
+        .tx-32{
+            font-size: 32px;
+        }
+        .tx-34{
+            font-size: 34px;
+        }
+        .tx-36{
+            font-size: 36px;
+        }
+        .tx-38{
+            font-size: 38px;
+        }
+        .tx-40{
+            font-size: 40px;
+        }
+        .tx-42{
+            font-size: 42px;
+        }
+        .tx-44{
+            font-size: 44px;
+        }
+
+        .tx-success{
+            color: #218f23;
+        }
+        .tx-danger{
+            color: #b81a1a;
+        }
+        .tx-white{
+            color: white;
+        }
+        .v-align-middle{
+        vertical-align: middle;
+        }
+        .tx-center{
+            text-align: center;
+        }
+
+
+        .bg-info{
+            background: #00b5e9;
+        }
+        .bg-warning{
+            background: #ffc107;
+        }
+        .bg-danger{
+            background: #fa4251;
+        }
+        .bg-other{
+            background: #212529;
+        }
+
+
     </style>

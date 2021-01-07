@@ -154,7 +154,7 @@ class ProductController extends Controller
                       <td scope="row"><b><?php echo $count; ?></b></td>
                       <td><?php echo $key['id']?></td>
                       <td><?php echo $key['name']?></td>
-                      <td><a class="btn btn-primary" href="javascript:void(0)" onclick='EditCategory("<?php echo $key['id']?>","<?php echo $key['name']?>")'><i class="fa fa-edit tx-15"></i></a>&nbsp;&nbsp;&nbsp;<a class="btn btn-danger" onclick='DeleteCategory("<?php echo $key['id'] ?>")' href="javascript:void(0)"><i class="fa fa-trash tx-15"></i></a></td>
+                      <td><a class="" href="javascript:void(0)" onclick='EditCategory("<?php echo $key['id']?>","<?php echo $key['name']?>")'><i class="fa fa-edit tx-20"></i></a>&nbsp;&nbsp;&nbsp;<a class="" onclick='DeleteCategory("<?php echo $key['id'] ?>")' href="javascript:void(0)"><i class="fa fa-trash text-danger tx-20"></i></a></td>
                     </tr>
 
                 <?php
@@ -534,7 +534,7 @@ class ProductController extends Controller
                       <td><?php echo $key['cost']?></td>
                       <td><?php echo $key['tax']?>%</td>
                       <td><?php echo $key['price']?></td>
-                      <td><a class="btn btn-primary" href="javascript:void(0)" onclick='EditProduct("<?php echo $key['id']?>","<?php echo $key['product_code']?>","<?php echo $key['name']?>","<?php echo $key['category_id']?>","<?php echo $key['cost']?>","<?php echo $key['tax']?>","<?php echo $key['price']?>","<?php echo $key['description']?>","<?php echo $key['image']?>")'><i class="fa fa-edit tx-15"></i></a>&nbsp;&nbsp;&nbsp;<a class="btn btn-danger" onclick='DeleteProduct("<?php echo $key['id'] ?>")' href="javascript:void(0)"><i class="fa fa-trash tx-15"></i></a>&nbsp;&nbsp;&nbsp;<a href="<?php echo env('IMG_URL').$key['image'] ?>" class="btn btn-success"><i class="fa fa-picture-o"></i></a></td>
+                      <td><a class="" href="javascript:void(0)" onclick='EditProduct("<?php echo $key['id']?>","<?php echo $key['product_code']?>","<?php echo $key['name']?>","<?php echo $key['category_id']?>","<?php echo $key['cost']?>","<?php echo $key['tax']?>","<?php echo $key['price']?>","<?php echo $key['description']?>","<?php echo $key['image']?>")'><i class="fa fa-edit tx-20"></i></a>&nbsp;&nbsp;&nbsp;<a class="" onclick='DeleteProduct("<?php echo $key['id'] ?>")' href="javascript:void(0)"><i class="fa fa-trash tx-20 text-danger"></i></a>&nbsp;&nbsp;&nbsp;<a href="<?php echo env('IMG_URL').$key['image'] ?>" target="_blank" class=""><i class="fa fa-picture-o tx-20 text-success"></i></a></td>
                     </tr>
 
                 <?php

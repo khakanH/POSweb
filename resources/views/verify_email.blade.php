@@ -31,6 +31,10 @@
 
     <!-- Main CSS-->
     <link href="{{asset('css/theme.css')}}" rel="stylesheet" media="all">
+      <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+    <link rel="stylesheet" href="{{asset('assets/css/login-resgister.css?'.time().'')}}">
 
     <style type="text/css">
         input::-webkit-outer-spin-button,
@@ -39,11 +43,7 @@
                margin: 0;
             }
               body { 
-    background: url('{{asset('images/parallax/3.jpg')}}') no-repeat center center fixed;
-    -moz-background-size: cover;
-    -webkit-background-size: cover;
-    -o-background-size: cover;
-    background-size: cover;
+    background: rgba(0,0,0,0.8);
 } 
     </style> 
     
@@ -53,12 +53,7 @@
     <div class="page-wrapper">
             <div class="container">
                 <div class="login-wrap">
-                    <div class="login-content">
-                        <div class="login-logo">
-                            <a href="#">
-                                <img src="{{env('IMG_URL')}}icon/logo.png" alt="CoolAdmin">
-                            </a>
-                        </div>
+                    <div class="login-content" style="border-radius: 20px;">
 
                         <center>
 
@@ -88,12 +83,11 @@
                             -->
                             <input type="hidden" name="verification_type" id="verification_type" value="{{ $verification_type }}">
 
-                            <input type="number" maxlength="1" autofocus="" value="" pattern="/^-?\d+\.?\d*$/" id="pin1" name="pin1" class="form-control pin" onKeyPress="if(this.value.length==1) return false;" placeholder="X" style="width: 60px; height: 60px; text-align: center; font-size: 20px;" onfocus="ToNormal()">&nbsp;<input type="number" maxlength="1" value="" pattern="/^-?\d+\.?\d*$/" id="pin2" name="pin2" class="form-control pin" onKeyPress="if(this.value.length==1) return false;" placeholder="X" style="width: 60px; height: 60px; text-align: center; font-size: 20px;" onfocus="ToNormal()">&nbsp;<input type="number" maxlength="1" value="" pattern="/^-?\d+\.?\d*$/" id="pin3" name="pin3" class="form-control pin" onKeyPress="if(this.value.length==1) return false;" placeholder="X" style="width: 60px; height: 60px; text-align: center; font-size: 20px;" onfocus="ToNormal()">&nbsp;<input type="number" maxlength="1" value="" pattern="/^-?\d+\.?\d*$/" id="pin4" name="pin4" class="form-control pin" onKeyPress="if(this.value.length==1) return false;" placeholder="X" style="width: 60px; height: 60px; text-align: center; font-size: 20px;" onfocus="ToNormal()">
+                            <input type="number" maxlength="1" autofocus="" value="" pattern="/^-?\d+\.?\d*$/" id="pin1" name="pin1" class="form-control inp pin" onKeyPress="if(this.value.length==1) return false;" placeholder="X" style="width: 60px; height: 60px; text-align: center; font-size: 20px;" onfocus="ToNormal()">&nbsp;<input type="number" maxlength="1" value="" pattern="/^-?\d+\.?\d*$/" id="pin2" name="pin2" class="form-control inp pin" onKeyPress="if(this.value.length==1) return false;" placeholder="X" style="width: 60px; height: 60px; text-align: center; font-size: 20px;" onfocus="ToNormal()">&nbsp;<input type="number" maxlength="1" value="" pattern="/^-?\d+\.?\d*$/" id="pin3" name="pin3" class="form-control inp pin" onKeyPress="if(this.value.length==1) return false;" placeholder="X" style="width: 60px; height: 60px; text-align: center; font-size: 20px;" onfocus="ToNormal()">&nbsp;<input type="number" maxlength="1" value="" pattern="/^-?\d+\.?\d*$/" id="pin4" name="pin4" class="form-control inp pin" onKeyPress="if(this.value.length==1) return false;" placeholder="X" style="width: 60px; height: 60px; text-align: center; font-size: 20px;" onfocus="ToNormal()">
                             </div>
                             <br><br>
                             <p id="base-timer-label"></p>
-                            <br>
-                            <button class="btn btn-block btn-success" onclick="VerifyNumber()" type="button" style="display: inline-block; width: 69%; text-align: center;">Confirm</button>
+                            <button class="btn btn-default-pos" onclick="VerifyNumber()" type="button" style="display: inline-block; width: 69%; text-align: center;">Confirm</button>
                         </center>
                 </div>
         </div>

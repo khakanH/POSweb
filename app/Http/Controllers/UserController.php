@@ -158,20 +158,13 @@ class UserController extends Controller
                       <td><?php echo isset($key->member_type_name['name'])?$key->member_type_name['name']:"Super Admin"?></td>
                       <td>
                         <?php if ($key['is_verified'] == 0):?>
-                            <span class="badge badge-danger">Not Verified!</span>
+                            <span class="text-danger">Not Verified!</span>
                         <?php else:  ?>
-                            <span class="badge badge-success">Verified!</span>
+                            <span class="text-success">Verified!</span>
                         <?php endif; ?>
                           
                       </td>
-                      <td><a data-toggle="tooltip" title="Block/Unblock User" id="status-btn-color<?php echo $key['id']?>" class="<?php if ($key['is_blocked'] == 0): ?>btn btn-danger<?php else: ?>btn btn-success<?php endif ?>" href="javascript:void(0)" onclick='BlockUnblockUser("<?php echo $key['id']?>")'><i id="status-btn-icon<?php echo $key['id']?>"  class="
-                                                    <?php if ($key['is_blocked'] == 0): ?>
-                                                    fa fa-lock tx-15
-                                                    <?php else: ?>
-                                                    fa fa-unlock tx-15
-                                                    <?php endif ?>
-
-                                                    "></i></a>&nbsp;&nbsp;&nbsp;<!-- <a class="btn btn-danger" onclick='DeleteUser("<?php // echo $key['id'] ?>")' href="javascript:void(0)"><i class="fa fa-trash tx-15"></i></a> --></td>
+                      <td><a data-toggle="tooltip" title="Block/Unblock User" id="status-btn-color<?php echo $key['id']?>" href="javascript:void(0)" onclick='BlockUnblockUser("<?php echo $key['id']?>")'><i id="status-btn-icon<?php echo $key['id']?>" class="<?php if ($key['is_blocked'] == 0): ?>fa fa-lock tx-20 text-danger<?php else: ?>fa fa-unlock tx-20 text-success<?php endif ?>"></i></a>&nbsp;&nbsp;&nbsp;<!-- <a class="btn btn-danger" onclick='DeleteUser("<?php // echo $key['id'] ?>")' href="javascript:void(0)"><i class="fa fa-trash tx-15"></i></a> --></td>
                     </tr>
 
                 <?php
@@ -404,7 +397,7 @@ class UserController extends Controller
                                                         </label>
                                                     </td>
                                                     <td class="tx-center">
-                                                         <a class="btn btn-primary" href="javascript:void(0)" onclick='EditEMemberType("<?php echo $key['id']?>","<?php echo $key['name']?>")'><i class="fa fa-edit tx-15"></i></a>&nbsp;&nbsp;&nbsp;<a class="btn btn-danger" onclick='DeleteMemberType("<?php echo $key['id'] ?>")' href="javascript:void(0)"><i class="fa fa-trash tx-15"></i></a>
+                                                         <a class="" href="javascript:void(0)" onclick='EditEMemberType("<?php echo $key['id']?>","<?php echo $key['name']?>")'><i class="fa fa-edit text-primary tx-20"></i></a>&nbsp;&nbsp;&nbsp;<a class="" onclick='DeleteMemberType("<?php echo $key['id'] ?>")' href="javascript:void(0)"><i class="fa fa-trash text-danger tx-20"></i></a>
                                                     </td>                        
 
                     </tr>

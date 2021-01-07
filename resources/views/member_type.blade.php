@@ -1,13 +1,8 @@
 @extends('layouts.app')
 @section('content')
        
-
-     <div class="tab-content">
-
-            <!-- STATISTIC-->
-            <section class="statistic statistic2">
-                <div class="container">
-                    
+<div class="tab-content">
+ <h5 class=""> Users Types</h5>
                    <center>
             @if(session('success'))
                         <p class="text-success pulse animated">{{ session('success') }}</p>
@@ -22,23 +17,24 @@
 
                 <div class="form-group">
                                         
-                    <input class="au-input au-input--full" type="text" name="search_text" id="member_type_search_text" required="" style="padding-right: 105px;" placeholder="Enter Member Type Name" onfocusout="SearchMemberType(this.value)">
-                    <button class="btn btn-primary" style="float: right;position: absolute; margin: 0px 0px 0px -43px; height: 44px;"><i class="fa fa-search"></i></button>
+                    <input class="form-control inp" type="text" name="search_text" id="member_type_search_text" required="" style="" placeholder="Enter User Type Name" onfocusout="SearchMemberType(this.value)">
+                    
                 </div>
                                     
             </div>
             
             <div class="table-data__tool-right">
-                <button class="au-btn au-btn-icon au-btn--green au-btn--small" onclick="AddMemberType()" type="button"><i class="zmdi zmdi-plus"></i>Add User Type</button>
+                <button class="btn btn-default-pos" onclick="AddMemberType()" type="button">&nbsp;&nbsp;<i class="zmdi zmdi-plus"></i> &nbsp;Add User Type&nbsp;&nbsp;</button>
                                    
             </div>
         </div>
 
 
 
-        <div class="user-data">
+       <div class="table-div">
+                                <div class="table-pad-div">
                   
-                                        <table class="table table-striped">
+                                        <table class="table table-1 table-sm">
                                             <thead>
                                                 <tr>
                                                     <!-- <td width="2%">
@@ -75,7 +71,7 @@
                                                         </label>
                                                     </td>
                                                     <td class="tx-center">
-                                                         <a class="btn btn-primary" href="javascript:void(0)" onclick='EditEMemberType("<?php echo $key['id']?>","<?php echo $key['name']?>")'><i class="fa fa-edit tx-15"></i></a>&nbsp;&nbsp;&nbsp;<a class="btn btn-danger" onclick='DeleteMemberType("<?php echo $key['id'] ?>")' href="javascript:void(0)"><i class="fa fa-trash tx-15"></i></a>
+                                                         <a class="" href="javascript:void(0)" onclick='EditEMemberType("<?php echo $key['id']?>","<?php echo $key['name']?>")'><i class="fa fa-edit tx-20 text-primary"></i></a>&nbsp;&nbsp;&nbsp;<a class=" onclick='DeleteMemberType("<?php echo $key['id'] ?>")' href="javascript:void(0)"><i class="fa fa-trash tx-20 text-danger"></i></a>
                                                     </td>
 
                                                 </tr>
@@ -84,14 +80,12 @@
                                         </table>
 
         </div>
-
+</div>
 
 <br>
 
 
     
-    </div>
-  </section>
 </div>
 
 <script type="text/javascript">
@@ -101,7 +95,7 @@
         document.getElementById('member_type_name').value = "";
         document.getElementById('member_type_id').value = "";
         $('#MemberTypeModal').modal('show');
-        $('#MemberTypeModalLabel').html('Add Member Type');
+        $('#MemberTypeModalLabel').html('Add User Type');
 
         document.getElementById('MemberTypeModal').style.backgroundColor="rgba(0,0,0,0.8)";
         document.getElementById('MemberTypeModalDialog').style.paddingTop="0px";
@@ -116,7 +110,7 @@
 
 
         $('#MemberTypeModal').modal('show');
-        $('#MemberTypeModalLabel').html('Edit Member Type');
+        $('#MemberTypeModalLabel').html('Edit User Type');
 
         document.getElementById('MemberTypeModal').style.backgroundColor="rgba(0,0,0,0.8)";
         document.getElementById('MemberTypeModalDialog').style.paddingTop="0px";

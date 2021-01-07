@@ -48,7 +48,7 @@
                       <label for="exampleInputPassword1" class="form-label">Password</label><br>
                       <input type="password" class="form-control inp" value="{{old('password')}}" id="password" name="password" required>
                     </div>
-                    <div><a href="#" id="forgot-password">Forgotten Password?</a></div>
+                    <div><a href="#" id="forgot-password" onclick="ForgotPassword()">Forgotten Password?</a></div>
                     
                     <button type="submit" class="btn btn-primary sub-btn" id="login-btn">Sign In</button>
                     <p class="already-acc">Don't have an account? <a href="#login-box" class="signup">Register</a> now</p>
@@ -264,7 +264,64 @@
   });
 });
 
+function ForgotPassword()
+    {
+        if (document.getElementById('email').value.trim() == "" ) 
+        {
+            document.getElementById("email").style.border="solid red 2px";
+        }
+        else
+        {     
+                                 $("body").fadeOut();
 
+                        var email  = document.getElementById('email').value.trim();
+                        $.ajax({
+                        type: "POST",
+                        url : "{{ env('APP_URL')}}send-verification-code",
+
+                        data: { 
+                                'email'  : email,
+                                "_token" : "{{csrf_token()}}" },
+                        success: function(data) {
+                            
+                            get_status = data['status'];
+                            get_msg    = data['msg'];
+
+                            if (get_status == "0") 
+                            {
+                                 $("body").fadeIn();
+                                //failed
+                                 document.getElementById('toast').style.visibility = "visible";
+                                document.getElementById('toast').className = "alert alert-danger alert-rounded fadeIn animated";
+                                document.getElementById('toastMsg').innerHTML = get_msg;
+
+
+                                 setTimeout(function() {
+                                document.getElementById('toast').className = "alert alert-danger alert-rounded fadeOut animated";
+
+                            }, 5000);
+
+                            }
+                            else
+                            {
+                                //success
+                                window.location.href = "{{ env('APP_URL')}}forgot-password/"+email;
+
+
+                            }
+
+
+
+
+                        },
+                        error: function(jqXHR, textStatus, errorThrown) {
+                            alert('Exception:' + errorThrown);
+                        }
+                    });
+
+
+        }
+    }
 
     </script>
 </body>

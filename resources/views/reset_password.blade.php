@@ -31,7 +31,10 @@
 
     <!-- Main CSS-->
     <link href="{{asset('css/theme.css')}}" rel="stylesheet" media="all">
-
+ <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+    <link rel="stylesheet" href="{{asset('assets/css/login-resgister.css?'.time().'')}}">
     <style type="text/css">
         input::-webkit-outer-spin-button,
         input::-webkit-inner-spin-button {
@@ -39,11 +42,7 @@
                margin: 0;
             }
               body { 
-    background: url('{{asset('images/parallax/3.jpg')}}') no-repeat center center fixed;
-    -moz-background-size: cover;
-    -webkit-background-size: cover;
-    -o-background-size: cover;
-    background-size: cover;
+    background: rgba(0,0,0,0.8);
 } 
     </style> 
     
@@ -53,12 +52,8 @@
     <div class="page-wrapper">
             <div class="container">
                 <div class="login-wrap">
-                    <div class="login-content">
-                        <div class="login-logo">
-                            <a href="#">
-                                <img src="{{env('IMG_URL')}}icon/logo.png" alt="CoolAdmin">
-                            </a>
-                        </div>
+                    <div class="login-content" style="border-radius: 20px;">
+                       
 
                         <center>
 
@@ -86,16 +81,16 @@
 
                         <div class="form-group">
                         <i id="pass-eye" style="font-size: 18px;  z-index: 1; display: flex; position: absolute; margin: 12px 0px 0px 12px; cursor: pointer;" class="fa fa-eye" onclick="ShowPassword('new_password','pass-eye')"></i>
-                        <input type="password" style="padding-left: 45px;" class="form-control" name="new_password" id="new_password" placeholder="Enter New Password" autocomplete="off">
+                        <input type="password" style="padding-left: 45px;" class="form-control inp" name="new_password" id="new_password" placeholder="Enter New Password" autocomplete="off">
                       </div>
                        <div class="form-group">
                         <i id="c_pass-eye" style="font-size: 18px;  z-index: 1; display: flex; position: absolute; margin: 12px 0px 0px 12px; cursor: pointer;" class="fa fa-eye" onclick="ShowPassword('confirm_new_password','c_pass-eye')"></i>
-                        <input type="password" style="padding-left: 45px;" class="form-control" name="confirm_new_password" id="confirm_new_password" placeholder="Confirm New password" autocomplete="off">
+                        <input type="password" style="padding-left: 45px;" class="form-control inp" name="confirm_new_password" id="confirm_new_password" placeholder="Confirm New password" autocomplete="off">
                       </div>
 
                         <br>
                             
-                        <button class="btn btn-block btn-success" type="submit" style="display: inline-block; width: 100%; text-align: center;">Confirm</button>
+                        <button class="btn btn-default-pos" type="submit" style="display: inline-block; width: 100%; text-align: center;">Confirm</button>
                         
                         </form>   
 

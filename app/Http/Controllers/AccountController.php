@@ -161,8 +161,8 @@ class AccountController extends Controller
         try
         {
             $input = $request->all();
-            // $code = 1234;
-            $code = rand(1111,9999);
+            $code = 1234;
+            // $code = rand(1111,9999);
             
             $get_account = $this->member_model->where('email',strtolower(trim($input['email'])))->first();
 
@@ -182,7 +182,7 @@ class AccountController extends Controller
                 $username = empty($get_account->username)?"0":$get_account->username;
 
                 $text_notes = "Account Verification.";
-                $this->SendMailVerification($username,$code,$get_account->email,$text_notes);
+                // $this->SendMailVerification($username,$code,$get_account->email,$text_notes);
                 // $msg = "Your Dazaran Verification Code is";
                 // $this->TwilioSendSMS($input['phone'],$msg,$code);
                     return array("status"=>"1","msg"=>"Verification Code Successfully Send to your Email Address");
@@ -343,12 +343,12 @@ class AccountController extends Controller
                 
                 if ($check_account->is_verified == 0) 
                 {
-                    $code = rand(1111,9999);
-                    // $code = 1234;
+                    // $code = rand(1111,9999);
+                    $code = 1234;
                     $username = empty($check_account->username)?"0":$check_account->username;
 
                     $text_notes = "Account Verification.";
-                    $this->SendMailVerification($username,$code,$check_account->email,$text_notes);
+                    // $this->SendMailVerification($username,$code,$check_account->email,$text_notes);
                                    
                     $this->member_model->where('id',$check_account->id)->update(array('verification_code'=>$code));
 
@@ -876,7 +876,7 @@ class AccountController extends Controller
             ?>
                         <input type="hidden" id="company_id" name="company_id" value="<?php echo $id; ?>">
 
-                                        <div class="row form-group">
+                                        <div class="row form-group pos-right-search">
                                           <div class="col-lg-6">
                                             <label for="name" class=" form-control-label">Company Name:</label>
                                             <input type="text" id="company_name" name="company_name" placeholder="Enter your company name" value="<?php echo $company->name; ?>" class="form-control">
@@ -888,7 +888,7 @@ class AccountController extends Controller
                                         </div>
                                         <br>
 
-                                        <div class="row form-group">
+                                        <div class="row form-group pos-right-search">
                                           <div class="col-lg-6">
                                             <label for="email" class=" form-control-label">Company Email:</label>
                                             <input type="email" id="company_email" name="company_email" placeholder="Enter your company email address" value="<?php echo $company->email; ?>" class="form-control">
@@ -906,7 +906,7 @@ class AccountController extends Controller
                                           </div>
                                         </div>
                                         <br>
-                                        <div class="row form-group">
+                                        <div class="row form-group pos-right-search">
                                           <div class="col-lg-6">
                                             <label for="discount" class=" form-control-label">Default Discount %</label>
                                             <input type="number" id="company_default_discount" name="company_default_discount" placeholder="Enter your company default discount" value="<?php echo $company->default_discount; ?>" min="0" max="100" class="form-control">
@@ -919,10 +919,10 @@ class AccountController extends Controller
                                         <br>
                                  
 
-                                        <div class="row form-group">
+                                        <div class="row form-group pos-right-search">
                                           <div class="col-lg-6">
                                             <label for="company_logo_output" class="form-control-label">Company Logo:</label><br>
-                                            <img id="company_logo_output" src="<?php echo  env('IMG_URL'); ?><?php echo $company->logo; ?>" width="130" height="130" style="border-radius: 2%; border: solid gray 1px; object-position: top; object-fit: cover;">&nbsp;&nbsp;&nbsp;<input type="file" onchange="logo_loadFile(event)" onclick="clearImage()"   name="company_logo" id="company_logo" accept="image/*" >
+                                            <img id="company_logo_output" src="<?php echo  env('IMG_URL'); ?><?php echo $company->logo; ?>" width="0" height="0" style="visibility: hidden; border-radius: 2%; border: solid gray 1px; object-position: top; object-fit: cover;">&nbsp;&nbsp;&nbsp;<input type="file" onchange="logo_loadFile(event)" onclick="clearImage()"   name="company_logo" id="company_logo" accept="image/*" >
                                           </div>
                                             <div class="col-lg-6">
                                             <label for="company_type" class=" form-control-label">Company Type:</label>
@@ -939,7 +939,7 @@ class AccountController extends Controller
                                         
                                         <br>
 
-                                               <div class="row form-group" style="background: #333; border: solid gray 2px; border-radius: 3px; color: white; padding: 25px;">
+                                               <div class="row form-group pos-right-search" style="background: #333; border: solid gray 2px; border-radius: 3px; color: white; padding: 25px;">
                                           <div class="col-lg-6">
                                             <label class="form-control-label">FBR Invoice Data:</label>
                                             &nbsp;&nbsp;&nbsp;
@@ -968,19 +968,19 @@ class AccountController extends Controller
 
                                         <br>
 
-                                        <div class="row form-group">
+                                        <div class="row form-group pos-right-search">
                                           <div class="col-lg-12">
                                             <label for="receipt_header" class="form-control-label">Text in the Receipt Header:</label>
                                             <!-- <div id="editor">
                                             <div id='edit' style="margin-top: 10px;"><p id="receipt_header">{!! $company->receipt_header !!}</p>
                                             </div>
                                             </div> -->
-                                            <textarea id="company_receipt_header" placeholder="Enter receipt header text" name="company_receipt_header" class="form-control" rows="4"><?php echo $company->receipt_header; ?></textarea>
+                                            <textarea id="company_receipt_header" placeholder="Enter receipt header text" name="company_receipt_header" class="form-control inp" rows="4"><?php echo $company->receipt_header; ?></textarea>
                                           </div>
                                         </div>
                                         <br>
 
-                                        <div class="row form-group">
+                                        <div class="row form-group pos-right-search">
                                           <div class="col-lg-12">
                                             <label for="receipt_footer" class="form-control-label">Text in the Receipt Footer:</label>
                                             <input type="text" id="company_receipt_footer" name="company_receipt_footer" placeholder="Enter receipt footer text" value="<?php echo $company->receipt_footer; ?>" class="form-control">

@@ -69,6 +69,7 @@ body{
     border: none;
     background-color: rgba(230, 232, 241, 1);
   }
+ 
  .inp:focus {
     outline: none; 
     border: 0; 

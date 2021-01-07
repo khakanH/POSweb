@@ -64,14 +64,14 @@
 
           </form>
       </div>
-
+      <br>
 
       <hr>
                      
 
       <div class="row">
         <div class="col-lg-6 pad-20-div" style="border-right: solid lightgray 1px;">
-            
+            <br>
 
 
               <strong class="card-title">Change Email</strong>
@@ -109,7 +109,7 @@
        
       </div>
       <div class="col-lg-6 pad-20-div">
-        
+          <br>
               <strong class="card-title">Change Password</strong>
              
                <form name="changePasswordForm" method="post" enctype="multipart/form-data" id="passForm">

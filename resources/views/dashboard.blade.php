@@ -8,7 +8,24 @@
                 <div class="tab-pane active" id="dashboard" role="tabpanel">
                     <div class="heading-calender">
                         <h4>Dashboard</h4>
-                        <h4 class="calender">Calender</h4>
+                        <div class="calender"> <div class="btn-group">
+                                                <button type="button" class="btn btn-default-pos dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                                   <i class="fa fa-calendar"></i> &nbsp;&nbsp;Today &nbsp;&nbsp;&nbsp;
+                                                </button>
+                                                <div class="dropdown-menu" style="margin-right: 20px;">
+                                                 <div class="pos-right-search">
+                                                     
+                                                    <label>From</label>
+                                                    <input type="date" name="from_date" max="{{date('Y-m-d')}}" onclick="ToNormal()" id="from_date" class="form-control" name="">
+                                                    <label>To</label>
+                                                    <input type="date" name="to_date" max="{{date('Y-m-d')}}" onclick="ToNormal()" id="to_date" class="form-control" name="">
+                                                    <br>
+                                                    <center>
+                                                    <input onclick="FilterSale()" readonly="" value="Apply" class="btn pos-btn " style="width: 80%; background-color: rgba(57, 63, 151, 1); ">
+                                                    </center>
+                                                 </div>
+                                                </div>
+                                            </div></div>
                     </div>
                     <div class="table-div ">
                        <div class="revenue-head"> <h3 >Revenue</h3></div>

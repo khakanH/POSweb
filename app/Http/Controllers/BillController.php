@@ -18,7 +18,7 @@ use App\Models\Sales;
 use App\Models\SalesItems;
 
 
-
+use File;
 
 class BillController extends Controller
 {
@@ -94,7 +94,7 @@ class BillController extends Controller
             if (count($get_sale_list)==0) 
             {
                 ?>
-                <tr><td colspan="9" class="text-center tx-18">No Sale Found</td></tr>
+                <tr><td colspan=11 class="text-center tx-18">No Sale Found</td></tr>
                 <?php
             }
             else
@@ -123,7 +123,7 @@ class BillController extends Controller
 
                                                 </td>
                       <td><?php echo date("d-M-Y",strtotime($key['created_at']))?></td>
-                      <td class="text-center"><a class="btn btn-primary" href="javascript:void(0)" onclick='ViewSaleItem("<?php echo $key['id']?>","<?php echo $key['bill_code']?>")'><i class="fa fa-eye tx-15"></i></a>&nbsp;&nbsp;&nbsp;<!-- <a class="btn btn-danger" onclick='DeleteSale("<?php //echo $key['id'] ?>")' href="javascript:void(0)"><i class="fa fa-trash tx-15"></i></a> --></td>
+                      <td class="text-center"><a class="" href="javascript:void(0)" onclick='ViewSaleItem("<?php echo $key['id']?>","<?php echo $key['bill_code']?>")'><i class="fa fa-eye tx-20"></i></a>&nbsp;&nbsp;&nbsp;<!-- <a class="btn btn-danger" onclick='DeleteSale("<?php //echo $key['id'] ?>")' href="javascript:void(0)"><i class="fa fa-trash tx-15"></i></a> --></td>
                     </tr>
 
                 <?php
@@ -646,7 +646,7 @@ class BillController extends Controller
                     $response = Http::withToken('1298b5eb-b252-3d97-8622-a4a69d5bf818')->post('https://gw.fbr.gov.pk/imsp/v1/api/Live/PostData',[
     
                                 "InvoiceNumber"      => "",
-                                "POSID"              => (int)"",
+                                "POSID"              => (int)$company->pos_id,
                                 "USIN"               => (int)"",
                                 "DateTime"           => date("Y-m-d H:i:s"),
                                 "BuyerNTN"           => "",
@@ -677,7 +677,7 @@ class BillController extends Controller
                     else
                     {
                         $status = "2";
-                        $msg = "Sale Added but ".$response['Response'];
+                        $msg = "Sale Added but ".$response['Response']." | Code: ".$response['Code'];
                     }
                 }
                 else
@@ -757,8 +757,7 @@ class BillController extends Controller
                     "Expires" => "0"
                   );
 
-
-             return response()->download($fileName, $fileName,$headers);
+             return response()->download($fileName, $fileName,$headers)->deleteFileAfterSend(true);
              // return redirect()->route('sales')->with('success','File Exported Successfully');
         } 
         catch (Exception $e) 
@@ -803,7 +802,7 @@ class BillController extends Controller
                 $get_bill_item = SalesItems::where('sale_id',$get_bill->id)->where('company_id',$company_id)->get();
                 ?>
                     <center>
-                        <img src="<?php echo env('IMG_URL').$company->logo; ?>" height="100" width="100">
+                        <img style="border-radius: 50%; width: 100px; height: 100px;" src="<?php echo env('IMG_URL').$company->logo; ?>" height="100" width="100">
                         <br>
                         <br>
                         <h4><?php echo $company->name; ?></h4>

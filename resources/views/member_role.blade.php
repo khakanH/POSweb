@@ -3,10 +3,7 @@
        
 
  <div class="tab-content">
-
-            <!-- STATISTIC-->
-            <section class="statistic statistic2">
-                <div class="container">
+ <h5 class=""> Users Roles</h5>
 
 
                    <center>
@@ -34,17 +31,16 @@
             </div>
             
         </div>
-        <br>
-
         <form method="post" name="memberRolesForm" id="memberRolesForm">
         @csrf
 
-      <div class="user-data">
-        
+       <div class="table-div">
+                                <div class="table-pad-div">
+                  
 
                                         <table class="table table-striped">
                                             <thead>
-                                                <tr>
+                                                <tr style="background-color: #3a3e97; color: #ffffff;font-size: 14px; font-weight: 600;">
                                                     <!-- <td width="2%">
                                                         <label class="au-checkbox">
                                                             <input type="checkbox">
@@ -74,6 +70,7 @@
                                         </table>
 
         </div>
+    </div>
                                         <br>
                                         <button class="btn btn-default-pos" style="float: right; width: 20%;" type="submit">Save</button>
                                         <br>
@@ -87,8 +84,6 @@
 
     
     </div>
-  </section>
-</div>
 
 
 <script type="text/javascript">

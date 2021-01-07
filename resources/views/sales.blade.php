@@ -2,11 +2,8 @@
 @section('content')
 
     
-  
-     <div class="page-content--bgf7">
-            <section class="statistic statistic2">
-                <div class="container">
-                   
+  <div class="tab-content">
+ <h5 class=""> Users</h5>
        
             <center>
             @if(session('success'))
@@ -21,28 +18,43 @@
           </center>
                                     
                                     <div class="row" style="margin: 0px 0px 0px -2px;">
-                                        <div class="col-lg-4 m-b-10"> <input class="au-input au-input--full" type="text" name="search_text" id="sale_search_text" required="" style="padding-right: 75px;" placeholder="Enter Sale Code" onfocusout="SearchSale(this.value)">
-                                    <button class="btn btn-primary" style="float: right;position: absolute; margin: 0px 0px 0px -43px; height: 44px;"><i class="fa fa-search"></i></button></div>
-                                        <div class="col-lg-3 m-b-10"><input style="height: 44px;" type="date" name="from_date" max="{{date('Y-m-d')}}" onfocus="ToNormal()" id="from_date" class="form-control"> </div>
-                                        <div class="col-lg-3 m-b-10"><input style="height: 44px;" type="date" name="to_date" max="{{date('Y-m-d')}}" onfocus="ToNormal()" id="to_date" class="form-control"> </div>
-                                        <div class="col-lg-1 text-center m-b-10">
-                                            <button class="btn btn-primary" onclick="FilterSale()" style="width: 100%; height: 44px;">Filter</button>
+                                        <div class="col-lg-3 m-b-10"> <input class="form-control inp" type="text" name="search_text" id="sale_search_text" required="" style="" placeholder="Enter Sale Code" onfocusout="SearchSale(this.value)">
+                                    </div>
+                                        <div class="col-lg-2 m-b-10"></div>
+                                        <div class="col-lg-3 m-b-10"></div>
+                                        <div class="col-lg-2 text-center m-b-10">
+                                            <a style="width: 100%;" href="{{route('export-sale-csv')}}" target="_blank"><button style="width: 100%; height: 44px; font-size: 15px;" class="btn btn-default-pos" >Export csv</button></a>
                                         </div>
-                                        <div class="col-lg-1 text-center m-b-10">
-                                            <a style="width: 100%;" href="{{route('export-sale-csv')}}" target="_blank"><button style="width: 100%; height: 44px; font-size: 15px;" class="btn btn-success" >Export csv</button></a>
+                                        <div class="col-lg-2 text-center m-b-10">
+                                           
+                                           <div class="btn-group">
+                                                <button type="button" class="btn btn-default-pos dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                                   <i class="fa fa-calendar"></i> &nbsp;&nbsp;Today &nbsp;&nbsp;&nbsp;
+                                                </button>
+                                                <div class="dropdown-menu" style="margin-right: 10px;">
+                                                 <div class="pos-right-search">
+                                                     
+                                                    <label>From</label>
+                                                    <input type="date" name="from_date" max="{{date('Y-m-d')}}" onclick="ToNormal()" id="from_date" class="form-control" name="">
+                                                    <label>To</label>
+                                                    <input type="date" name="to_date" max="{{date('Y-m-d')}}" onclick="ToNormal()" id="to_date" class="form-control" name="">
+                                                    <br>
+                                                    <center>
+                                                    <input onclick="FilterSale()" readonly="" value="Apply" class="btn pos-btn " style="width: 80%; background-color: rgba(57, 63, 151, 1); ">
+                                                    </center>
+                                                 </div>
+                                                </div>
+                                            </div>
                                         </div>
                                                                            
                                     </div>
 
 
  
-
-                    <br>
-
-
                     <!-- DATA TABLE-->
-                                <div class="table-responsive m-b-40">
-                                    <table class="table table-borderless table-data3 text-center">
+                             <div class="table-div">
+                                <div class="table-pad-div">
+                                    <table class="table table-1 table-sm tx-12">
                                         <thead>
                                             <tr>
                                                 <th>S No.</th>
@@ -78,7 +90,7 @@
 
                                                 </td>
                                                 <td>{{date("d-M-Y",strtotime($key['created_at']))}}</td>
-                                                <td class="text-center"><a class="btn btn-primary" href="javascript:void(0)" onclick='ViewSaleItem("<?php echo $key['id']?>","<?php echo $key['bill_code']?>")'><i class="fa fa-eye tx-15"></i></a>&nbsp;&nbsp;&nbsp;<!-- <a class="btn btn-danger" onclick='DeleteSale("<?php // echo $key['id'] ?>")' href="javascript:void(0)"><i class="fa fa-trash tx-15"></i></a> -->
+                                                <td class="text-center"><a class="" href="javascript:void(0)" onclick='ViewSaleItem("<?php echo $key['id']?>","<?php echo $key['bill_code']?>")'><i class="fa fa-eye tx-20"></i></a>&nbsp;&nbsp;&nbsp;<!-- <a class="btn btn-danger" onclick='DeleteSale("<?php // echo $key['id'] ?>")' href="javascript:void(0)"><i class="fa fa-trash tx-15"></i></a> -->
                                             </td>
                                             </tr>
                                             @endforeach
@@ -87,19 +99,21 @@
                                         </tbody>
                                     </table>
                                 </div>
+                            </div>
                                 <!-- END DATA TABLE-->
 
-                </div>
-            </section>
-
-           
 
            
 
         </div>
 
         <script type="text/javascript">
-          
+            function ToNormal()
+    {
+          document.getElementById("from_date").style.border = "solid lightgray 1px";
+          document.getElementById("to_date").style.border = "solid lightgray 1px";
+
+    }
 
        
     function SearchSale(value_)
@@ -290,12 +304,7 @@
     }
 
 
-    function ToNormal()
-    {
-          document.getElementById("from_date").style.border = "solid lightgray 1px";
-          document.getElementById("to_date").style.border = "solid lightgray 1px";
-
-    }
+  
 
 
 
