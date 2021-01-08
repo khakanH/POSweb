@@ -31,7 +31,8 @@
     <link rel="stylesheet" href="{{asset('assets/css/login-resgister.css')}}">
     <link rel="stylesheet" href="{{asset('assets/css/pos.css')}}">
     <link rel="stylesheet" href="{{asset('assets/css/dashboard.css')}}">
-
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/1.6.5/css/buttons.dataTables.min.css">
     <style type="text/css">
          ::-webkit-scrollbar-track
 {
@@ -143,4 +144,54 @@
         }
 
 
+        /*Data-tables styling*/
+
+          button.dt-button{
+         font-size: 16px !important;
+    background-color: #3a3e97;
+    
+    width: auto;
+    border: none;
+    border-radius: 50px;
+    font-weight: 400;
+    color: #ffffff;
+    cursor: pointer;
+        }
+
+         button.dt-button:hover {
+    color: #000;
+     background-color: #3a3e97 !important;
+    border-color: #1a8fc2
+}
+       .dataTables_wrapper .dataTables_paginate .paginate_button {
+               color: #000 !important;
+                background: #e6e8f1 !important;
+                border-radius: 10px;
+                box-shadow: 0 4px 6px rgba(50, 50, 93, .11), 0 1px 3px rgba(0, 0, 0, .08);
+                margin: 0px 5px 0px 5px;
+       }
+        .dataTables_wrapper .dataTables_paginate .paginate_button:hover:not(.disabled)  {
+               color: #fff !important;
+                background: #3a3e97 !important;
+                border-radius: 10px;
+                box-shadow: 0 4px 6px rgba(50, 50, 93, .11), 0 1px 3px rgba(0, 0, 0, .08);
+                margin: 0px 5px 0px 5px;
+       }
+       .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+               color: #fff !important;
+                background: #3a3e97 !important;
+                border-color: transparent !important;
+                border-radius: 10px;
+                box-shadow: 0 4px 6px rgba(50, 50, 93, .11), 0 1px 3px rgba(0, 0, 0, .08)
+       }
+       
+       .dataTables_wrapper .dataTables_filter input{
+    border-radius:10px;
+    border: none;
+    background-color: rgba(230, 232, 241, 1);
+       }
+       table.dataTable{
+        padding-top: 15px;
+        margin-bottom: 10px;
+       }
     </style>

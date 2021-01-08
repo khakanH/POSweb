@@ -3,7 +3,7 @@
 
     
   <div class="tab-content">
- <h5 class=""> Users</h5>
+ <h4 class=""> Sales</h4>
        
             <center>
             @if(session('success'))
@@ -17,7 +17,7 @@
           @endif
           </center>
                                     
-                                    <div class="row" style="margin: 0px 0px 0px -2px;">
+                                    <div class="row" style="">
                                         <div class="col-lg-3 m-b-10"> <input class="form-control inp" type="text" name="search_text" id="sale_search_text" required="" style="" placeholder="Enter Sale Code" onfocusout="SearchSale(this.value)">
                                     </div>
                                         <div class="col-lg-2 m-b-10"></div>
@@ -54,7 +54,7 @@
                     <!-- DATA TABLE-->
                              <div class="table-div">
                                 <div class="table-pad-div">
-                                    <table class="table table-1 table-sm tx-12">
+                                    <table class="table table-1 table-sm tx-12 dataTablesOptions">
                                         <thead>
                                             <tr>
                                                 <th>S No.</th>

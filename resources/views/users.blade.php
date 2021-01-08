@@ -4,7 +4,7 @@
     
   
      <div class="tab-content">
- <h5 class=""> Users</h5>
+ <h4 class=""> Users</h4>
             <!-- STATISTIC-->
             
                    <center>
@@ -47,7 +47,7 @@
                                 <div class="table-div">
                                 <div class="table-pad-div">
                                     
-                                    <table class="table table-1 table-sm">
+                                    <table class="table table-1 table-sm dataTablesOptions">
                                         <thead>
                                             <tr>
                                                 <th width="5%">S No.</th>

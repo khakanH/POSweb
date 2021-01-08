@@ -58,9 +58,7 @@ body{
   .list-group-item.active{
     background-color: #6056A5;
   }
-  .list-group> :nth-child(9) { 
-    margin-bottom: 65px; 
-  }
+ 
   /* .list-group-item> :nth-child(10).active { margin-top: 62px; } */
 
 

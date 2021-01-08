@@ -5,7 +5,7 @@
   
 
      <div class="tab-content">
- <h5 class=""> Category</h5>
+ <h4 class=""> Category</h4>
             <!-- STATISTIC-->
            
   <center>
@@ -40,8 +40,7 @@
                                 <!-- DATA TABLE-->
                                <div class="table-div">
                                 <div class="table-pad-div">
-                                    
-                                    <table class="table table-1 table-sm">
+                                    <table class="table table-1 table-sm dataTablesOptions">
                                         <thead>
                                             <tr>
                                                 <th>S No.</th>

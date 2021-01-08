@@ -3,7 +3,7 @@
 
     
   <div class="tab-content">
- <h5 class=""> Customers</h5>
+ <h4 class=""> Customers</h4>
                    
 
                    <center>
@@ -36,7 +36,7 @@
                                   <div class="table-div">
                                 <div class="table-pad-div">
                                     
-                                    <table class="table table-1 table-sm">
+                                    <table class="table table-1 table-sm dataTablesOptions">
                                         <thead>
                                             <tr>
                                                 <th>S No.</th>

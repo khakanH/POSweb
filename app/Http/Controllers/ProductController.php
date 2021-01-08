@@ -41,7 +41,7 @@ class ProductController extends Controller
         $get_cate_list = $this->category_model
                                       ->where('company_id',$company_id)
                                       ->where('is_deleted',0)
-                                      ->paginate(15);
+                                      ->get();
 
         return view('category',['category_list'=>$get_cate_list]);
     }
@@ -124,7 +124,7 @@ class ProductController extends Controller
                     $get_cate_list = $this->category_model
                                       ->where('company_id',$company_id)
                                       ->where('is_deleted',0)
-                                      ->paginate(15);
+                                      ->get();
             }
             else
             {   
@@ -132,7 +132,7 @@ class ProductController extends Controller
                                       ->where('company_id',$company_id)
                                       ->where('is_deleted',0)
                                       ->where('name','like','%'.$search_text.'%')
-                                      ->paginate(15);
+                                      ->get();
 
             }
             
@@ -382,34 +382,36 @@ class ProductController extends Controller
             $input = $request->all();
 
 
-            $image= $request->file('product_image');
-            if (empty($image)) 
-            {
-
-                $path = "product/default_product.png";
-                
-            }
-            else
-            {
-
-                $input['imagename'] =  uniqid().'.webp';
-               
-                $destinationPath = public_path('/images/product');
-
-                if($image->move($destinationPath, $input['imagename']))
-                {
-                        $path =  'product/'.$input['imagename'];
-                }
-                else
-                {
-                        return redirect()->back()->withInput()->with("failed","Something Went Wrong for Image Uploading");
-                }
-
-            }
+            
              
 
             if (empty($input['prod_id'])) 
             {   
+                
+                $image= $request->file('product_image');
+                if (empty($image)) 
+                {
+
+                    $path = "product/default_product.png";
+                    
+                }
+                else
+                {
+
+                    $input['imagename'] =  uniqid().'.webp';
+                   
+                    $destinationPath = public_path('/images/product');
+
+                    if($image->move($destinationPath, $input['imagename']))
+                    {
+                            $path =  'product/'.$input['imagename'];
+                    }
+                    else
+                    {
+                            return redirect()->back()->withInput()->with("failed","Something Went Wrong for Image Uploading");
+                    }
+
+                }
                 $data = array(
                         "product_code"          => $input['prod_code'],
                         "name"                  => $input['prod_name'],
@@ -438,16 +440,44 @@ class ProductController extends Controller
             else
             {
 
-                if (!empty($image)) 
-                {   
-                    $get_product = $this->product_model->where('id',$input['prod_id'])->first();
-                    $image_path = public_path('images/'.$get_product->image);  // Value is not URL but directory file path
+                
 
-                    if(File::exists($image_path)) {
-                        File::delete($image_path);
+                $get_product = $this->product_model->where('id',$input['prod_id'])->first();
+
+
+               
+                $image= $request->file('product_image');
+                if (empty($image)) 
+                {
+
+                    $path = $get_product->image;
+                
+                }
+                else
+                {   
+
+                    $input['imagename'] =  uniqid().'.webp';
+                   
+                    $destinationPath = public_path('/images/product');
+
+                    if($image->move($destinationPath, $input['imagename']))
+                    {
+                            $path =  'product/'.$input['imagename'];
+                    }
+                    else
+                    {       
+                        return array("status"=>"0","msg"=>"Something Went Wrong for Image Uploading.");
+                    }
+                    
+                    if ($get_product->image != "default_product.png") 
+                    {
+                        $image_path = public_path('/images/'.$get_product->image);  // Value is not URL but directory file path
+                        if(File::exists($image_path)) {
+                            File::delete($image_path);
+                        }
                     }
 
-                    
+
                 }
 
                 $data = array(

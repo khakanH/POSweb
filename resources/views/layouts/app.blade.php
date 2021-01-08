@@ -15,15 +15,7 @@
     </head>
     <body class="">     
 
-        @if(session('login.is_set_profile') == 1 && session('login.user_type')==0)
-
-<header class="side-bar" style="background-color: #3a3e97; border-bottom: solid black 2px;">
-                    <select class="form-control" name="company_list" style="width: 21%;" id="company_list" onchange="ChangeCompany(this.value)">
-                        <option selected="" value="{{session('login.company_id')}}">{{session('login.company_name')}}</option>
-                    </select>
-        </header>
-
-@endif
+      
         <div class="container-fluid">
             <div class="row" style="min-height: 100vh;">
         
@@ -55,57 +47,6 @@
 
 </body>
 
-<script type="text/javascript">
-     document.addEventListener("DOMContentLoaded", function(event) { 
-     setTimeout(GetCompanyList,1000);  
-     // setTimeout(NewNotification,1000);  
-     // setInterval(NewNotification,15000);  
-     // setTimeout(NotificationAlert,1000);  
-     // setInterval(NotificationAlert,15000);  
-    });
 
-       function GetCompanyList()
-    {   
-        id = <?php echo session('login.user_id'); ?>;
-
-        $.ajax({
-            type: "GET",
-            url: "{{ env('APP_URL')}}get-company-list/"+id,
-            success: function(data) {
-              $('#company_list').html(data);
-            },
-            error: function(jqXHR, textStatus, errorThrown) {
-                alert('Exception:' + errorThrown);
-            }
-        });   
-    }
-
-    function ChangeCompany(id)
-    {
-        $.ajax({
-            type: "GET",
-            url: "{{ env('APP_URL')}}change-company/"+id,
-            success: function(data) {
-
-
-                get_status = data['status'];
-                get_msg    = data['msg'];
-
-                                if (get_status == "0") 
-                                {
-                                    alert(get_msg);
-                                }
-                                else
-                                {
-                                    location.reload();
-                                }
-            },
-            error: function(jqXHR, textStatus, errorThrown) {
-                alert('Exception:' + errorThrown);
-            }
-        });   
-    }
-
-</script>
 
 </html>

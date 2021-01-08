@@ -46,14 +46,14 @@ class CustomerController extends Controller
             {       
                     $get_cust_list = Customers::where('company_id',$company_id)
                                       ->where('is_deleted',0)
-                                      ->paginate(15);
+                                      ->get();
             }
             else
             {   
                     $get_cust_list = Customers::where('company_id',$company_id)
                                       ->where('is_deleted',0)
                                       ->where('customer_name','like','%'.$search_text.'%')
-                                      ->paginate(15);
+                                      ->get();
 
             }
             

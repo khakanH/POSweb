@@ -2,7 +2,7 @@
 @section('content')
        
 <div class="tab-content">
- <h5 class=""> Users Types</h5>
+ <h4 class=""> Users Types</h4>
                    <center>
             @if(session('success'))
                         <p class="text-success pulse animated">{{ session('success') }}</p>
@@ -34,7 +34,7 @@
        <div class="table-div">
                                 <div class="table-pad-div">
                   
-                                        <table class="table table-1 table-sm">
+                                        <table class="table table-1 table-sm dataTablesOptions">
                                             <thead>
                                                 <tr>
                                                     <!-- <td width="2%">

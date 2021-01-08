@@ -33,7 +33,7 @@
     
 
      <div class="tab-content">
- <h5 class=""> Settings</h5>
+ <h4 class=""> Settings</h4>
             <!-- STATISTIC-->
        <center>
             @if(session('success'))

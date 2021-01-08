@@ -59,7 +59,7 @@ class POSController extends Controller
                                 ));
         }
        
-        $pending_bill      = PendingBills::where('company_id',$company_id)->get();
+        $pending_bill      = PendingBills::where('company_id',$company_id)->orderBy('id','asc')->get();
         $pending_bill_item = PendingBillItems::where('company_id',$company_id)->where('pending_bill_id',$pending_bill[0]['id'])->get();
 
         $customers = Customers::where('company_id',$company_id)->where('is_deleted',0)->get();
