@@ -20,15 +20,17 @@
 
     <script type="text/javascript">
 
-    //         $(document).ready(function() {
-    //          $('.dataTablesOptions').DataTable({
-    //             "pageLength": 10,
-    //             dom: 'Bfrtip',
-    //             buttons: [
-    //                 'copy', 'csv', 'excel', 'pdf', 'print'
-    //             ]
-    //     //         } );
-    // } );
+        /*
+            $(document).ready(function() {
+             $('.dataTablesOptions').DataTable({
+                "pageLength": 10,
+                dom: 'Bfrtip',
+                buttons: [
+                    'copy', 'csv', 'excel', 'pdf', 'print'
+                ]
+                });
+            });
+        */
         
          $( document ).ajaxError(function( event, jqxhr, settings, thrownError ) {
 

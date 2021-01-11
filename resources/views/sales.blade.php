@@ -18,14 +18,14 @@
           </center>
                                     
                                     <div class="row" style="">
-                                        <div class="col-lg-3 m-b-10"> <input class="form-control inp" type="text" name="search_text" id="sale_search_text" required="" style="" placeholder="Enter Sale Code" onfocusout="SearchSale(this.value)">
+                                        <div class="col-md-3 m-b-10"> <input class="form-control inp" type="text" name="search_text" id="sale_search_text" required="" style="" placeholder="Enter Sale Code" onfocusout="SearchSale(this.value)">
                                     </div>
-                                        <div class="col-lg-2 m-b-10"></div>
-                                        <div class="col-lg-3 m-b-10"></div>
-                                        <div class="col-lg-2 text-center m-b-10">
+                                        <div class="col-md-2 m-b-10"></div>
+                                        <div class="col-md-3 m-b-10"></div>
+                                        <div class="col-md-2 text-center m-b-10">
                                             <a style="width: 100%;" href="{{route('export-sale-csv')}}" target="_blank"><button style="width: 100%; height: 44px; font-size: 15px;" class="btn btn-default-pos" >Export csv</button></a>
                                         </div>
-                                        <div class="col-lg-2 text-center m-b-10">
+                                        <div class="col-md-2 text-center m-b-10">
                                            
                                            <div class="btn-group">
                                                 <button type="button" class="btn btn-default-pos dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">

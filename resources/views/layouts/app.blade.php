@@ -13,19 +13,19 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.2/jquery.validate.min.js"></script>
     </head>
-    <body class="">     
+    <body class="" style="overflow-x: hidden;">     
 
       
-        <div class="container-fluid">
-            <div class="row" style="min-height: 100vh;">
-        
+       <div class="page-wrapper row" >
+            
+                <div class="col-lg-3" style="margin-bottom: 60px;">
                     @include('partials/sidebar')  
+                </div>
         
-                    <div class="col-md-9">
-
+                <div class="col-lg-9">
                         @yield('content')
-                    </div>
-            </div>
+                </div>
+            
         </div>
 
        <!--   <section class="p-t-30 p-b-20 bg-dark">

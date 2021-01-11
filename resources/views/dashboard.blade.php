@@ -101,9 +101,6 @@
 
 
 
-
-
-
     <script src="{{ asset('vendor/chartjs/Chart.bundle.min.js') }}"></script>
                       
         <script type="text/javascript">

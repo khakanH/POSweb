@@ -6601,7 +6601,7 @@ button.bg-dark:hover {
 	}
 }
 
-@media (min-width:992px) {
+@media (min-width:1150px) {
 	.d-lg-none {
 		display: none!important
 	}
