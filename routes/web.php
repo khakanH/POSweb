@@ -309,7 +309,10 @@ Route::middleware(['LoginSession','CheckMemberRoles'])->group(function ()
 	Route::post('add-user',[UserController::class,'AddUser'])->name('add-user');
 	// Route::get('delete-user/{id}',[UserController::class,'DeleteUser'])->name('delete-user');
 	Route::get('block-unblock-user/{id}',[UserController::class,'BlockUnblockUser'])->name('block-unblock-user');
-	Route::get('get-member-type',[UserController::class,'MemberType'])->name('get-member-type');
+	Route::get('get-member-type/{type}',[UserController::class,'MemberType'])->name('get-member-type');
+
+	Route::post('add-user-salary',[UserController::class,'AddUserSalary'])->name('add-user-salary');
+	Route::get('get-user-salary-detail/{id}',[UserController::class,'UserSalaryDetail'])->name('get-user-salary-detail');
 
 	//_________________________________________________________________________________
 

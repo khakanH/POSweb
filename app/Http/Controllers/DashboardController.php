@@ -23,6 +23,7 @@ class DashboardController extends Controller
     use CommonTrait;
     public function __construct(Request $request)
     {   
+
     }
 
 

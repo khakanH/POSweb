@@ -20,7 +20,7 @@
 
     <script type="text/javascript">
 
-        /*
+        /*          
             $(document).ready(function() {
              $('.dataTablesOptions').DataTable({
                 "pageLength": 10,
@@ -30,7 +30,7 @@
                 ]
                 });
             });
-        */
+         */   
         
          $( document ).ajaxError(function( event, jqxhr, settings, thrownError ) {
 

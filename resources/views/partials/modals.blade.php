@@ -5,6 +5,7 @@
 .modal-footer{
   display: block;
 }
+
 </style>
 
 <div id="myModal" class="modal fade show " tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-modal="true" aria-hidden="true">
@@ -426,7 +427,7 @@
 
 
 
-<!-- Category Modal                                         -->
+<!-- User Modal                                         -->
 <!-- ----------------------------------------------------------------------------------------------------- -->
 
 <div id="UserModal" class="modal fade show " tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-modal="true" aria-hidden="true" style="color: black;">
@@ -445,16 +446,38 @@
                   <div class="modal-body">
                       <div class="" id="UserModalData">
 
+                      <input type="hidden" id="user_id" name="user_id">
 
 
                         
-                        <div class="form-group">
-                          <input type="text" id="user_name" name="user_name" class="form-control inp" placeholder="Enter User Name"><br>
-                          <input type="email" id="user_email" name="user_email" class="form-control inp" placeholder="Enter User Email"><br>
-                          <input type="password" id="user_password" name="user_password" class="form-control inp" placeholder="Enter User password"><br>
-                          <select class="form-control inp" name="user_type" id="user_type">
-                          </select>
-                        </div>
+                          
+                          <div class="form-group" id="user-name-div">
+                            <label for="user_name">Name:</label>
+                            <input type="text" id="user_name" name="user_name" class="form-control inp" placeholder="Enter User Name">
+                          </div>
+                          
+                          <div class="form-group" id="user-email-div">
+                            <label for="user_email">Email:</label>
+                            <input type="email" id="user_email" name="user_email" class="form-control inp" placeholder="Enter User Email">
+                          </div>
+                          
+                          <div class="form-group" id="user-pass-div">
+                            <label for="user_password">Password:</label>
+                            <input type="password" id="user_password" name="user_password" class="form-control inp" placeholder="Enter User password">
+                          </div>
+                          
+                          <div class="form-group" id="user-salary-div">
+                            <label for="user_salary">Salary:</label>
+                            <input type="number" id="user_salary" name="user_salary" class="form-control inp" placeholder="Enter User Salary">
+                          </div>
+                          
+                          <div class="form-group" id="user-type-div">
+                            <label for="user_type">Type:</label>
+                            <select class="form-control inp" name="user_type" id="user_type">
+                            </select>
+                          </div>
+                       
+
                                 
                       </div>
               
@@ -478,6 +501,127 @@
 <!-- ----------------------------------------------------------------------------------------------------- -->
 <!-- ----------------------------------------------------------------------------------------------------- -->
 
+
+
+
+<!-- User Salary Modal                                         -->
+<!-- ----------------------------------------------------------------------------------------------------- -->
+
+<div id="UserSalaryModal" class="modal fade show " tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-modal="true" aria-hidden="true" style="color: black;">
+    <div class="modal-dialog modal-lg" id="UserSalaryModalDialog">
+        <div class="modal-content" id="UserSalaryModalContent">
+           
+            <form name="userSalaryForm" enctype="multipart/form-data" id="userSalaryForm">
+              @csrf
+               <span class='arrow'>
+              <label class='error'></label>
+              </span>
+                  <div class="modal-header">
+                      <h4 class="modal-title" id="UserSalaryModalLabel"></h4>
+                      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                  </div>
+                  <div class="modal-body">
+                      <div class="" id="UserSalaryModalData">
+
+                      <input type="hidden" id="user_salary_id" name="user_salary_id">
+
+
+                        
+                          <div class="row">
+                            <div class="form-group col-lg-6">
+                              <label for="salary_date">Salary Date:</label>
+                              <input type="date" id="salary_date" name="salary_date" class="form-control inp">
+                            </div>
+                            <div class="form-group col-lg-6">
+                              <label for="user_email">Salary Amount (Auto):</label>
+                              <input type="number" id="salary_amount" name="salary_amount" class="form-control inp" min="0" readonly="">
+                            </div>
+                          </div>
+                          
+                          <div class="row">
+                            <div class="form-group col-lg-6">
+                              <label for="salary_deduction">Deduction:</label>
+                              <input type="number" id="salary_deduction" name="salary_deduction" class="form-control inp" min="0" value="0" onkeyup="CalculateTotalSalary()">
+                            </div>
+                            <div class="form-group col-lg-6">
+                              <label for="salary_bonus">Bonus:</label>
+                              <input type="number" id="salary_bonus" name="salary_bonus" class="form-control inp" value="0" min="0" onkeyup="CalculateTotalSalary()">
+                            </div>
+                          </div>
+                          
+                          <div class="row">
+                            <div class="form-group col-lg-6">
+                              <label for="salary_deduction_reason">Deduction Reason:</label>
+                              <textarea rows="3" class="form-control inp" name="salary_deduction_reason"  id="salary_deduction_reason" placeholder="Enter Deduction Reason"></textarea>
+                            </div>
+                             <div class="form-group col-lg-6">
+                              <label for="salary_bonus_reason">Bonus Reason:</label>
+                              <textarea rows="3" class="form-control inp" name="salary_bonus_reason"  id="salary_bonus_reason" placeholder="Enter Bonus Reason"></textarea>
+                            </div>
+                          </div>
+                       
+                          <div class="form-group col-lg-12">
+                            <label for="total_salary">Total Salary Amount (Auto):</label>
+                            <input type="number" name="total_salary" id="total_salary" class="form-control inp" min="0" readonly="">
+                          </div>
+                                
+                      </div>
+              
+
+                      </div>
+                  <div class="modal-footer" id="UserSalaryModalFooter">
+                      <button type="submit" class="pos-btn mt-3 mb-3 btn btn-default-poss">Pay</button>
+                      <button type="button" class="btn pos-btn-secondary" data-dismiss="modal">Close</button>
+
+                  </div>
+            </form>
+
+
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+<!-- ----------------------------------------------------------------------------------------------------- -->
+<!-- ----------------------------------------------------------------------------------------------------- -->
+<!-- ----------------------------------------------------------------------------------------------------- -->
+
+
+<!-- User Salary Detail Modal                                         -->
+<!-- ----------------------------------------------------------------------------------------------------- -->
+
+<div id="UserSalaryDetailModal" class="modal fade show " tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-modal="true" aria-hidden="true" style="color: black;">
+    <div class="modal-dialog modal-lg" id="UserSalaryDetailModalDialog">
+        <div class="modal-content" id="UserSalaryDetailModalContent">
+           
+          
+                  <div class="modal-header">
+                      <h4 class="modal-title" id="UserSalaryDetailModalLabel"></h4>
+                      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                  </div>
+                  <div class="modal-body">
+                      <div class="" id="UserSalaryDetailModalData">
+
+                      </div>
+              
+
+                      </div>
+                  <div class="modal-footer" id="UserSalaryDetailModalFooter">
+                   
+                      <button type="button" class="btn pos-btn-secondary" data-dismiss="modal">Close</button>
+
+                  </div>
+
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+<!-- ----------------------------------------------------------------------------------------------------- -->
+<!-- ----------------------------------------------------------------------------------------------------- -->
+<!-- ----------------------------------------------------------------------------------------------------- -->
 
 
 
@@ -1341,6 +1485,117 @@
 //-------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------
 
+
+
+$(function() {
+        $("form[name='userSalaryForm']").validate({
+             errorPlacement: function(label, element) {
+        label.addClass('arrow');
+        label.css({"color": "red", "font-size": "12px" ,"width":"100%"});
+        label.insertAfter(element);
+    },
+    wrapper: 'span',
+
+    rules: {
+      salary_date: {
+        required: true,
+      },
+      salary_amount: {
+        required: true,
+      },
+      total_salary: {
+        required: true,
+      },
+
+    },
+    messages: {
+      salary_date: {
+        required: "Please Provide a Salary Date",
+      },
+      salary_amount: {
+        required: "Please Provide a Salary Amount",
+      },
+      total_salary: {
+        required: "Please Provide a Total Salary",
+      },
+    },
+    submitHandler: function(form) {
+
+        let myForm = document.getElementById('userSalaryForm');
+        let formData = new FormData(myForm);
+
+         $.ajax({
+        type: "POST",
+        url: "{{ env('APP_URL')}}add-user-salary",
+        enctype: 'multipart/form-data',
+        data: formData,
+        processData: false,
+        contentType: false,
+        beforeSend: function(){
+                            $('#UserSalaryModal').modal('hide');
+                            $('#LoadingModal').modal('show');
+                        },
+        success: function(data) {
+           
+                            $('#LoadingModal').modal('hide');
+
+            get_status = data['status'];
+            get_msg    = data['msg'];
+
+                            if (get_status == "0") 
+                            {
+
+                             document.getElementById('toast').style.visibility = "visible";
+                                document.getElementById('toast').className = "alert alert-danger alert-rounded fadeIn animated";
+                                document.getElementById('toastMsg').innerHTML = get_msg;
+
+
+                                 setTimeout(function() {
+                                document.getElementById('toast').className = "alert alert-danger alert-rounded fadeOut animated";
+
+                            }, 5000);
+
+                            }
+                            else
+                            {
+                                document.getElementById('toast').style.visibility = "visible";
+                                document.getElementById('toast').className = "alert alert-success alert-rounded fadeIn animated";
+                                document.getElementById('toastMsg').innerHTML = get_msg;
+
+
+                                 setTimeout(function() {
+                                document.getElementById('toast').className = "alert alert-success alert-rounded fadeOut animated";
+
+                            }, 5000);
+
+
+                            }
+
+
+        var search_text = (document.getElementById("user_search_text").value.trim() == "")?"0":document.getElementById("user_search_text").value.trim();
+        $.ajax({
+        type: "GET",
+        url: "{{ env('APP_URL')}}get-user-list-AJAX/"+search_text,
+        success: function(data) {
+
+            $('#userTBody').html(data);
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            alert('Exception:' + errorThrown);
+        }
+    });
+
+    }
+  });
+
+    }
+  });
+  });
+
+
+//-------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------
 
 
 

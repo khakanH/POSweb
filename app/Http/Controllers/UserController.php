@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\Members;
+use App\Models\MemberSalary;
 use App\Models\MemberType;
 use App\Models\MembersCompany;
 use App\Models\Modules;
@@ -38,6 +39,14 @@ class UserController extends Controller
 
         $users = Members::whereIn('id',$get_user_id)->where('member_type','!=',0)->get();
 
+        foreach ($users as $key ) 
+        {
+            $key['is_salary_paid'] = (MemberSalary::where('member_id',$key['id'])->whereYear('salary_date',date('Y'))->whereMonth('salary_date',date('m'))->count() == 0)?0:1;
+        }
+
+
+
+
         return view('users',compact("users"));
     }
 
@@ -65,7 +74,9 @@ class UserController extends Controller
 
             }
 
-            
+            if(empty($input['user_id']))
+            {
+
 
                 $data = array(  
                             'username'          => $input['user_name'],
@@ -79,6 +90,7 @@ class UserController extends Controller
                             'temp_password'     => $input['user_password'],
                             'member_type'       => $input['user_type'],
                             'parent_id'         => $user_id,
+                            'salary'            => (float)$input['user_salary'],
                             'created_at'        => date("Y-m-d H:i:s"),
                             'updated_at'        => date("Y-m-d H:i:s"),
                          );
@@ -100,7 +112,27 @@ class UserController extends Controller
 
                 }
 
+            }
+            else
+            {
+                $data = array(  
+                            'username'          => $input['user_name'],
+                            'member_type'       => $input['user_type'],
+                            'salary'            => (float)$input['user_salary'],
+                         );
 
+
+                
+                if(Members::where('id',$input['user_id'])->update($data))
+                {   
+                    return array("status"=>"1","msg"=>"User Updated Successfully.");
+                }
+                else
+                {
+                    return array("status"=>"0","msg"=>"Failed");
+
+                }
+            }
            
             
         } catch (Exception $e) 
@@ -108,6 +140,149 @@ class UserController extends Controller
             
         }
     }
+
+
+
+
+    public function AddUserSalary(Request $request)
+    {
+        try 
+        {   
+            $user_id = session("login")["user_id"];
+
+            $user_info = $this->checkUserAvailbility($user_id,$request);
+            
+            $company_id = session("login")["company_id"];
+            
+            $input = $request->all();
+
+
+                $data = array(  
+                            'member_id'         => $input['user_salary_id'],
+                            'salary_date'       => $input['salary_date'],
+                            'salary_amount'     => $input['salary_amount'],
+                            'deduction'         => $input['salary_deduction'],
+                            'deduction_reason'  => $input['salary_deduction_reason'],
+                            'bonus'             => $input['salary_bonus'],
+                            'bonus_reason'      => $input['salary_bonus_reason'],
+                            'total_salary'      => $input['total_salary'],
+                            'created_at'        => date("Y-m-d H:i:s"),
+                            'updated_at'        => date("Y-m-d H:i:s"),
+                         );
+
+
+               
+                if(MemberSalary::insert($data))
+                {   
+                    return array("status"=>"1","msg"=>"User Salary Added Successfully.");
+                }
+                else
+                {
+                    return array("status"=>"0","msg"=>"Failed");
+
+                }
+
+            
+        } catch (Exception $e) 
+        {
+            
+        }
+    }
+
+    public function UserSalaryDetail(Request $request,$id)
+    {
+        try 
+        {   
+            $user_id = session("login")["user_id"];
+
+            $user_info = $this->checkUserAvailbility($user_id,$request);
+            
+            $company_id = session("login")["company_id"];
+            
+            $input = $request->all();
+
+            $data = MemberSalary::where('member_id',$id)->orderBy('salary_date','desc')->get();
+
+            if (count($data) == 0) 
+            {
+                ?>
+                <center><p class="text-danger">No Record Found :(</p></center>
+                <?php 
+            }
+            else
+            {   ?>
+                    <table class="table table-1 table-sm dataTablesOptionsModal">
+                        <thead>
+                            <tr>
+                                <th width="5%">Salary</th>
+                                <th width="5%">Date</th>
+                                <th width="5%">Deduction</th>
+                                <th width="5%">Bonus</th>
+                                <th width="5%">Total Salary</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersalaryTBody">
+                            <?php $sum_salary = 0; foreach($data as $key): ?>
+                                <tr>
+                                    <td><?php echo number_format($key['salary_amount'],0); ?></td>
+                                    <td><?php echo date("M d, Y",strtotime($key['salary_date'])); ?></td>
+                                    <td><?php echo number_format($key['deduction'],0); ?> 
+                                        <?php if (!empty($key['deduction'])): ?>
+                                        <br> <i><?php echo $key['deduction_reason'] ?></i>
+                                        <?php endif; ?>
+                                    </td>
+                                    <td><?php echo number_format($key['bonus'],0); ?>
+                                         <?php if (!empty($key['bonus'])): ?>
+                                        <br> <i><?php echo $key['bonus_reason'] ?></i>
+                                        <?php endif; ?>
+                                    </td>
+                                    <td><?php echo number_format($key['total_salary'],0); ?></td>
+                                </tr>
+                            <?php $sum_salary += $key['total_salary']; endforeach; ?>
+                                <tfoot>
+                                <tr style="font-size: 18px; font-weight: bold;" class="bg-success text-white text-center">
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>Total Paid: </td>
+                                    <td><?php echo number_format($sum_salary,0); ?></td>
+                                </tr>
+                                </tfoot>
+
+                        </tbody>
+                    </table>
+                    <!-- <script type="text/javascript">
+                         $(document).ready(function() {
+             $('.dataTablesOptionsModal').DataTable({
+                "pageLength": 10,
+                dom: 'Bfrtip',
+
+                buttons: [
+                    { extend: 'copyHtml5', footer: true },
+                    { extend: 'excelHtml5', footer: true },
+                    { extend: 'csvHtml5', footer: true },
+                    { extend: 'pdfHtml5', footer: true },
+                    { extend: 'print', footer: true },
+
+                ]
+                });
+            });
+                    </script> -->
+                <?php
+            }
+
+              
+
+            
+        } catch (Exception $e) 
+        {
+            
+        }
+    }
+
+
+
+
 
     public function UserListAJAX(Request $request,$search_text)
     {
@@ -149,6 +324,7 @@ class UserController extends Controller
                 $count= 1;
                 foreach ($get_user_list as $key) 
                 {
+                     $key['is_salary_paid'] = (MemberSalary::where('member_id',$key['id'])->whereYear('salary_date',date('Y'))->whereMonth('salary_date',date('m'))->count() == 0)?0:1;
                 ?>
 
                     <tr id="user<?php echo $key['id']?>">
@@ -156,6 +332,15 @@ class UserController extends Controller
                       <td><?php echo $key['username']?></td>
                       <td><?php echo $key['email']?></td>
                       <td><?php echo isset($key->member_type_name['name'])?$key->member_type_name['name']:"Super Admin"?></td>
+                      <td><a data-toggle="tooltip" title="View Salary Details" href="javascript:void(0)" onclick='ViewSalaryDetails("<?php echo $key['id']?>","<?php echo $key['username']?>")'><?php echo number_format($key['salary'],0) ?></a></td>
+                        <td>
+                                                    <?php if($key['is_salary_paid'] == 0): ?>
+                                                        <i class="fa fa-times-circle text-danger"> Unpaid</i>
+                                                    <?php else: ?>
+                                                        <i class="fa fa-check-circle text-success"> Paid</i>
+
+                                                    <?php endif; ?>
+                        </td>
                       <td>
                         <?php if ($key['is_verified'] == 0):?>
                             <span class="text-danger">Not Verified!</span>
@@ -164,7 +349,11 @@ class UserController extends Controller
                         <?php endif; ?>
                           
                       </td>
-                      <td><a data-toggle="tooltip" title="Block/Unblock User" id="status-btn-color<?php echo $key['id']?>" href="javascript:void(0)" onclick='BlockUnblockUser("<?php echo $key['id']?>")'><i id="status-btn-icon<?php echo $key['id']?>" class="<?php if ($key['is_blocked'] == 0): ?>fa fa-lock tx-20 text-danger<?php else: ?>fa fa-unlock tx-20 text-success<?php endif ?>"></i></a>&nbsp;&nbsp;&nbsp;<!-- <a class="btn btn-danger" onclick='DeleteUser("<?php // echo $key['id'] ?>")' href="javascript:void(0)"><i class="fa fa-trash tx-15"></i></a> --></td>
+                      <td><a data-toggle="tooltip" title="Block/Unblock User" id="status-btn-color<?php echo $key['id']?>" href="javascript:void(0)" onclick='BlockUnblockUser("<?php echo $key['id']?>")'><i id="status-btn-icon<?php echo $key['id']?>" class="<?php if ($key['is_blocked'] == 0): ?>fa fa-lock tx-20 text-danger<?php else: ?>fa fa-unlock tx-20 text-success<?php endif ?>"></i></a>  &nbsp;&nbsp;&nbsp;
+                                                <a data-toggle="tooltip" title="Edit User" href="javascript:void(0)" onclick='EditUser("<?php echo $key['id']?>","<?php echo $key['username']?>","<?php echo $key['member_type']?>","<?php echo $key['salary']?>")'><i class="fa fa-edit tx-20 text-primary"></i></a>
+                                &nbsp;&nbsp;&nbsp;
+                                                <a data-toggle="tooltip" title="Pay Salary" href="javascript:void(0)" onclick='PaySalary("<?php echo $key['id']?>","<?php echo $key['salary']?>","<?php echo $key['username']?>")'><i class="fa fa-money tx-20 text-success"></i></a>
+                                                <!-- <a class="btn btn-danger" onclick='DeleteUser("<?php // echo $key['id'] ?>")' href="javascript:void(0)"><i class="fa fa-trash tx-15"></i></a> --></td>
                     </tr>
 
                 <?php
@@ -178,6 +367,9 @@ class UserController extends Controller
             
         }
     }
+
+
+
 
 
 
@@ -201,7 +393,7 @@ class UserController extends Controller
     }
 
 
-    public function MemberType(Request $request)
+    public function MemberType(Request $request,$type)
     {
         try 
         {   
@@ -227,7 +419,9 @@ class UserController extends Controller
                 {
                 ?>
 
-                <option value="<?php echo $key['id'] ?>"><?php echo $key['name'] ?></option>
+                <option <?php if ($key['id'] == (int)$type): ?>
+                    selected
+                <?php endif ?> value="<?php echo $key['id'] ?>"><?php echo $key['name'] ?></option>
 
                 <?php
                 } 
@@ -482,7 +676,7 @@ class UserController extends Controller
             }
 
 
-            $all_modules = Modules::where('parent_id',0)->get();
+            $all_modules = Modules::where('parent_id',0)->where('id','!=',7)->get();
             foreach ($all_modules as $key) 
             {
                 $all_sub_modules[] = Modules::where('parent_id',$key['id'])->get();

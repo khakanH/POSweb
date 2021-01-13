@@ -469,7 +469,7 @@ class ProductController extends Controller
                         return array("status"=>"0","msg"=>"Something Went Wrong for Image Uploading.");
                     }
                     
-                    if ($get_product->image != "default_product.png") 
+                    if ($get_product->image != "product/default_product.png") 
                     {
                         $image_path = public_path('/images/'.$get_product->image);  // Value is not URL but directory file path
                         if(File::exists($image_path)) {
